@@ -1,6 +1,7 @@
 import React ,{Component} from 'react';
 import Info from './Info';
 import './App.css';
+import MediaPlayer from './components/mediaPlayer/MediaPlayer';
 class FirstForm extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +26,7 @@ class FirstForm extends Component {
                 <button onClick={this.callAPI}>
                     Go
                 </button>
-               
+                <MediaPlayer/>   
             </div>
         )
     }

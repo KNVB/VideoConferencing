@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Utility from "../../Utility";
 import './MediaPlayer.css'
 class Media extends React.Component {
@@ -11,7 +11,6 @@ class Media extends React.Component {
         if (this.props["elapseTime"]){
             this.videoTag.currentTime=this.props["elapseTime"];
         }
-        this.videoTag.src=this.props["src"];       
         this.videoTag.ontimeupdate=(()=>{
             if (this.videoTag && this.props.timeUpdateHandler){
                 this.props.timeUpdateHandler(Utility.toHHMMSS(this.videoTag.currentTime));
@@ -35,18 +34,31 @@ class Media extends React.Component {
     }
     render() {
         var finalClass=this.props.mediaClass;
+        var mediaSource=null;
         if (this.state.mirror){
             finalClass+=" mirror";
         } else {
             finalClass=finalClass.replace(" mirror","");
         }
+        if (this.props.mediaSource!=null){
+            mediaSource=<source src={this.props.mediaSource}/>
+        }
         return (
-            <video  
-                autoPlay
-                muted={this.props.muted}
-                className={finalClass}
-                ref={instance => { this.videoTag = instance; }}>
-            </video>
+            <Fragment>
+                <video  
+                    autoPlay
+                    className={finalClass}
+                    muted={this.props.muted}                    
+                    ref={instance => { this.videoTag = instance; }}>
+                        {mediaSource}
+                </video>
+                <div 
+                    className="align-items-center 
+                            justify-content-center 
+                            playerOverlay
+                            text-white">        
+                </div>
+            </Fragment>    
         );
     }
 }

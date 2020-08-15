@@ -11,7 +11,6 @@ class MiniPlayer extends React.Component{
         this.media=React.createRef();
         this.pInP=React.createRef();
         this.pInPVideoTag=React.createRef();
-
         this.state={};
 
     }
@@ -22,7 +21,7 @@ class MiniPlayer extends React.Component{
                 <Card className="pinp rounded p-1" ref={instance => {this.pInP = instance; }}>
                     <Media mediaClass="card-body p-0 rounded w-100" 
                         muted={this.props.muted}                        
-                        src="https://www.w3schools.com/html/mov_bbb.mp4"
+                        mediaSource="https://www.w3schools.com/html/mov_bbb.mp4"
                         timeUpdateHandler={this.timeUpdateHandler}
                         ref={instance => { this.media = instance; }}/>
                     <div 
