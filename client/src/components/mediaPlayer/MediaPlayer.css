@@ -1,55 +1,32 @@
-.controlBar{
-    font-size:20px;
-    margin-top: auto;
-    display: block;
+.controlLayer {
+  align-items: flex-end;
+  display: flex;
+  z-index: 10;
 }
 .full_screen {
-  width: 100vw;
+  width: 100%;
   position: fixed;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
   z-index: 100;
 }
-.hideMiniPlayer{
+.hidePInPPlayer{
   background-color:rgba(0,0,0,0);
   z-index: 0;
   opacity: 0.5;
 }
-.mirror{
-  transform: scaleX(-1);
-}
-.pinp{
-  height:30vh;
-  width:40vw;
-  position: fixed;
-  bottom: 5px;
-  right: 5px;
-  z-index: 100;
-}
-.playerOverlay {
-  display: flex;
-  flex-direction: column;
-  background-color: rgba(0,0,0,0);
-  z-index: 2;
-  cursor: pointer;
-}	
-.showMiniPlayer{
+.showPInPPlayer{
   background-color: black;
   z-index: 20;
   opacity: 0.5;
 }
-
-.hideMiniPlayer,
-.playerOverlay,
-.showMiniPlayer
-{
+.controlLayer,
+.hidePInPPlayer,
+.showPInPPlayer{
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-}
-video {
-    object-fit: cover;
 }

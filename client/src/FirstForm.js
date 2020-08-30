@@ -1,7 +1,7 @@
 import React ,{Component} from 'react';
 import Info from './Info';
 import './App.css';
-import MediaPlayer from './components/mediaPlayer/MediaPlayer';
+import MediaPlayer from './components/mediaplayer/MediaPlayer';
 class FirstForm extends Component {
     constructor(props) {
         super(props);

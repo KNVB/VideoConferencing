@@ -5,14 +5,14 @@ class ExpandButton extends Component {
     constructor(props) {
         super(props);
         this.clickHandler=(()=>{
-            this.props.hideMiniPlayer();
+            this.props.hidePInPPlayer();
         })        
     }
     
     render() {
         return (
             <Fragment>
-                <div className="btnlink" title="Expand" onClick={this.clickHandler}> 
+                <div type="button" title="Expand" onClick={this.clickHandler}> 
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         style={{"fill":"white","transform":"scaleX(-1)"}} 
                         width="24" height="24" 
