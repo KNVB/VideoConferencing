@@ -1,7 +1,6 @@
-import Card from "react-bootstrap/Card";
-import InfoPane from "./InfoPane";
+import InfoPane from "../infopane/InfoPane";
 import MediaPlayer from '../mediaplayer/MediaPlayer';
-import React,{ Fragment } from "react";
+import React from "react";
 import "./Meeting.css";
 class Meeting extends React.Component {
   componentDidMount() {
