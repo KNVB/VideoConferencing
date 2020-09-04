@@ -1,7 +1,7 @@
 import Info from './routes/Info';
 import React ,{Component} from 'react';
 import './App.css';
-import fetchApi from './utils/fetch'
+import fetchApi from './utils/fetch';
 import { Col,Container,Row } from 'react-bootstrap';
 class FirstForm extends Component {
     constructor(props) {
