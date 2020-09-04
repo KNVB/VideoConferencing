@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import "./Media.css";
-import Utility from '../Utility';
+import Utility from '../../utils/Utility';
 class Media extends React.Component {
   constructor(props) {
     super(props);

@@ -1,6 +1,6 @@
 import { Container } from 'react-bootstrap';
 import React ,{Component} from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 class Info extends Component {
     constructor(props) {
         super(props);
@@ -10,8 +10,8 @@ class Info extends Component {
     render() {
         return (
             <Container>
-                <div class="bg-danger font-weight-bold text-white">Hi {this.userName}</div>
-                <div class="bg-success font-weight-bold text-white">You email address:{this.email}</div>
+                <div className="bg-danger font-weight-bold text-white">Hi {this.userName}</div>
+                <div className="bg-success font-weight-bold text-white">You email address:{this.email}</div>
                 
             </Container>
         );

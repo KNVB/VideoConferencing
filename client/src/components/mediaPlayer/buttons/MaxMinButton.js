@@ -1,6 +1,4 @@
 import React ,{Component}  from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Button.css';
 class MaxMinButton extends Component {
     constructor(props) {
         super(props);

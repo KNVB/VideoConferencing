@@ -1,6 +1,4 @@
 import React ,{Component,Fragment}  from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Button.css';
 class MuteButton extends Component {
     constructor(props) {
         super(props);

@@ -1,6 +1,4 @@
 import React ,{Component,Fragment}  from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Button.css';
 class PInPButton extends Component {
     constructor(props) {
         super(props);

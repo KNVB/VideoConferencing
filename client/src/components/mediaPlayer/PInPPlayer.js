@@ -1,5 +1,5 @@
 import React from "react";
-import Draggable from '../Draggable';
+import Draggable from '../../utils/Draggable';
 import ExpandButton from './buttons/ExpandButton';
 import Media from '../media/Media';
 import "./PInPPlayer.css";
