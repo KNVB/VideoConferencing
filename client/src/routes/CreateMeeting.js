@@ -17,7 +17,7 @@ class CreateMeeting extends Component {
                     data['shareAudio']=form.shareAudio.value;
                     data['shareVideo']=form.shareVideo.value;
                     data['meetingPwd']=form.meetingPwd.value;
-                    fetchApi('/createMeeting','POST',data)
+                    fetchApi('/login','POST',{},data,'json')
                     .then(x=>{
                         console.log(x);
                     })
