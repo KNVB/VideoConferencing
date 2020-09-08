@@ -16,7 +16,7 @@ router.post('/', (req, res, next) => {
   meeting.setPassword(body.meetingPwd);
   body.userList[userId]=user;
   body.meetingList[meetingId]=meeting;
-  res.send({"userId":userId,"meetingId":meetingId});
+  res.send({"user":user,"meetingId":meetingId});
   res.end();
 })
 module.exports = router

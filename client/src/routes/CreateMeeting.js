@@ -2,9 +2,11 @@ import fetchApi from '../utils/fetch';
 import { Col,Container,Row } from 'react-bootstrap';
 import React ,{Component} from 'react';
 import UserAttrib from '../utils/UserAttrib';
+import Meeting from '../components/meeting/Meeting';
 class CreateMeeting extends Component {
     constructor(props) {
         super(props);
+        this.state={};
         this.formRef=React.createRef();
         this.handleSubmit =(event)=>{
             var form=this.formRef.current;
@@ -19,8 +21,11 @@ class CreateMeeting extends Component {
                     data['meetingPwd']=form.meetingPwd.value;
                     fetchApi('/login','POST',{},data,'json')
                     .then(x=>{
-                        console.log(x);
+                        this.setState({'meeting': x});
                     })
+                    .catch(err => {
+                        alert("Something wrong when creating a meeting : "+err.message);
+                    });
                 }
             }
             event.preventDefault();     
@@ -32,39 +37,43 @@ class CreateMeeting extends Component {
 //
 
     render(){
-        return (
-            <form ref={this.formRef}>
-                <Container fluid>
-                    <Row>
-                        <Col>
-                            <h3>Create A Meeting</h3>
-                        </Col>
-                    </Row>
-                    <UserAttrib/>
-                    <Row>
-                        <div className="col-6 d-flex justify-content-end">
-                            <label htmlFor="meetingPwd">Meeting Password:</label>
-                        </div>
-                        <div className="col-6 m-0 p-0">    
-                            <input id="meetingPwd" name="meetingPwd" type="password"/>
-                        </div>
-                    </Row>
-                    <Row>
-                        <div className="col-6 d-flex justify-content-end">
-                            <label htmlFor="cfmPwd">Confirm Password:</label>
-                        </div>
-                        <div className="col-6 m-0 p-0">    
-                            <input id="cfmPwd" name="cfmPwd" type="password"/>
-                        </div>
-                    </Row>     
-                    <Row>
-                        <Col className="d-flex justify-content-center p-1">
-                            <button type="submit" onClick={this.handleSubmit}>Create Meeting</button>
-                        </Col>
-                    </Row>
-            </Container> 
-           </form>
-        )
+        if (this.state.meeting){
+            return (<Meeting meeting={this.state.meeting}/>);
+        } else {
+            return (
+                <form ref={this.formRef}>
+                    <Container fluid>
+                        <Row>
+                            <Col>
+                                <h3>Create A Meeting</h3>
+                            </Col>
+                        </Row>
+                        <UserAttrib/>
+                        <Row>
+                            <div className="col-6 d-flex justify-content-end">
+                                <label htmlFor="meetingPwd">Meeting Password:</label>
+                            </div>
+                            <div className="col-6 m-0 p-0">    
+                                <input id="meetingPwd" name="meetingPwd" type="password"/>
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className="col-6 d-flex justify-content-end">
+                                <label htmlFor="cfmPwd">Confirm Password:</label>
+                            </div>
+                            <div className="col-6 m-0 p-0">    
+                                <input id="cfmPwd" name="cfmPwd" type="password"/>
+                            </div>
+                        </Row>     
+                        <Row>
+                            <Col className="d-flex justify-content-center p-1">
+                                <button type="submit" onClick={this.handleSubmit}>Create Meeting</button>
+                            </Col>
+                        </Row>
+                </Container> 
+            </form>
+            )
+        }    
     }
 }
 export default CreateMeeting;

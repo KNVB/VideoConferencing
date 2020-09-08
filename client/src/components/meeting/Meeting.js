@@ -3,6 +3,10 @@ import MediaPlayer from '../mediaplayer/MediaPlayer';
 import React from "react";
 import "./Meeting.css";
 class Meeting extends React.Component {
+  constructor(props){
+    super(props);
+    console.log(props);
+  }
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
   }
