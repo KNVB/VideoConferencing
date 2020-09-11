@@ -1,10 +1,9 @@
 import { serialize } from 'object-to-formdata'
-
 import config from './config'
-
 const API_HTTP_URL = 'http://' + config.API_HOST + ':' + String(config.API_PORT)+"/api";
-export const API_URL = config.API_URL || API_HTTP_URL
-
+const SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT);
+export const API_URL = config.API_URL || API_HTTP_URL;
+export const SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
 export default function fetchApi (endpoint, method, params, payload, contentType) {
   contentType = contentType || 'json'
   const paramsObject = new URLSearchParams(params)
