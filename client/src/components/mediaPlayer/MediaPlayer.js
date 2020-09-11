@@ -6,6 +6,7 @@ import PInPButton from "./buttons/PInPButton";
 import PInPPlayer from "./PInPPlayer";
 import React, { Fragment } from "react";
 import "./MediaPlayer.css";
+import "./buttons/Button.css";
 class MediaPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -110,7 +111,7 @@ class MediaPlayer extends React.Component {
                     showFullScreen={this.state.showFullScreen}
                     togglePInP={this.showPInP}
                   />
-                  <div type="button" onClick={this.toggleMirror}>
+                  <div className="btnlink" onClick={this.toggleMirror}>
                     &#x21c4;
                   </div>
                   <MaxMinButton

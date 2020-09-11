@@ -1,4 +1,4 @@
-var apiRouter,app,bodyParser,cors,express;
+var apiRouter,app,authRouter,bodyParser,cors,express;
 var http,httpServer,httpServerPort,io;
 
 var loginRouter,meetingList,userList;
@@ -6,7 +6,9 @@ bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
 httpServerPort = 9000;
-loginRouter = require('./routes/login')
+
+authRouter=require('./routes/auth');
+loginRouter = require('./routes/login');
 
 app = express();
 http = require('http');
@@ -29,8 +31,14 @@ apiRouter.use('/login', function(req,res,next){
 		req.body.meetingList=meetingList;
 		req.body.userList=userList;
 		next();
-	},loginRouter)
-	
+	},loginRouter);
+/*	
+apiRouter.use("/auth",function(req,res,next){
+		req.body.meetingList=meetingList;
+		req.body.userList=userList;
+		next();
+	},authRouter);	
+*/	
 apiRouter.use((err, req, res, next) => {
   if (err.notFound) {
     res.status(404)
@@ -48,3 +56,14 @@ apiRouter.use((err, req, res, next) => {
 apiRouter.use((req, res, next) => {
   res.status(404).json({ error: true, message: 'not found' })
 })
+
+
+io.on('connection', (socket) => {
+	console.log('a user('+socket.id+') connected@'+getTimeString());
+	
+})
+function getTimeString(){
+	var date=new Date();
+	var result=date.getHours()+":"+date.getMinutes() +":"+date.getSeconds()+"."+date.getMilliseconds();
+	return result;
+}

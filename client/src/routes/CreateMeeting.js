@@ -39,8 +39,8 @@ class CreateMeeting extends Component {
 
     render(){
         if (this.state.meeting){
-            localStorage.setItem("user",this.state.meeting.user);
-            return (<Redirect to={"/meeting/"+this.state.meeting.meetingId} />);
+            sessionStorage.setItem("meetingInfo",JSON.stringify(this.state.meeting));
+            return <Redirect to={"/meeting/"+this.state.meeting.meetingId}/>
         } else {
             return (
                 <form ref={this.formRef}>
@@ -56,7 +56,7 @@ class CreateMeeting extends Component {
                                 <label htmlFor="meetingPwd">Meeting Password:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input id="meetingPwd" name="meetingPwd" type="password"/>
+                                <input id="meetingPwd" name="meetingPwd" type="password" defaultValue="1"/>
                             </div>
                         </Row>
                         <Row>
@@ -64,7 +64,7 @@ class CreateMeeting extends Component {
                                 <label htmlFor="cfmPwd">Confirm Password:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input id="cfmPwd" name="cfmPwd" type="password"/>
+                                <input id="cfmPwd" name="cfmPwd" type="password" defaultValue="1"/>
                             </div>
                         </Row>     
                         <Row>

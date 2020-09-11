@@ -1,15 +1,9 @@
 import InfoPane from "../infopane/InfoPane";
 import MediaPlayer from '../mediaplayer/MediaPlayer';
 import React from "react";
+
 import "./Meeting.css";
 class Meeting extends React.Component {
-  constructor(props){
-    super(props);
-    this.meetingId=this.props.match.params.meetingId;
-    this.user=localStorage.getItem("user");
-    console.log(this.meetingId);
-    console.log(this.user);
-  }
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
   }
@@ -24,6 +18,6 @@ class Meeting extends React.Component {
           <InfoPane/>
         </div>
       </div>);
-  }
+    }  
 }
 export default Meeting;                      
