@@ -1,7 +1,7 @@
 var apiRouter,app,authRouter,bodyParser,cors,express;
 var http,httpServer,httpServerPort,io;
 
-var loginRouter,meetingList,userList;
+var loginRouter,meetingAPI,meetingList,userList;
 bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
@@ -20,6 +20,7 @@ httpServer.listen(httpServerPort, function() {
 
 meetingList={};
 userList={};
+meetingAPI=require("./utils/MeetingAPI.js");
 
 apiRouter= express.Router();
 app.use(bodyParser.urlencoded({extended:false}));
@@ -60,7 +61,9 @@ apiRouter.use((req, res, next) => {
 
 io.on('connection', (socket) => {
 	console.log('a user('+socket.id+') connected@'+getTimeString());
-	
+	socket.on("connectMeeting",info=>{
+		console.log(info.meetingId,info.userId);
+	});
 })
 function getTimeString(){
 	var date=new Date();
