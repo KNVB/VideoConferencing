@@ -5,7 +5,10 @@ import "./Meeting.css";
 class Meeting extends React.Component {
   constructor(props){
     super(props);
-    console.log(props);
+    this.meetingId=this.props.match.params.meetingId;
+    this.user=localStorage.getItem("user");
+    console.log(this.meetingId);
+    console.log(this.user);
   }
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
