@@ -14,18 +14,24 @@ class Meeting{
 		this.getMeetingId=(()=>{
 			return meetingId;
 		});
+		this.getMemberCount=(()=>{
+			return Object.keys(memberList).length;
+		});
+		this.getPassword=(()=>{
+			return meetingPwd;
+		});
 		this.isHost=((user)=>{
-			
+			return (user.id===hostUser.id)	
 		});
 		this.join=((user)=>{
-			
+			memberList[user.id]=user;
 		});
 		this.leave=((user)=>{
-			
+			delete memberList[user.id];
 		});
 		this.setHostMember=((user)=>{
 			hostUser=user;
-			memberList[user.id]=user;
+			this.join(user);
 		});
 		this.setMeetingId=((id)=>{
 			meetingId=id;

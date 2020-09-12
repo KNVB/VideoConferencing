@@ -11,15 +11,16 @@ class Meeting extends React.Component {
   }
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
-    var meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
+    this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
     this.meetingAPI=new MeetingAPI();
     this.meetingAPI.connect();
-    this.meetingAPI.connectMeeting(meetingInfo.meetingId,meetingInfo.user.id);
+    this.meetingAPI.joinMeeting(this.meetingInfo.meetingId,this.meetingInfo.user.id);
   }
   componentWillUnmount() {
     document.getElementById("root").classList.remove("p-1");
   }
   leaveMeeting=(event)=>{
+    this.meetingAPI.leaveMeeting(this.meetingInfo.meetingId,this.meetingInfo.user.id);
     sessionStorage.clear();
     event.preventDefault(); 
     this.props.history.push("/");

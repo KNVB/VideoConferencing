@@ -1,7 +1,7 @@
 var apiRouter,app,authRouter,bodyParser,cors,express;
 var http,httpServer,httpServerPort,io;
 
-var loginRouter,meetingAPI,meetingList,userList;
+var loginRouter,meetingManager;
 bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
@@ -13,26 +13,42 @@ loginRouter = require('./routes/login');
 app = express();
 http = require('http');
 httpServer= http.createServer(app);
-io = require('socket.io')(httpServer);
+
+io = require('socket.io')(httpServer,{
+    handlePreflightRequest: (req, res) => {
+        const headers = {
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+            "Access-Control-Allow-Credentials": true
+        };
+        res.writeHead(200, headers);
+        res.end();
+    }
+});
 httpServer.listen(httpServerPort, function() {
   console.log('server up and running at %s port', httpServerPort);
 });
 
-meetingList={};
-userList={};
-meetingAPI=require("./utils/MeetingAPI.js");
+meetingManager=new (require("./utils/MeetingManager.js"));
 
 apiRouter= express.Router();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-app.use(cors())
-
+app.use(cors());
 app.use('/api', apiRouter);
+apiRouter.post('/initMeeting',function(req,res){
+	res.send(meetingManager.initMeeting(req.body));
+});
+apiRouter.post('/joinMeeting',function(req,res){
+	res.send(meetingManager.joinMeeting(req.body));
+});
+/*
 apiRouter.use('/login', function(req,res,next){
 		req.body.meetingList=meetingList;
 		req.body.userList=userList;
 		next();
 	},loginRouter);
+*/
 /*	
 apiRouter.use("/auth",function(req,res,next){
 		req.body.meetingList=meetingList;
@@ -60,13 +76,5 @@ apiRouter.use((req, res, next) => {
 
 
 io.on('connection', (socket) => {
-	console.log('a user('+socket.id+') connected@'+getTimeString());
-	socket.on("connectMeeting",info=>{
-		console.log(info.meetingId,info.userId);
-	});
+	meetingManager.setSocket(socket);	
 })
-function getTimeString(){
-	var date=new Date();
-	var result=date.getHours()+":"+date.getMinutes() +":"+date.getSeconds()+"."+date.getMilliseconds();
-	return result;
-}

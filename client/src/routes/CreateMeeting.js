@@ -11,16 +11,17 @@ class CreateMeeting extends Component {
         this.formRef=React.createRef();
         this.handleSubmit =(event)=>{
             var form=this.formRef.current;
-            if(form.checkValidity()){
+            
+            if(form.reportValidity()){
                 if (form.meetingPwd.value!==form.cfmPwd.value) {
-                    alert("The meeting password is not same as the confirm password.");
+                    alert("The meeting password and the confirm password do not match.");
                 } else {
                     var data={};
                     data['alias']=form.alias.value;
                     data['shareAudio']=form.shareAudio.value;
                     data['shareVideo']=form.shareVideo.value;
                     data['meetingPwd']=form.meetingPwd.value;
-                    fetchApi('/login','POST',{},data,'json')
+                    fetchApi('/initMeeting','POST',{},data,'json')
                     .then(x=>{
                         this.setState({'meeting': x});
                     })
@@ -56,7 +57,7 @@ class CreateMeeting extends Component {
                                 <label htmlFor="meetingPwd">Meeting Password:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input id="meetingPwd" name="meetingPwd" type="password" defaultValue="1"/>
+                                <input id="meetingPwd" name="meetingPwd" type="password" defaultValue="1" required/>
                             </div>
                         </Row>
                         <Row>
@@ -64,7 +65,7 @@ class CreateMeeting extends Component {
                                 <label htmlFor="cfmPwd">Confirm Password:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input id="cfmPwd" name="cfmPwd" type="password" defaultValue="1"/>
+                                <input id="cfmPwd" name="cfmPwd" type="password" defaultValue="1" required/>
                             </div>
                         </Row>     
                         <Row>
