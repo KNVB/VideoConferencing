@@ -8,9 +8,15 @@ class MeetingAPI {
         this.socket=null;
         this.connect=()=>{
             this.socket=io.connect(SOCKET_URL);
-            this.socket.on("new_member",userObj=>{
+            this.socket.on("member_join",userObj=>{
                 console.log("new member "+userObj.alias);
             });
+            this.socket.on('member_left',user=>{
+                console.log("member left the meeting");
+            })
+            this.socket.on("member_list",memberList=>{
+                console.log("member list"+memberList);
+            })
         }
         this.joinMeeting=(meetingId,userId)=>{
             this.socket.emit("joinMeeting",{"meetingId":meetingId,"userId":userId});

@@ -1,4 +1,3 @@
-
 class MeetingManager
 {
 	constructor(){
@@ -30,7 +29,9 @@ class MeetingManager
 					user.id=userId;
 					user.alias=reqBody.alias;
 					user.shareMedia={"video":reqBody.shareVideo,"audio":reqBody.shareAudio};
+					userList[userId]=user;
 					meeting.join(user);
+					meetingList[reqBody.meetingId]=meeting;
 					return {"user":user,"meetingId":reqBody.meetingId};
 				} else {
 					var err = new Error('Invalid Meeting Password');
@@ -46,11 +47,11 @@ class MeetingManager
 		this.setSocket=(socket=>{
 			
 			socket.on("joinMeeting",info=>{
-				//console.log(info.meetingId,info.userId);
 				var user=userList[info.userId];
+				socket.join(info.meetingId);
 				user.socketId=socket.id;
 				userList[info.userId]=user;
-				console.log('User '+user.alias+" joins the meeting :"+info.meetingId+" @"+util.getTimeString());
+				console.log('User :'+user.alias+"("+info.userId+") joins the meeting :"+info.meetingId+" @"+util.getTimeString());
 				socket.to(info.meetingId).emit('member_join',user);
 				console.log(Object.keys(userList).length);
 			});
@@ -62,7 +63,9 @@ class MeetingManager
 				delete userList[info.userId];
 				console.log('User '+user.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
 				socket.to(info.meetingId).emit('member_left',user);
-				console.log(Object.keys(userList).length);
+				socket.leave(info.meetingId);
+				socket.disconnect();
+				console.log("Member count in room "+info.meetingId+" = "+Object.keys(userList).length);
 				if (meeting.getMemberCount()==0){
 					delete meetingList[info.meetingId];
 					console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());

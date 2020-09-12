@@ -14,7 +14,7 @@ class ChatBox extends React.Component {
     }
     render(){
         return (
-            <Card className="w-100" ref={this.chatBox}>
+            <Card className="d-none w-100" ref={this.chatBox}>
                 <Card.Body className="border border-primary d-flex flex-grow-1 position-relative p-0 rounded">
                     <div className="position-absolute h-100 overflow-auto w-100">
                         <div>dsfsdf</div>
