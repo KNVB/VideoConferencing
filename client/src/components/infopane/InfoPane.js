@@ -11,7 +11,6 @@ class InfoPane extends React.Component {
     this.chatBox=React.createRef();
     this.meetingInfo=React.createRef();
     this.memberList=React.createRef();
-    console.log("I="+this.props.meetingId);
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;

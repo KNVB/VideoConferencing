@@ -1,4 +1,5 @@
 import config from './config';
+import fetchApi from '../utils/fetch';
 import io from 'socket.io-client';
 
 class MeetingAPI {
@@ -12,11 +13,13 @@ class MeetingAPI {
                 console.log("new member "+userObj.alias);
             });
             this.socket.on('member_left',user=>{
-                console.log("member left the meeting");
+                console.log("member "+user.alias+" left the meeting");
             })
+/*
             this.socket.on("member_list",memberList=>{
                 console.log("member list"+memberList);
             })
+*/
         }
         this.joinMeeting=(meetingId,userId)=>{
             this.socket.emit("joinMeeting",{"meetingId":meetingId,"userId":userId});

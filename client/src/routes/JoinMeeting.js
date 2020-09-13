@@ -48,7 +48,7 @@ class JoinMeeting extends Component {
                                 <label htmlFor="meetingId">Meeting Id:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input type="text" required id="meetingId" 
+                                <input autoComplete="off" type="text" required id="meetingId" 
                                     name="meetingId" defaultValue={this.meetingId}
                                     readOnly={(this.meetingId===null)?false:true}/>
                             </div>
@@ -63,7 +63,7 @@ class JoinMeeting extends Component {
                         </Row>                    
                         <Row>
                             <Col className="d-flex justify-content-center p-1">
-                                <button type="submit" onClick={this.handleSubmit}>Join Meeting</button>
+                                <button type="submit" onClick={this.handleSubmit}>Join The Meeting</button>
                             </Col>
                         </Row>
                     </Container> 

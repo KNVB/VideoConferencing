@@ -7,7 +7,8 @@ import { Redirect } from "react-router-dom";
 class Meeting extends React.Component {
   constructor(props){
     super(props)
-    this.props=props;    
+    //this.props=props;
+    this.state={};    
   }
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
