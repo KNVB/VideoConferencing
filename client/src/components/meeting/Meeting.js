@@ -11,7 +11,7 @@ class Meeting extends React.Component {
   }
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
-    this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
+   
     this.meetingAPI=new MeetingAPI();
     this.meetingAPI.connect();
     this.meetingAPI.joinMeeting(this.meetingInfo.meetingId,this.meetingInfo.user.id);
@@ -30,11 +30,12 @@ class Meeting extends React.Component {
       alert("The access for this meeting is invalid, please login first.");
       return <Redirect to="/"/>
     } else {  
+      this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
       return (
         <div className="border border-info meeting p-0 rounded">
           <MediaPlayer/>
           <div className="panel d-flex flex-grow-1">
-            <InfoPane leaveMeeting={this.leaveMeeting}/>
+            <InfoPane leaveMeeting={this.leaveMeeting} meetingId={this.meetingInfo.meetingId}/>
           </div>
         </div>);
       }

@@ -11,6 +11,7 @@ class InfoPane extends React.Component {
     this.chatBox=React.createRef();
     this.meetingInfo=React.createRef();
     this.memberList=React.createRef();
+    console.log("I="+this.props.meetingId);
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;
@@ -48,7 +49,7 @@ class InfoPane extends React.Component {
         </Card.Header>
         <Card.Body className="d-flex flex-grow-1 pb-0 pl-1 pr-1 pt-0">
           <ChatBox ref={this.chatBox}/>
-          <MeetingInfo ref={this.meetingInfo}/>
+          <MeetingInfo ref={this.meetingInfo} meetingId={this.props.meetingId}/>
           <MemberList ref={this.memberList}/>      
         </Card.Body>
         <Card.Footer className="m-1 p-1 rounded">
