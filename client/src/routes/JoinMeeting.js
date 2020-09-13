@@ -7,6 +7,7 @@ class JoinMeeting extends Component {
     constructor(props) {
         super(props);
         this.state={};
+        this.meetingId=this.props.match.params.meetingId;
         this.formRef=React.createRef();
         this.handleSubmit =(event)=>{
             var form=this.formRef.current;
@@ -47,7 +48,9 @@ class JoinMeeting extends Component {
                                 <label htmlFor="meetingId">Meeting Id:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input type="text" required id="meetingId" name="meetingId" />
+                                <input type="text" required id="meetingId" 
+                                    name="meetingId" defaultValue={this.meetingId}
+                                    readOnly={(this.meetingId===null)?false:true}/>
                             </div>
                         </Row>
                         <Row>

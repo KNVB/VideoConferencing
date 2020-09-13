@@ -12,8 +12,9 @@ class App extends Component {
         <Switch>
             <Route exact path='/' component={FirstForm} />
             <Route exact path='/Info' component={Info} />
-            <Route exact path='/createMeeting' component={CreateMeeting} />
-            <Route exact path='/joinMeeting' component={JoinMeeting} />
+            <Route exact path='/createMeeting/' component={CreateMeeting} />
+            <Route exact path='/joinMeeting/' component={JoinMeeting} />
+            <Route exact path='/joinMeeting/:meetingId' component={JoinMeeting} />
             <Route exact path='/meeting/:meetingId' component={SecureRoute} />
         </Switch>
       </Router>

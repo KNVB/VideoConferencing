@@ -29,9 +29,9 @@ class FirstForm extends Component {
                     </Row>
                     <Row>
                         <Col className="p-3">
-                            <a href="/createMeeting">Create a meeting</a>
+                            <a href="/createMeeting/">Create a meeting</a>
                             &nbsp; &nbsp;&nbsp;
-                            <a href="/joinMeeting">Join a meeting</a>
+                            <a href="/joinMeeting/">Join a meeting</a>
                         </Col>
                     </Row>
                 </Container>

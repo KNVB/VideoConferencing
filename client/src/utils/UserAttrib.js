@@ -9,7 +9,7 @@ class UserAttrib extends Component {
                         <label htmlFor="alias">Your Alias:</label>
                     </div>
                     <div className="col-6 m-0 p-0">    
-                        <input id="alias" name="alias" required type="text" defaultValue="李四"/>
+                        <input id="alias" name="alias" required type="text" placeholder="李四"/>
                     </div>
                 </Row>
                 <Row>
