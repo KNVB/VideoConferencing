@@ -1,6 +1,6 @@
 import fetchApi from '../utils/fetch';
 import React ,{Component, Fragment} from 'react';
-import { Button,Col,Container,Modal,Row } from 'react-bootstrap';
+import { Button,Col,Container,Modal,Row,Spinner } from 'react-bootstrap';
 import UserAttrib from '../utils/UserAttrib';
 import { Redirect } from 'react-router-dom';
 class JoinMeeting extends Component {
@@ -9,7 +9,8 @@ class JoinMeeting extends Component {
         this.modalBody=React.createRef();
         this.modalFooter=React.createRef();
         this.state = {showModal : false}
-        this.state.show=false;
+
+        this.state.modalContent=[];
         this.meetingId=this.props.match.params.meetingId;
         this.formRef=React.createRef();
         this.handleClose=(event)=>{
@@ -21,7 +22,6 @@ class JoinMeeting extends Component {
            
             if(form.reportValidity()){
                 var data={};
-                var modalBody=this.modalBody.current;
                 this.setState({'showModal': true});
                 data['alias']=form.alias.value;
                 data['shareAudio']=form.shareAudio.value;
@@ -31,7 +31,10 @@ class JoinMeeting extends Component {
                 fetchApi('/authMeeting','POST',{},data,'json')
                 .then(x=>{
                     //this.setState({'meeting': x});
-                    this.modalBody.current.innerHTML+="The Meeting Authentication is passed.";
+                    var modalContent=[];
+                    modalContent.push(<div>The Meeting Authentication is passed.</div>);
+                    modalContent.push(<Spinner animation="border" role="status"><span className="sr-only">Loading...</span></Spinner>);
+                    this.setState({"modalContent":modalContent});
                 })
                 .catch(err => {
                     this.modalBody.current.innerHTML+="<div>"+err.message+"</div>";
@@ -83,8 +86,8 @@ class JoinMeeting extends Component {
                     <Modal show={this.state.showModal}
                         backdrop="static"
                         keyboard={false}>
-                        <Modal.Body ref={this.modalBody}>
-                            
+                        <Modal.Body className="align-items-center d-flex flex-column justify-content-center" ref={this.modalBody}>
+                            {this.state.modalContent}
                         </Modal.Body>
                         <Modal.Footer ref={this.modalFooter}>
                             <Button variant="secondary" onClick={this.handleClose}>
