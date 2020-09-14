@@ -1,46 +1,35 @@
-import Card  from 'react-bootstrap/Card';
+import {Card, Media}  from 'react-bootstrap';
 import React from "react";
 
 class MemberList extends React.Component {
     constructor(props){
         super(props);
-        this.memberList=React.createRef();
+        this.memberListComponent=React.createRef();
     }
     hide(){
-        this.memberList.current.classList.add("d-none");
+        this.memberListComponent.current.classList.add("d-none");
     }
     show(){
-        this.memberList.current.classList.remove("d-none");
+        this.memberListComponent.current.classList.remove("d-none");
     }
     render(){
+        //console.log("M:"+JSON.stringify(this.props.memberList));
+        let result=[];
+        let thisMember=this.props.meetingInfo.user;
+        result[0]="";
+        Object.keys(this.props.memberList).forEach(memberId=>{
+            var member=this.props.memberList[memberId];
+            if (member.isHost){
+                result[0]=<Media className="border-bottom border-info" key={member.id}><Media.Body>{member.alias}(Host){(member.id===thisMember.id)?"*":""}</Media.Body></Media>
+            } else {
+                result.push(<Media className="border-bottom border-info" key={member.id}><Media.Body>{member.alias}{(member.id===thisMember.id)?"*":""}</Media.Body></Media>);
+            }
+        })
         return (
-            <Card className="border border-primary w-100" ref={this.memberList}>
+            <Card className="border border-primary w-100" ref={this.memberListComponent}>
                 <Card.Body className="d-flex flex-grow-1 position-relative p-0 rounded">
                     <div className="position-absolute h-100 overflow-auto w-100">
-                        <div>Member List</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
+                        {result}
                     </div>
                 </Card.Body>
             </Card>

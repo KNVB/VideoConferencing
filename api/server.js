@@ -14,17 +14,7 @@ app = express();
 http = require('http');
 httpServer= http.createServer(app);
 
-io = require('socket.io')(httpServer,{
-    handlePreflightRequest: (req, res) => {
-        const headers = {
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-            "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
-            "Access-Control-Allow-Credentials": true
-        };
-        res.writeHead(200, headers);
-        res.end();
-    }
-});
+io = require('socket.io')(httpServer);
 httpServer.listen(httpServerPort, function() {
   console.log('server up and running at %s port', httpServerPort);
 });
@@ -36,11 +26,14 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', apiRouter);
+apiRouter.post('/getMemberList',function(req,res){
+	res.send(meetingManager.getMemberList(req.body));
+});
 apiRouter.post('/initMeeting',function(req,res){
 	res.send(meetingManager.initMeeting(req.body));
 });
-apiRouter.post('/joinMeeting',function(req,res){
-	res.send(meetingManager.joinMeeting(req.body));
+apiRouter.post('/authMeeting',function(req,res){
+	res.send(meetingManager.authMeeting(req.body));
 });
 /*
 apiRouter.use('/login', function(req,res,next){

@@ -4,23 +4,7 @@ class MeetingManager
 		let meetingList={},userList={};
 		const { v4: uuidv4 } = require('uuid');
 		const util=require("./Utility.js");
-		this.initMeeting=((reqBody)=>{
-			var user =new(require('../classes/User'));
-			var meeting=new(require('../classes/Meeting'));
-			var userId=uuidv4(),meetingId=uuidv4();
-			user.id=userId;
-			user.alias=reqBody.alias;
-			user.shareMedia={"video":reqBody.shareVideo,"audio":reqBody.shareAudio};
-			meeting.setMeetingId(meetingId);
-			meeting.setHostMember(user);
-			meeting.setPassword(reqBody.meetingPwd);
-			userList[userId]=user;
-			meetingList[meetingId]=meeting;
-			console.log("meeting :"+meetingId+" is created @"+util.getTimeString());
-			return {"user":user,"meetingId":meetingId};
-		});
-		this.joinMeeting=((reqBody)=>{
-			
+		this.authMeeting=((reqBody)=>{
 			if (Object.keys(meetingList).includes(reqBody.meetingId)){
 				var meeting=meetingList[reqBody.meetingId];
 				if (meeting.getPassword()==reqBody.meetingPwd){
@@ -44,8 +28,53 @@ class MeetingManager
 				throw err;
 			}			
 		});
+		this.getMemberList=((reqBody)=>{
+			if (reqBody){
+				var meetingId=reqBody.meetingId;
+				var userId=reqBody.user.id;
+				
+				if (Object.keys(meetingList).includes(meetingId)){
+					if (Object.keys(userList).includes(userId)){
+						var meeting=meetingList[meetingId];
+						if (meeting.hasMember(userId)) {
+							return meeting.getMemberList();
+						} else {
+							var err = new Error('This user cannot access this meeting.');
+							err.unauthorized=true;
+							throw err;
+						}
+					} else {
+						var err = new Error('Invalid User Id');
+						err.badRequest=true;
+						throw err;
+					}
+				} else {
+					var err = new Error('Invalid Meeting Id');
+					err.badRequest=true;
+					throw err;
+				}
+			} else {
+				var err = new Error('Invalid Meeting Info');
+				err.badRequest=true;
+				throw err;
+			}				
+		});
+		this.initMeeting=((reqBody)=>{
+			var user =new(require('../classes/User'));
+			var meeting=new(require('../classes/Meeting'));
+			var userId=uuidv4(),meetingId=uuidv4();
+			user.id=userId;
+			user.alias=reqBody.alias;
+			user.shareMedia={"video":reqBody.shareVideo,"audio":reqBody.shareAudio};
+			meeting.setMeetingId(meetingId);
+			meeting.setHostMember(user);
+			meeting.setPassword(reqBody.meetingPwd);
+			userList[userId]=user;
+			meetingList[meetingId]=meeting;
+			console.log("meeting :"+meetingId+" is created @"+util.getTimeString());
+			return {"user":user,"meetingId":meetingId};
+		});
 		this.setSocket=(socket=>{
-			
 			socket.on("joinMeeting",info=>{
 				var user=userList[info.userId];
 				socket.join(info.meetingId);
@@ -58,17 +87,18 @@ class MeetingManager
 			socket.on("leaveMeeting",info=>{
 				var user=userList[info.userId];
 				var meeting=meetingList[info.meetingId];
-				
-				meeting.leave(user);
-				delete userList[info.userId];
-				console.log('User '+user.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
-				socket.to(info.meetingId).emit('member_left',user);
-				socket.leave(info.meetingId);
-				socket.disconnect();
-				console.log("Member count in room "+info.meetingId+" = "+Object.keys(userList).length);
-				if (meeting.getMemberCount()==0){
-					delete meetingList[info.meetingId];
-					console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
+				if (Object.keys(meetingList).includes(info.meetingId)){
+					meeting.leave(user);
+					delete userList[info.userId];
+					console.log('User '+user.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
+					socket.to(info.meetingId).emit('member_left',user);
+					socket.leave(info.meetingId);
+					socket.disconnect();
+					console.log("Member count in room "+info.meetingId+" = "+Object.keys(userList).length);
+					if (meeting.getMemberCount()==0){
+						delete meetingList[info.meetingId];
+						console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
+					}
 				}
 			});
 		});

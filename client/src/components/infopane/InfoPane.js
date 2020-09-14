@@ -10,12 +10,12 @@ class InfoPane extends React.Component {
     this.paneList={};
     this.chatBox=React.createRef();
     this.meetingInfo=React.createRef();
-    this.memberList=React.createRef();
+    this.memberListComponent=React.createRef();
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;
     this.paneList['meetingInfo']=this.meetingInfo.current;
-    this.paneList['memberList']=this.memberList.current;
+    this.paneList['memberList']=this.memberListComponent.current;
   }
   showPane(paneToBeShown){
     Object.keys(this.paneList).forEach(paneName=>{
@@ -27,6 +27,7 @@ class InfoPane extends React.Component {
     })
   }
   render() {
+    //console.log("I:"+JSON.stringify(this.props.memberList));
     return (
       <Card className="rounded w-100">
         <Card.Header className="align-items-center d-flex flex-row justify-content-around m-1 p-0 rounded">
@@ -47,9 +48,14 @@ class InfoPane extends React.Component {
           </div>
         </Card.Header>
         <Card.Body className="d-flex flex-grow-1 pb-0 pl-1 pr-1 pt-0">
-          <ChatBox ref={this.chatBox}/>
-          <MeetingInfo ref={this.meetingInfo} meetingId={this.props.meetingId}/>
-          <MemberList ref={this.memberList}/>      
+          <ChatBox ref={this.chatBox}
+            meetingInfo={this.props.meetingInfo}
+            memberList={this.props.memberList}/>
+          <MeetingInfo ref={this.meetingInfo}
+            meetingInfo={this.props.meetingInfo}/>
+          <MemberList ref={this.memberListComponent}
+            meetingInfo={this.props.meetingInfo}
+            memberList={this.props.memberList}/>      
         </Card.Body>
         <Card.Footer className="m-1 p-1 rounded">
           <div className="d-flex flex-row justify-content-around pt-1">
