@@ -13,9 +13,10 @@ class JoinMeeting extends Component {
                     passAuth:false,
                     buttonDisabled:true}
 
-        this.state.modalContent=[];
-        this.meetingId=this.props.match.params.meetingId;
         this.formRef=React.createRef();
+        this.timer=null;
+        this.meetingId=this.props.match.params.meetingId;
+        
         this.handleClose=(event)=>{
             this.setState({'showModal': false});
             event.preventDefault(); 
@@ -24,20 +25,22 @@ class JoinMeeting extends Component {
             var form=this.formRef.current;
            
             if(form.reportValidity()){
-                var data={};
+                this.approvalReq={};
                 this.setState({'showModal': true});
-                data['alias']=form.alias.value;
-                data['meetingId']=form.meetingId.value;
-                data['meetingPwd']=form.meetingPwd.value;
-                data['shareAudio']=form.shareAudio.value;
-                data['shareVideo']=form.shareVideo.value;
-                fetchApi('/authMeeting','POST',{},data,'json')
+                this.approvalReq['alias']=form.alias.value;
+                this.approvalReq['meetingId']=form.meetingId.value;
+                this.approvalReq['meetingPwd']=form.meetingPwd.value;
+                this.approvalReq['shareAudio']=form.shareAudio.value;
+                this.approvalReq['shareVideo']=form.shareVideo.value;	
+                fetchApi('/authMeeting','POST',{},this.approvalReq,'json')
                 .then(x=>{
+                    //console.log(x);
                     this.setState({className:"align-items-center d-flex flex-column justify-content-center",
                                    passAuth:true});
-                    var meetingAPI=new MeetingAPI();               
-                    meetingAPI.connect();
-                    meetingAPI.reqToJoinMeeting(data,this.approvalResHandler);
+                    this.meetingAPI=new MeetingAPI();
+                    this.approvalReq["tempId"]=x.tempId;               
+                    this.meetingAPI.connect();
+                    this.meetingAPI.submitApprovalReq(this.approvalReq,this.approvalResponseHandler);
                 })
                 .catch(err => {
                     this.setState({authErrMsg:err.message,
@@ -48,20 +51,38 @@ class JoinMeeting extends Component {
             }
             event.preventDefault();
         }
-        this.approvalResHandler=(result)=>{
-            console.log(result);
+        this.approvalResponseHandler=(result)=>{
+            //console.log(result);
             if(result.error===0){
                 if (Object.keys(result).length>1){
                     //console.log(result.user);
-                   this.setState({'meeting':{"meetingId":result.meetingId,"user":result.user}});
+                    clearInterval(this.timer);
+                    this.setState({'meeting':{"meetingId":result.meetingId,"user":result.user}});
+                } else {
+                    this.count=0;
+                    this.timer=setInterval(this.counter,1000);
                 }
             } else {
+                clearInterval(this.timer);
                 this.setState({authErrMsg:result.message,
                     className:"d-none",
                     passAuth:false,
                     buttonDisabled:false});
             }            
         }
+        this.counter=(()=>{
+            this.count++;
+            if (this.count===180){ //time out = 3min.
+                clearInterval(this.timer);
+                this.meetingAPI.cancelApprovalReq(this.approvalReq);
+                this.meetingAPI.disconnect();
+                var message='The approval time out, please try again.';
+                this.setState({authErrMsg:message,
+                    className:"d-none",
+                    passAuth:false,
+                    buttonDisabled:false});
+            }
+        })
     }            
     render(){
         if (this.state.meeting){

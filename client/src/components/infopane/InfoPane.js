@@ -67,7 +67,7 @@ class InfoPane extends React.Component {
           <MeetingInfo ref={this.meetingInfo}
             meetingInfo={this.props.meetingInfo}/>
           <MemberList ref={this.memberListComponent}
-            approvalHandler={this.props.approvalHandler}
+            pendingRequestHandler={this.props.pendingRequestHandler}
             meetingInfo={this.props.meetingInfo}
             memberList={this.props.memberList}/>      
         </Card.Body>

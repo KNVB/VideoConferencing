@@ -26,7 +26,7 @@ class MemberList extends React.Component {
                     result.push(<Media className="border-bottom border-info" key={member.id}>
                                     <Media.Body className="d-flex flex-row justify-content-around">
                                         {member.alias}{(member.id===thisMember.id)?"*":""}
-                                        <Button variant="primary" onClick={()=>this.props.approvalHandler(member)}>Pending Approval</Button>
+                                        <Button variant="primary" onClick={()=>this.props.pendingRequestHandler(member)}>Pending Approval</Button>
                                     </Media.Body>
                                 </Media>);
                 } else {

@@ -15,9 +15,10 @@ class Meeting extends React.Component {
   componentDidMount() {
     document.getElementById("root").classList.add("p-1");
     this.meetingAPI=new MeetingAPI();
-    this.meetingAPI.setReqApprovalHandler(this.reqApprovalHandler);
-    this.meetingAPI.setMemberJoinHandler(this.memberJoinHandler);
-    this.meetingAPI.setMemberLeftHandler(this.memberLeftHandler);
+    this.meetingAPI.cancelApprovalReqHandler=this.cancelApprovalReqHandler;
+    this.meetingAPI.approvalRequestHandler=this.approvalRequestHandler;
+    this.meetingAPI.memberJoinHandler=this.memberJoinHandler;
+    this.meetingAPI.memberLeftHandler=this.memberLeftHandler;
     this.meetingAPI.connect();
     this.meetingAPI.getMemberList(this.meetingInfo)
     .then ((memberList)=>{
@@ -32,19 +33,27 @@ class Meeting extends React.Component {
   componentWillUnmount() {
     document.getElementById("root").classList.remove("p-1");
   }
-  approvalHandler=(user)=>{
-    console.log("Approval Handler");
-    this.setState({approvalUser:user,
-                  showApprovModal : true});
-  }
-  approveUser=()=>{
-    this.meetingAPI.approveUser(this.meetingInfo.meetingId,this.state.approvalUser.id);
+  approveRequest=()=>{
+    this.meetingAPI.approveRequest(this.meetingInfo.meetingId,this.state.approvalUser.id);
     var memberList=this.state.memberList;
     delete memberList[this.state.approvalUser.id];
     this.setState({approvalUser:{},
                    "memberList":memberList,
                    showApprovModal : false});
   }
+  approvalRequestHandler=(user)=>{
+    console.log(user.alias+" Request Approval");
+    var memberList=this.state.memberList;
+    memberList[user.id]=user;
+    this.setState({"memberList":memberList});
+  }
+  cancelApprovalReqHandler=(user)=>{
+    var memberList=this.state.memberList;
+    delete memberList[user.id];
+    this.setState({approvalUser:{},
+                   "memberList":memberList,
+                   showApprovModal : false});        
+  };
   leaveMeeting=(event)=>{
     this.meetingAPI.leaveMeeting(this.meetingInfo.meetingId,this.meetingInfo.user.id);
     sessionStorage.clear();
@@ -63,19 +72,17 @@ class Meeting extends React.Component {
     this.setState({"memberList":memberList});
     console.log("member "+user.alias+" left the meeting");   
   }
-  rejectUser=()=>{
-    this.meetingAPI.rejectUser(this.meetingInfo.meetingId,this.state.approvalUser.id);
+  pendingRequestHandler=(user)=>{
+    this.setState({approvalUser:user,
+    showApprovModal : true});
+  }
+  rejectRequest=()=>{
+    this.meetingAPI.rejectRequest(this.meetingInfo.meetingId,this.state.approvalUser.id);
     var memberList=this.state.memberList;
     delete memberList[this.state.approvalUser.id];
     this.setState({approvalUser:{},
                    "memberList":memberList,
                    showApprovModal : false});
-  }
-  reqApprovalHandler=(user)=>{
-    console.log(user.alias+" Request Approval");
-    var memberList=this.state.memberList;
-    memberList[user.id]=user;
-    this.setState({"memberList":memberList});
   }
   render() {
     if (sessionStorage.getItem("meetingInfo")===null){
@@ -90,7 +97,7 @@ class Meeting extends React.Component {
             <div className="panel d-flex flex-grow-1">
               <InfoPane leaveMeeting={this.leaveMeeting} 
                         memberList={this.state.memberList}
-                        approvalHandler={this.approvalHandler}
+                        pendingRequestHandler={this.pendingRequestHandler}
                         meetingInfo={this.meetingInfo}/>
             </div>
           </div>
@@ -101,8 +108,8 @@ class Meeting extends React.Component {
               User {this.state.approvalUser.alias} request to join the meeting?
             </Modal.Body>
             <Modal.Footer ref={this.modalFooter}>
-              <Button variant="primary" onClick={this.approveUser}>Approve</Button>
-              <Button variant="secondary" onClick={this.rejectUser}>
+              <Button variant="primary" onClick={this.approveRequest}>Approve</Button>
+              <Button variant="secondary" onClick={this.rejectRequest}>
                 Reject
               </Button>
             </Modal.Footer>

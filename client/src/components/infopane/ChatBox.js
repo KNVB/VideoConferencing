@@ -4,7 +4,14 @@ import React from "react";
 class ChatBox extends React.Component {
     constructor(props){
         super(props);
+        this.state={"history":[]};
         this.chatBox=React.createRef();
+    }
+    addMsg=(member,msg)=>{
+
+    }
+    addSystemMsg=(member,msg)=>{
+
     }
     hide(){
         this.chatBox.current.classList.add("d-none");
@@ -17,6 +24,8 @@ class ChatBox extends React.Component {
             <Card className="d-none w-100" ref={this.chatBox}>
                 <Card.Body className="border border-primary d-flex flex-grow-1 position-relative p-0 rounded">
                     <div className="position-absolute h-100 overflow-auto w-100">
+                        {this.state.history}
+                        {/*
                         <div>dsfsdf</div>
                         <div>dsfsdf</div>
                         <div>dsfsdf</div>
@@ -41,6 +50,7 @@ class ChatBox extends React.Component {
                         <div>dsfsdf</div>
                         <div>dsfsdf</div>
                         <div>dsfsdf</div>
+                        */}
                     </div>  
                     </Card.Body>
                 <Card.Footer className="p-1">

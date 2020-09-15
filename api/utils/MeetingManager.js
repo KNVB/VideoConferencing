@@ -1,7 +1,7 @@
 class MeetingManager
 {
 	constructor(){
-		let meetingList={},userList={},reqApprovalUserList={};
+		let meetingList={},userList={},approvalRequestList={};
 		const { v4: uuidv4 } = require('uuid');
 		const util=require("./Utility.js");
 		this.authMeeting=((reqBody)=>{
@@ -9,7 +9,9 @@ class MeetingManager
 			if (Object.keys(meetingList).includes(reqBody.meetingId)){
 				var meeting=meetingList[reqBody.meetingId];
 				if (meeting.getPassword()==reqBody.meetingPwd){
-					return {"message":"The Meeting Authentication is passed."}
+					var tempId=uuidv4();
+					tempId="*"+tempId;
+					return {"tempId":tempId};
 				} else {
 					var err = new Error('Invalid Meeting Password');
 					err.unauthorized=true;
@@ -69,10 +71,10 @@ class MeetingManager
 			return {"user":user,"meetingId":meetingId};
 		});
 		this.setSocket=(socket=>{
-			socket.on("approveUser",(info,callBack)=>{
-				console.log("approveUser:"+JSON.stringify(info));
+			socket.on("approveRequest",(info,callBack)=>{
+				console.log("approveRequest:"+JSON.stringify(info));
 				if (Object.keys(meetingList).includes(info.meetingId)){
-					var user=reqApprovalUserList[info.userId];
+					var user=approvalRequestList[info.userId];
 					var meeting=meetingList[info.meetingId];
 
 					user.id=info.userId.replace(/^\*/,"");
@@ -80,8 +82,23 @@ class MeetingManager
 					meeting.join(user);
 					socket.to(user.socketId).emit("approvalResult",{error:0,"user":user,"meetingId":info.meetingId});
 				}
-				delete reqApprovalUserList[info.userId];
-			})
+				delete approvalRequestList[info.userId];
+			});
+			socket.on("cancelApprovalReq",info=>{
+				/*
+				console.log("cancelApprovalReq");
+				console.log(info);
+				*/
+				if (Object.keys(approvalRequestList).includes(info.tempId)&&
+					Object.keys(meetingList).includes(info.meetingId)){
+					var meeting=meetingList[info.meetingId];
+					var user=approvalRequestList[info.tempId];
+					var hostUser=meeting.getHostUser();
+					approvalRequestList[user.id]=user;
+					socket.to(hostUser.socketId).emit("cancelApprovalReq",user);
+					delete approvalRequestList[info.tempId];
+				}				
+			});
 			socket.on("joinMeeting",info=>{
 				var user=userList[info.userId];
 				socket.join(info.meetingId);
@@ -108,30 +125,29 @@ class MeetingManager
 					}
 				}
 			});
-			socket.on("rejectUser",(info,callBack)=>{
-				console.log("rejectUser:"+JSON.stringify(info));
+			socket.on("rejectRequest",(info,callBack)=>{
+				console.log("rejectRequest:"+JSON.stringify(info));
 				if (Object.keys(meetingList).includes(info.meetingId)){
-					var user=reqApprovalUserList[info.userId];
+					var user=approvalRequestList[info.userId];
 					socket.to(user.socketId).emit("approvalResult",{error:1,message:"The host rejects your join meeting request."});
 				}
-				delete reqApprovalUserList[info.userId];
+				delete approvalRequestList[info.userId];
 			});
-			socket.on("reqToJoinMeeting",(info,callBack)=>{
+			socket.on("submitApprovalReq",(info,callBack)=>{
 				var meeting=meetingList[info.meetingId];
 				if (Object.keys(meetingList).includes(info.meetingId)){
 					if (meeting.getPassword()===info.meetingPwd){
 						callBack({error:0});
 						var user =new(require('../classes/User'));
-						var userId=uuidv4();
 						
 						user.alias=info.alias;
-						user.id="*"+userId;
+						user.id=info.tempId;
 						user.isHost=false;						
 						user.socketId=socket.id;
 						user.shareMedia={"video":info.shareVideo,"audio":info.shareAudio};
 						var hostUser=meeting.getHostUser();
-						reqApprovalUserList[user.id]=user;
-						socket.to(hostUser.socketId).emit("reqApproval",user);
+						approvalRequestList[user.id]=user;
+						socket.to(hostUser.socketId).emit("approvalRequest",user);
 					} else {
 						callBack({error:1,message:"Invalid Meeting password"})
 					}

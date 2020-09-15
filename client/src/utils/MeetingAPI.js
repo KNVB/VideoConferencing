@@ -6,24 +6,34 @@ class MeetingAPI {
     constructor(){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
+        this.cancelApprovalReqHandler=null;
         this.memberJoinHandler=null;
         this.memberLeftHandler=null;
-        this.reqApprovalHandler=null;
+        this.approvalRequestHandler=null;
         this.socket=null;
-        this.approveUser=(meetingId,userId)=>{
-            this.socket.emit("approveUser",{"meetingId":meetingId,"userId":userId});
+        this.approveRequest=(meetingId,userId)=>{
+            this.socket.emit("approveRequest",{"meetingId":meetingId,"userId":userId});
         }
         this.connect=()=>{
             this.socket=io.connect(SOCKET_URL);
+            this.socket.on("cancelApprovalReq",user=>{
+                this.cancelApprovalReqHandler(user);
+            });
             this.socket.on("member_join",user=>{
                 this.memberJoinHandler(user);
             });
             this.socket.on('member_left',user=>{
                 this.memberLeftHandler(user);
             })
-            this.socket.on("reqApproval",user=>{
-                this.reqApprovalHandler(user);
+            this.socket.on("approvalRequest",user=>{
+                this.approvalRequestHandler(user);
             });
+        }
+        this.cancelApprovalReq=(approvalReq)=>{
+            this.socket.emit("cancelApprovalReq",approvalReq);
+        };
+        this.disconnect=()=>{
+            this.socket.disconnect();
         }
         this.getMemberList=(meetingInfo)=>{
             return fetchApi('/getMemberList','POST',{},meetingInfo,'json');
@@ -34,27 +44,18 @@ class MeetingAPI {
         this.leaveMeeting=(meetingId,userId)=>{
             this.socket.emit("leaveMeeting",{"meetingId":meetingId,"userId":userId});
         }
-        this.rejectUser=(meetingId,userId)=>{
-            this.socket.emit("rejectUser",{"meetingId":meetingId,"userId":userId});
+        this.rejectRequest=(meetingId,userId)=>{
+            this.socket.emit("rejectRequest",{"meetingId":meetingId,"userId":userId});
         }
-        this.reqToJoinMeeting=(meetingInfo,approvalResHandler)=>{
+        this.submitApprovalReq=(meetingInfo,approvalResponseHandler)=>{
             this.socket.on("approvalResult",res=>{
-                approvalResHandler(res);
+                approvalResponseHandler(res);
             })
             
-            this.socket.emit("reqToJoinMeeting",meetingInfo,(res)=>{
-                approvalResHandler(res);
+            this.socket.emit("submitApprovalReq",meetingInfo,(res)=>{
+                approvalResponseHandler(res);
             });            
-        }
-        this.setMemberJoinHandler=(handler)=>{
-            this.memberJoinHandler=handler;
-        }
-        this.setMemberLeftHandler=(handler)=>{
-            this.memberLeftHandler=handler;
-        }
-        this.setReqApprovalHandler=(handler)=>{
-            this.reqApprovalHandler=handler;
-        }
+        }      
     }
 }
 export default MeetingAPI;
