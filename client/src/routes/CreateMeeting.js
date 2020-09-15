@@ -18,9 +18,9 @@ class CreateMeeting extends Component {
                 } else {
                     var data={};
                     data['alias']=form.alias.value;
-                    data['shareAudio']=form.shareAudio.value;
-                    data['shareVideo']=form.shareVideo.value;
                     data['meetingPwd']=form.meetingPwd.value;
+                    data['shareAudio']=form.shareAudio.value;
+                    data['shareVideo']=form.shareVideo.value;                    
                     fetchApi('/initMeeting','POST',{},data,'json')
                     .then(x=>{
                         this.setState({'meeting': x});

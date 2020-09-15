@@ -1,14 +1,17 @@
-import fetchApi from '../utils/fetch';
-import React ,{Component, Fragment} from 'react';
 import { Button,Col,Container,Modal,Row,Spinner } from 'react-bootstrap';
-import UserAttrib from '../utils/UserAttrib';
 import { Redirect } from 'react-router-dom';
+import fetchApi from '../utils/fetch';
+import MeetingAPI from '../utils/MeetingAPI';
+import React ,{Component, Fragment} from 'react';
+import UserAttrib from '../utils/UserAttrib';
+
 class JoinMeeting extends Component {
     constructor(props) {
         super(props);
-        this.modalBody=React.createRef();
-        this.modalFooter=React.createRef();
-        this.state = {showModal : false}
+        this.state = {authErrMsg:"",
+                    showModal : false,
+                    passAuth:false,
+                    buttonDisabled:true}
 
         this.state.modalContent=[];
         this.meetingId=this.props.match.params.meetingId;
@@ -24,23 +27,40 @@ class JoinMeeting extends Component {
                 var data={};
                 this.setState({'showModal': true});
                 data['alias']=form.alias.value;
-                data['shareAudio']=form.shareAudio.value;
-                data['shareVideo']=form.shareVideo.value;
                 data['meetingId']=form.meetingId.value;
                 data['meetingPwd']=form.meetingPwd.value;
+                data['shareAudio']=form.shareAudio.value;
+                data['shareVideo']=form.shareVideo.value;
                 fetchApi('/authMeeting','POST',{},data,'json')
                 .then(x=>{
-                    //this.setState({'meeting': x});
-                    var modalContent=[];
-                    modalContent.push(<div>The Meeting Authentication is passed.</div>);
-                    modalContent.push(<Spinner animation="border" role="status"><span className="sr-only">Loading...</span></Spinner>);
-                    this.setState({"modalContent":modalContent});
+                    this.setState({className:"align-items-center d-flex flex-column justify-content-center",
+                                   passAuth:true});
+                    var meetingAPI=new MeetingAPI();               
+                    meetingAPI.connect();
+                    meetingAPI.reqToJoinMeeting(data,this.approvalResHandler);
                 })
                 .catch(err => {
-                    this.modalBody.current.innerHTML+="<div>"+err.message+"</div>";
+                    this.setState({authErrMsg:err.message,
+                                    className:"d-none",
+                                    passAuth:false,
+                                    buttonDisabled:false});
                 });
             }
             event.preventDefault();
+        }
+        this.approvalResHandler=(result)=>{
+            console.log(result);
+            if(result.error===0){
+                if (Object.keys(result).length>1){
+                    //console.log(result.user);
+                   this.setState({'meeting':{"meetingId":result.meetingId,"user":result.user}});
+                }
+            } else {
+                this.setState({authErrMsg:result.message,
+                    className:"d-none",
+                    passAuth:false,
+                    buttonDisabled:false});
+            }            
         }
     }            
     render(){
@@ -86,11 +106,23 @@ class JoinMeeting extends Component {
                     <Modal show={this.state.showModal}
                         backdrop="static"
                         keyboard={false}>
-                        <Modal.Body className="align-items-center d-flex flex-column justify-content-center" ref={this.modalBody}>
-                            {this.state.modalContent}
+                        <Modal.Body className="align-items-center d-flex flex-column justify-content-center">
+                            <div 
+                                className={this.state.className}>
+                                <div>
+                                    The Meeting Authentication is passed.<br/>
+                                    Waiting for the host approval.
+                                </div>
+                                <Spinner animation="border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </div>
+                            <div className={(this.state.passAuth===false)?"":"d-none"}>
+                                {this.state.authErrMsg}
+                            </div>
                         </Modal.Body>
                         <Modal.Footer ref={this.modalFooter}>
-                            <Button variant="secondary" onClick={this.handleClose}>
+                            <Button disabled={this.state.buttonDisabled} variant="secondary" onClick={this.handleClose}>
                                 Close
                             </Button>
                         </Modal.Footer>

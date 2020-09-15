@@ -28,6 +28,20 @@ class InfoPane extends React.Component {
   }
   render() {
     //console.log("I:"+JSON.stringify(this.props.memberList));
+    
+    var pendingItemsCount=0,patt=/^\*/,pending="",memberCount=0;
+    var user=this.props.meetingInfo.user;
+    Object.keys(this.props.memberList).forEach(memberId=>{
+      if(patt.test(memberId)){
+        pendingItemsCount++;
+      }
+      memberCount++;
+    });
+    memberCount="("+  memberCount +")";
+    
+    if ((pendingItemsCount>0) &&(user.isHost)){
+      pending="!";
+    }
     return (
       <Card className="rounded w-100">
         <Card.Header className="align-items-center d-flex flex-row justify-content-around m-1 p-0 rounded">
@@ -44,7 +58,7 @@ class InfoPane extends React.Component {
           <div className="align-items-end btn d-flex" title="Member List" type="button" onClick={()=>{this.showPane('memberList')}}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-            </svg>
+            </svg>{memberCount}{pending}
           </div>
         </Card.Header>
         <Card.Body className="d-flex flex-grow-1 pb-0 pl-1 pr-1 pt-0">
@@ -54,6 +68,7 @@ class InfoPane extends React.Component {
           <MeetingInfo ref={this.meetingInfo}
             meetingInfo={this.props.meetingInfo}/>
           <MemberList ref={this.memberListComponent}
+            approvalHandler={this.props.approvalHandler}
             meetingInfo={this.props.meetingInfo}
             memberList={this.props.memberList}/>      
         </Card.Body>

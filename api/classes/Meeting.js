@@ -11,6 +11,9 @@ class Meeting{
 		this.close=(()=>{
 			
 		});
+		this.getHostUser=(()=>{
+			return hostUser;
+		});
 		this.getMeetingId=(()=>{
 			return meetingId;
 		});

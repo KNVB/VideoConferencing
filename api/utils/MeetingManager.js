@@ -1,22 +1,15 @@
 class MeetingManager
 {
 	constructor(){
-		let meetingList={},userList={};
+		let meetingList={},userList={},reqApprovalUserList={};
 		const { v4: uuidv4 } = require('uuid');
 		const util=require("./Utility.js");
 		this.authMeeting=((reqBody)=>{
+			//console.log(Object.keys(meetingList).includes(reqBody.meetingId));
 			if (Object.keys(meetingList).includes(reqBody.meetingId)){
 				var meeting=meetingList[reqBody.meetingId];
 				if (meeting.getPassword()==reqBody.meetingPwd){
-					var userId=uuidv4();
-					var user =new(require('../classes/User'));
-					user.id=userId;
-					user.alias=reqBody.alias;
-					user.shareMedia={"video":reqBody.shareVideo,"audio":reqBody.shareAudio};
-					userList[userId]=user;
-					meeting.join(user);
-					meetingList[reqBody.meetingId]=meeting;
-					return {"user":user,"meetingId":reqBody.meetingId};
+					return {"message":"The Meeting Authentication is passed."}
 				} else {
 					var err = new Error('Invalid Meeting Password');
 					err.unauthorized=true;
@@ -64,6 +57,7 @@ class MeetingManager
 			var meeting=new(require('../classes/Meeting'));
 			var userId=uuidv4(),meetingId=uuidv4();
 			user.id=userId;
+			user.isHost=true;
 			user.alias=reqBody.alias;
 			user.shareMedia={"video":reqBody.shareVideo,"audio":reqBody.shareAudio};
 			meeting.setMeetingId(meetingId);
@@ -75,6 +69,19 @@ class MeetingManager
 			return {"user":user,"meetingId":meetingId};
 		});
 		this.setSocket=(socket=>{
+			socket.on("approveUser",(info,callBack)=>{
+				console.log("approveUser:"+JSON.stringify(info));
+				if (Object.keys(meetingList).includes(info.meetingId)){
+					var user=reqApprovalUserList[info.userId];
+					var meeting=meetingList[info.meetingId];
+
+					user.id=info.userId.replace(/^\*/,"");
+					userList[user.id]=user;
+					meeting.join(user);
+					socket.to(user.socketId).emit("approvalResult",{error:0,"user":user,"meetingId":info.meetingId});
+				}
+				delete reqApprovalUserList[info.userId];
+			})
 			socket.on("joinMeeting",info=>{
 				var user=userList[info.userId];
 				socket.join(info.meetingId);
@@ -82,7 +89,7 @@ class MeetingManager
 				userList[info.userId]=user;
 				console.log('User :'+user.alias+"("+info.userId+") joins the meeting :"+info.meetingId+" @"+util.getTimeString());
 				socket.to(info.meetingId).emit('member_join',user);
-				console.log(Object.keys(userList).length);
+				//console.log(Object.keys(userList).length);
 			});
 			socket.on("leaveMeeting",info=>{
 				var user=userList[info.userId];
@@ -99,6 +106,38 @@ class MeetingManager
 						delete meetingList[info.meetingId];
 						console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
 					}
+				}
+			});
+			socket.on("rejectUser",(info,callBack)=>{
+				console.log("rejectUser:"+JSON.stringify(info));
+				if (Object.keys(meetingList).includes(info.meetingId)){
+					var user=reqApprovalUserList[info.userId];
+					socket.to(user.socketId).emit("approvalResult",{error:1,message:"The host rejects your join meeting request."});
+				}
+				delete reqApprovalUserList[info.userId];
+			});
+			socket.on("reqToJoinMeeting",(info,callBack)=>{
+				var meeting=meetingList[info.meetingId];
+				if (Object.keys(meetingList).includes(info.meetingId)){
+					if (meeting.getPassword()===info.meetingPwd){
+						callBack({error:0});
+						var user =new(require('../classes/User'));
+						var userId=uuidv4();
+						
+						user.alias=info.alias;
+						user.id="*"+userId;
+						user.isHost=false;						
+						user.socketId=socket.id;
+						user.shareMedia={"video":info.shareVideo,"audio":info.shareAudio};
+						var hostUser=meeting.getHostUser();
+						reqApprovalUserList[user.id]=user;
+						socket.to(hostUser.socketId).emit("reqApproval",user);
+					} else {
+						callBack({error:1,message:"Invalid Meeting password"})
+					}
+				} else {
+					//socket.to.emit"approvalResult"
+					callBack({error:1,message:"Invalid Meeting Id"})
 				}
 			});
 		});

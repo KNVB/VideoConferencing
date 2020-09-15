@@ -32,7 +32,7 @@ class MeetingInfo extends React.Component {
                         </svg>
                         to get the join meeting link<br/>{/*this.meetingLink*/}
 
-                        Your Alias:{this.props.meetingInfo.user.alias}
+                        User Alias:{this.props.meetingInfo.user.alias}
                     </div>
                 </Card.Body>
             </Card>            
