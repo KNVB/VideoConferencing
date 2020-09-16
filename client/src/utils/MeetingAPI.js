@@ -1,5 +1,5 @@
 import config from './config';
-import fetchApi from '../utils/fetch';
+import fetchApi from './fetch';
 import io from 'socket.io-client';
 
 class MeetingAPI {

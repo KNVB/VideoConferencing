@@ -24,35 +24,19 @@ class MeetingManager
 			}			
 		});
 		this.getMemberList=((reqBody)=>{
-			if (reqBody){
-				var meetingId=reqBody.meetingId;
-				var userId=reqBody.user.id;
-				
-				if (Object.keys(meetingList).includes(meetingId)){
-					if (Object.keys(userList).includes(userId)){
-						var meeting=meetingList[meetingId];
-						if (meeting.hasMember(userId)) {
-							return meeting.getMemberList();
-						} else {
-							var err = new Error('This user cannot access this meeting.');
-							err.unauthorized=true;
-							throw err;
-						}
-					} else {
-						var err = new Error('Invalid User Id');
-						err.badRequest=true;
-						throw err;
-					}
-				} else {
+			var meeting;
+			try{
+				meeting=meetingList[reqBody.meetingId];
+				return meeting.getMemberList(reqBody.user);
+			}catch (error){
+				if (meeting===undefined){
 					var err = new Error('Invalid Meeting Id');
 					err.badRequest=true;
 					throw err;
+				} else {
+					throw error;
 				}
-			} else {
-				var err = new Error('Invalid Meeting Info');
-				err.badRequest=true;
-				throw err;
-			}				
+			}
 		});
 		this.initMeeting=((reqBody)=>{
 			var user =new(require('../classes/User'));

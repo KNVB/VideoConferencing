@@ -44,8 +44,18 @@ class Meeting{
 		this.getMemberCount=(()=>{
 			return Object.keys(memberList).length;
 		});
+		/*
+		this.getMemberList=(()=>{
+			var result={};
+			Object.keys(memberList).forEach(memberId=>{
+				var member=memberList[memberId];
+				result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
+			});
+			return result;
+		});
+		*/
 		this.getMemberList=((user)=>{
-			if (Object.keys(memberList).includes(user.id)){
+			if (this.hasMember(user.id)){
 				var result={};
 				Object.keys(memberList).forEach(memberId=>{
 					var member=memberList[memberId];
@@ -61,6 +71,9 @@ class Meeting{
 		this.getPassword=(()=>{
 			return meetingPwd;
 		});
+		this.hasMember=(userId=>{
+			return Object.keys(memberList).includes(userId)
+		})
 		this.isHost=((user)=>{
 			return (user.id===hostUser.id)	
 		});
