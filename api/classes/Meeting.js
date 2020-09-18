@@ -54,8 +54,11 @@ class Meeting{
 			return result;
 		});
 		*/
-		this.getMemberList=((user)=>{
-			if (this.hasMember(user.id)){
+		this.getMemberList=((userId)=>{
+			//console.log("memberList="+JSON.stringify(memberList));
+			console.log("userId="+JSON.stringify(userId));
+			//console.log(this.hasMember(userId));
+			if (this.hasMember(userId)){
 				var result={};
 				Object.keys(memberList).forEach(memberId=>{
 					var member=memberList[memberId];
@@ -113,6 +116,15 @@ class Meeting{
 				return true;
 			} else {
 				return false;
+			}				
+		});
+		this.updateSocketId=((userId,socketId)=>{
+			if (this.hasMember(userId)){
+				memberList[userId].socketId=socketId;
+			} else {
+				var err = new Error('This user id is not included in this meeting.');
+				err.unauthorized=true;
+				throw err;
 			}				
 		});
 //===============================================================		

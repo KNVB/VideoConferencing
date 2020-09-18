@@ -55,42 +55,24 @@ class MeetingManager
 			return {"user":user,"meetingId":meetingId};
 		});
 		this.setSocket=(socket=>{
-			socket.on("approveRequest",(info,callBack)=>{
-				console.log("approveRequest:"+JSON.stringify(info));
-				if (Object.keys(meetingList).includes(info.meetingId)){
-					var user=approvalRequestList[info.userId];
-					var meeting=meetingList[info.meetingId];
-
-					user.id=info.userId.replace(/^\*/,"");
-					userList[user.id]=user;
-					meeting.join(user);
-					socket.to(user.socketId).emit("approvalResult",{error:0,"user":user,"meetingId":info.meetingId});
+			socket.on("login",(info,callBack)=>{
+				var meeting;
+				console.log("login");
+				console.log("info="+JSON.stringify(info));
+				console.log("uid="+info.user.id);
+				try{
+					meeting=meetingList[info.meetingId];
+					meeting.getMemberList(info.user.id);
+					meeting.updateSocketId(info.user.id,socket.id);
+					callBack({error:0,memberList:meeting.getMemberList(info.user)});
+				}catch (error){
+					//console.log(error);
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
 				}
-				delete approvalRequestList[info.userId];
-			});
-			socket.on("cancelApprovalReq",info=>{
-				/*
-				console.log("cancelApprovalReq");
-				console.log(info);
-				*/
-				if (Object.keys(approvalRequestList).includes(info.tempId)&&
-					Object.keys(meetingList).includes(info.meetingId)){
-					var meeting=meetingList[info.meetingId];
-					var user=approvalRequestList[info.tempId];
-					var hostUser=meeting.getHostUser();
-					approvalRequestList[user.id]=user;
-					socket.to(hostUser.socketId).emit("cancelApprovalReq",user);
-					delete approvalRequestList[info.tempId];
-				}				
-			});
-			socket.on("joinMeeting",info=>{
-				var user=userList[info.userId];
-				socket.join(info.meetingId);
-				user.socketId=socket.id;
-				userList[info.userId]=user;
-				console.log('User :'+user.alias+"("+info.userId+") joins the meeting :"+info.meetingId+" @"+util.getTimeString());
-				socket.to(info.meetingId).emit('member_join',user);
-				//console.log(Object.keys(userList).length);
 			});
 			socket.on("leaveMeeting",info=>{
 				var user=userList[info.userId];
@@ -109,37 +91,7 @@ class MeetingManager
 					}
 				}
 			});
-			socket.on("rejectRequest",(info,callBack)=>{
-				console.log("rejectRequest:"+JSON.stringify(info));
-				if (Object.keys(meetingList).includes(info.meetingId)){
-					var user=approvalRequestList[info.userId];
-					socket.to(user.socketId).emit("approvalResult",{error:1,message:"The host rejects your join meeting request."});
-				}
-				delete approvalRequestList[info.userId];
-			});
-			socket.on("submitApprovalReq",(info,callBack)=>{
-				var meeting=meetingList[info.meetingId];
-				if (Object.keys(meetingList).includes(info.meetingId)){
-					if (meeting.getPassword()===info.meetingPwd){
-						callBack({error:0});
-						var user =new(require('../classes/User'));
-						
-						user.alias=info.alias;
-						user.id=info.tempId;
-						user.isHost=false;						
-						user.socketId=socket.id;
-						user.shareMedia={"video":info.shareVideo,"audio":info.shareAudio};
-						var hostUser=meeting.getHostUser();
-						approvalRequestList[user.id]=user;
-						socket.to(hostUser.socketId).emit("approvalRequest",user);
-					} else {
-						callBack({error:1,message:"Invalid Meeting password"})
-					}
-				} else {
-					//socket.to.emit"approvalResult"
-					callBack({error:1,message:"Invalid Meeting Id"})
-				}
-			});
+			
 		});
 	}
 }
