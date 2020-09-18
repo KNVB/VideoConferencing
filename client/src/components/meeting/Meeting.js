@@ -1,6 +1,7 @@
 import { Redirect } from "react-router-dom";
 import { Spinner } from 'react-bootstrap';
 import ActionPane from "../actionpane/ActionPane";
+import "./Meeting.css";
 import MediaPlayer from '../mediaplayer/MediaPlayer';
 import MeetingUtil from "../../utils/MeetingUtil";
 import React from "react";
@@ -12,8 +13,9 @@ class Meeting extends React.Component {
     componentDidMount() {
         document.getElementById("root").classList.add("p-1");
         var meetingUtil =new MeetingUtil(this.meetingInfo);
+        
         meetingUtil.login(result=>{
-            console.log(result);
+        //    console.log(result);
             if (result.error===0){
                 this.setState({"meetingUtil":meetingUtil});
             } else {
@@ -25,7 +27,6 @@ class Meeting extends React.Component {
     }
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
-      
     }    
     render() {
         if (sessionStorage.getItem("meetingInfo")===null){

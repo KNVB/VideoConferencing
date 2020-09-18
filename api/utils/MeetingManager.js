@@ -4,25 +4,23 @@ class MeetingManager
 		let meetingList={},userList={},approvalRequestList={};
 		const { v4: uuidv4 } = require('uuid');
 		const util=require("./Utility.js");
-		this.authMeeting=((reqBody)=>{
-			//console.log(Object.keys(meetingList).includes(reqBody.meetingId));
-			if (Object.keys(meetingList).includes(reqBody.meetingId)){
-				var meeting=meetingList[reqBody.meetingId];
-				if (meeting.getPassword()==reqBody.meetingPwd){
-					var tempId=uuidv4();
-					tempId="*"+tempId;
-					return {"tempId":tempId};
-				} else {
-					var err = new Error('Invalid Meeting Password');
-					err.unauthorized=true;
+		this.getJoinReqId=((reqBody)=>{
+			var meeting;
+			try{
+				console.log(reqBody.meetingId);
+				meeting=meetingList[reqBody.meetingId];
+				return ({joinReqId:meeting.getJoinReqId(reqBody)});
+			}catch (error){
+				if (meeting===undefined){
+					var err = new Error('Invalid Meeting Id');
+					err.badRequest=true;
 					throw err;
+				} else {
+					throw error;
 				}
-			} else {
-				var err = new Error('Invalid Meeting Id');
-				err.badRequest=true;
-				throw err;
-			}			
+			}
 		});
+		/*
 		this.getMemberList=((reqBody)=>{
 			var meeting;
 			try{
@@ -37,7 +35,7 @@ class MeetingManager
 					throw error;
 				}
 			}
-		});
+		});*/
 		this.initMeeting=((reqBody)=>{
 			var user =new(require('../classes/User'));
 			var meeting=new(require('../classes/Meeting'));
@@ -55,16 +53,31 @@ class MeetingManager
 			return {"user":user,"meetingId":meetingId};
 		});
 		this.setSocket=(socket=>{
+			
+			socket.on("getJoinReqId",(info,callBack)=>{
+				//console.log("getJoinReqId");
+				var meeting;
+				try{
+					//console.log(info.meetingId);
+					meeting=meetingList[info.meetingId];
+					callBack ({"error":0,joinReqId:meeting.getJoinReqId(info)});
+				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						throw error;
+						callBack({"error":1,message:error.message});
+					}
+				}
+			});
+			
+			
+			
 			socket.on("login",(info,callBack)=>{
 				var meeting;
-				console.log("login");
-				console.log("info="+JSON.stringify(info));
-				console.log("uid="+info.user.id);
 				try{
 					meeting=meetingList[info.meetingId];
-					meeting.getMemberList(info.user.id);
-					meeting.updateSocketId(info.user.id,socket.id);
-					callBack({error:0,memberList:meeting.getMemberList(info.user)});
+					callBack({error:0,memberList:meeting.getMemberList(info.user.id)});
 				}catch (error){
 					//console.log(error);
 					if (meeting===undefined){

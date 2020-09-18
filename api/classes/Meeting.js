@@ -55,9 +55,6 @@ class Meeting{
 		});
 		*/
 		this.getMemberList=((userId)=>{
-			//console.log("memberList="+JSON.stringify(memberList));
-			console.log("userId="+JSON.stringify(userId));
-			//console.log(this.hasMember(userId));
 			if (this.hasMember(userId)){
 				var result={};
 				Object.keys(memberList).forEach(memberId=>{

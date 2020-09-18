@@ -1,14 +1,13 @@
 import { Button,Col,Container,Modal,Row,Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import fetchApi from '../utils/fetch';
-import MeetingAPI from '../utils/MeetingAPI';
+import JoinMeetingUtil from '../utils/JoinMeetingUtil';
 import React ,{Component, Fragment} from 'react';
 import UserAttrib from '../utils/UserAttrib';
 
 class JoinMeeting extends Component {
     constructor(props) {
         super(props);
-        this.state = {authErrMsg:"",
+        this.state = {joinResultMsg:"",
                     showModal : false,
                     passAuth:false,
                     buttonDisabled:true}
@@ -17,58 +16,24 @@ class JoinMeeting extends Component {
         this.timer=null;
         this.meetingId=this.props.match.params.meetingId;
         
-        this.handleClose=(event)=>{
+        this.closeModal=(event)=>{
             this.setState({'showModal': false});
             event.preventDefault(); 
         }
-        this.handleSubmit =(event)=>{
+        this.submitJoinReq=(event)=>{
             var form=this.formRef.current;
-           
             if(form.reportValidity()){
-                this.approvalReq={};
+                this.joinReq={};
                 this.setState({'showModal': true});
-                this.approvalReq['alias']=form.alias.value;
-                this.approvalReq['meetingId']=form.meetingId.value;
-                this.approvalReq['meetingPwd']=form.meetingPwd.value;
-                this.approvalReq['shareAudio']=form.shareAudio.value;
-                this.approvalReq['shareVideo']=form.shareVideo.value;	
-                fetchApi('/authMeeting','POST',{},this.approvalReq,'json')
-                .then(x=>{
-                    //console.log(x);
-                    this.setState({className:"align-items-center d-flex flex-column justify-content-center",
-                                   passAuth:true});
-                    this.meetingAPI=new MeetingAPI();
-                    this.approvalReq["tempId"]=x.tempId;               
-                    this.meetingAPI.connect();
-                    this.meetingAPI.submitApprovalReq(this.approvalReq,this.approvalResponseHandler);
-                })
-                .catch(err => {
-                    this.setState({authErrMsg:err.message,
-                                    className:"d-none",
-                                    passAuth:false,
-                                    buttonDisabled:false});
-                });
+                this.joinReq['alias']=form.alias.value;
+                this.joinReq['meetingId']=form.meetingId.value;
+                this.joinReq['meetingPwd']=form.meetingPwd.value;
+                this.joinReq['shareAudio']=form.shareAudio.value;
+                this.joinReq['shareVideo']=form.shareVideo.value;
+                var jointMeetingUtil=new JoinMeetingUtil();
+                jointMeetingUtil.getJoinReqId(this.joinReq,this.joinReqResultHandler);
             }
             event.preventDefault();
-        }
-        this.approvalResponseHandler=(result)=>{
-            //console.log(result);
-            if(result.error===0){
-                if (Object.keys(result).length>1){
-                    //console.log(result.user);
-                    clearInterval(this.timer);
-                    this.setState({'meeting':{"meetingId":result.meetingId,"user":result.user}});
-                } else {
-                    this.count=0;
-                    this.timer=setInterval(this.counter,1000);
-                }
-            } else {
-                clearInterval(this.timer);
-                this.setState({authErrMsg:result.message,
-                    className:"d-none",
-                    passAuth:false,
-                    buttonDisabled:false});
-            }            
         }
         this.counter=(()=>{
             this.count++;
@@ -76,13 +41,24 @@ class JoinMeeting extends Component {
                 clearInterval(this.timer);
                 this.meetingAPI.cancelApprovalReq(this.approvalReq);
                 this.meetingAPI.disconnect();
-                var message='The approval time out, please try again.';
+                var message='This join request is time out, please try again.';
                 this.setState({authErrMsg:message,
                     className:"d-none",
                     passAuth:false,
                     buttonDisabled:false});
             }
         })
+        this.joinReqResultHandler=(result)=>{
+            if(result.error===0){
+                this.count=0;
+                this.timer=setInterval(this.counter,1000);
+            } else {
+                this.setState({joinResultMsg:result.message,
+                    className:"d-none",
+                    passAuth:false,
+                    buttonDisabled:false});
+            }
+        }
     }            
     render(){
         if (this.state.meeting){
@@ -119,7 +95,7 @@ class JoinMeeting extends Component {
                             </Row>                    
                             <Row>
                                 <Col className="d-flex justify-content-center p-1">
-                                    <button type="submit" onClick={this.handleSubmit}>Join The Meeting</button>
+                                    <button type="submit" onClick={this.submitJoinReq}>Join The Meeting</button>
                                 </Col>
                             </Row>
                         </Container> 
@@ -129,7 +105,7 @@ class JoinMeeting extends Component {
                         keyboard={false}>
                         <Modal.Body className="align-items-center d-flex flex-column justify-content-center">
                             <div 
-                                className={this.state.className}>
+                                className="align-items-center d-flex flex-column justify-content-center">
                                 <div>
                                     The Meeting Authentication is passed.<br/>
                                     Waiting for the host approval.
@@ -143,7 +119,7 @@ class JoinMeeting extends Component {
                             </div>
                         </Modal.Body>
                         <Modal.Footer ref={this.modalFooter}>
-                            <Button disabled={this.state.buttonDisabled} variant="secondary" onClick={this.handleClose}>
+                            <Button disabled={this.state.buttonDisabled} variant="secondary" onClick={this.closeModal}>
                                 Close
                             </Button>
                         </Modal.Footer>

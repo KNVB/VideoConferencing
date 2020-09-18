@@ -26,14 +26,16 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', apiRouter);
+/*
 apiRouter.post('/getMemberList',function(req,res){
 	res.send(meetingManager.getMemberList(req.body));
 });
+*/
 apiRouter.post('/initMeeting',function(req,res){
 	res.send(meetingManager.initMeeting(req.body));
 });
-apiRouter.post('/authMeeting',function(req,res){
-	res.send(meetingManager.authMeeting(req.body));
+apiRouter.post('/getJoinReqId',function(req,res){
+	res.send(meetingManager.getJoinReqId(req.body));
 });
 /*
 apiRouter.use('/login', function(req,res,next){
