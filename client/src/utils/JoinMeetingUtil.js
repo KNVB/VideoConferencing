@@ -6,7 +6,9 @@ class JoinMeetingUtil{
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
 
         this.socket=io.connect(SOCKET_URL);
-        
+        this.cancelJoinReq=(joinReq)=>{
+            this.socket.emit("cancelJoinReq",joinReq);
+        }
         this.disconnect=()=>{
             this.socket.disconnect();
         }
@@ -14,6 +16,11 @@ class JoinMeetingUtil{
             this.socket.emit("getJoinReqId",
                             joinReq,
                             callBack)
+        }
+        this.submitJoinReq=(joinReq,callBack)=>{
+            this.socket.emit("submitJoinReq",
+                            joinReq,
+                            callBack);
         }   
     }
 }

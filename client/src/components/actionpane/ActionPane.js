@@ -13,17 +13,21 @@ class ActionPane extends React.Component {
     this.memberList=React.createRef();
     this.paneList={};
     this.state={"leave":false};
+    this.props.meetingUtil.joinReqHandler=this.joinReqHandler;
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;
     this.paneList['meetingInfo']=this.meetingInfo.current;
     this.paneList['memberList']=this.memberList.current;
   }
-  leaveMeeting(){
+  joinReqHandler=(joinReq)=>{
+    this.showPane('memberList');
+  }
+  leaveMeeting=()=>{
     this.props.meetingUtil.leaveMeeting();
     this.setState({leave:true});
   }
-  showPane(paneToBeShown){
+  showPane=(paneToBeShown)=>{
     Object.keys(this.paneList).forEach(paneName=>{
       if (paneName===paneToBeShown){
         this.paneList[paneName].show();
@@ -38,7 +42,7 @@ class ActionPane extends React.Component {
       return <Redirect to="/"/>
     } else {
       var pendingItemsCount=0,patt=/^\*/,memberCount=0;
-      if (this.props.meetingUtil){
+/*
         Object.keys(this.props.meetingUtil.memberList).forEach(memberId=>{
           if(patt.test(memberId)){
             pendingItemsCount++;
@@ -46,8 +50,8 @@ class ActionPane extends React.Component {
             memberCount++;
           }
         });    
-      }    
-      memberCount="("+  memberCount +")";
+ */         
+      memberCount="("+ Object.keys(this.props.meetingUtil.memberList).length +")";
       return (
         <Card className="rounded w-100">
           <Card.Header className="align-items-center d-flex flex-row justify-content-around m-1 p-0 rounded">

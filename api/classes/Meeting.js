@@ -31,7 +31,7 @@ class Meeting{
 			if (info.meetingPwd===meetingPwd){
 				var joinReqId=uuidv4();
 				joinReqId="*"+joinReqId;
-				return {"joinReqId":joinReqId};
+				return joinReqId;
 			} else {
 				var err = new Error('Invalid Meeting Password');
 				err.unauthorized=true;
@@ -54,13 +54,14 @@ class Meeting{
 			return result;
 		});
 		*/
-		this.getMemberList=((userId)=>{
+		this.login=((userId,socket)=>{
 			if (this.hasMember(userId)){
 				var result={};
 				Object.keys(memberList).forEach(memberId=>{
 					var member=memberList[memberId];
 					result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
 				});
+				memberList[userId].socketId=socket.id;
 				return result;
 			} else {
 				var err = new Error('This user cannot access this meeting.');
@@ -109,10 +110,12 @@ class Meeting{
 				user.socketId=socket.id;
 				user.shareMedia={"video":info.shareVideo,"audio":info.shareAudio};
 				pendingJoinReq[user.id]=user;
-				socket.to(hostUser.socketId).emit("joinRequest",user);
-				return true;
+				socket.to(hostUser.socketId).emit("joinRequest",{"alias":info.alias,"id":info.joinReqId});
+				console.log("joinRequest");
 			} else {
-				return false;
+				var err = new Error('Invalid Meeting Password');
+				err.unauthorized=true;
+				throw err;
 			}				
 		});
 		this.updateSocketId=((userId,socketId)=>{

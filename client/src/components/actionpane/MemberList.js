@@ -15,26 +15,25 @@ class MemberList extends React.Component {
     render(){
         //console.log("M:"+JSON.stringify(this.props.memberList));
         let result=[];
-        if(this.props.meetingUtil){
-            let thisMember=this.props.meetingUtil.user;
-            Object.keys(this.props.meetingUtil.memberList).forEach(memberId=>{
-                var member=this.props.meetingUtil.memberList[memberId];
-                if (member.isHost){
-                    result[0]=<Media className="border-bottom border-info" key={member.id}><Media.Body>{member.alias}(Host){(member.id===thisMember.id)?"*":""}</Media.Body></Media>
+
+        let thisMember=this.props.meetingUtil.user;
+        Object.keys(this.props.meetingUtil.memberList).forEach(memberId=>{
+            var member=this.props.meetingUtil.memberList[memberId];
+            if (member.isHost){
+                result[0]=<Media className="border-bottom border-info" key={member.id}><Media.Body>{member.alias}(Host){(member.id===thisMember.id)?"*":""}</Media.Body></Media>
+            } else {
+                if (member.id.startsWith("*")){
+                    result.push(<Media className="border-bottom border-info" key={member.id}>
+                                    <Media.Body className="d-flex flex-row justify-content-around">
+                                        {member.alias}{(member.id===thisMember.id)?"*":""}
+                                        <Button variant="primary" onClick={()=>this.props.pendingRequestHandler(member)}>Pending Approval</Button>
+                                    </Media.Body>
+                                </Media>);
                 } else {
-                    if (member.id.startsWith("*")){
-                        result.push(<Media className="border-bottom border-info" key={member.id}>
-                                        <Media.Body className="d-flex flex-row justify-content-around">
-                                            {member.alias}{(member.id===thisMember.id)?"*":""}
-                                            <Button variant="primary" onClick={()=>this.props.pendingRequestHandler(member)}>Pending Approval</Button>
-                                        </Media.Body>
-                                    </Media>);
-                    } else {
-                        result.push(<Media className="border-bottom border-info" key={member.id}><Media.Body>{member.alias}{(member.id===thisMember.id)?"*":""}</Media.Body></Media>);
-                    }
+                    result.push(<Media className="border-bottom border-info" key={member.id}><Media.Body>{member.alias}{(member.id===thisMember.id)?"*":""}</Media.Body></Media>);
                 }
-            })
-        }
+            }
+        })
         return (
             <Card className="border border-primary w-100" ref={this.memberListComponent}>
                 <Card.Body className="d-flex flex-grow-1 position-relative p-0 rounded">

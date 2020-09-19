@@ -65,7 +65,6 @@ class MeetingManager
 					if (meeting===undefined){
 						callBack({"error":1,message:'Invalid Meeting Id'});
 					} else {
-						throw error;
 						callBack({"error":1,message:error.message});
 					}
 				}
@@ -77,7 +76,8 @@ class MeetingManager
 				var meeting;
 				try{
 					meeting=meetingList[info.meetingId];
-					callBack({error:0,memberList:meeting.getMemberList(info.user.id)});
+					var memberList=meeting.login(info.user.id,socket);
+					callBack({error:0,"memberList":memberList});
 				}catch (error){
 					//console.log(error);
 					if (meeting===undefined){
@@ -104,7 +104,20 @@ class MeetingManager
 					}
 				}
 			});
-			
+			socket.on("submitJoinReq",(joinReq,callBack)=>{
+				var meeting;
+				try{
+					meeting=meetingList[joinReq.meetingId];
+					meeting.submitJoinReq(joinReq,socket);
+					callBack({"error":0,message:"The Join Request submitted."});
+				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			})
 		});
 	}
 }

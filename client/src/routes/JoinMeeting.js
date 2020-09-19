@@ -7,9 +7,8 @@ import UserAttrib from '../utils/UserAttrib';
 class JoinMeeting extends Component {
     constructor(props) {
         super(props);
-        this.state = {joinResultMsg:"",
-                    showModal : false,
-                    passAuth:false,
+        this.state = {errorMsg:"",
+                    showModal : false,                   
                     buttonDisabled:true}
 
         this.formRef=React.createRef();
@@ -24,41 +23,55 @@ class JoinMeeting extends Component {
             var form=this.formRef.current;
             if(form.reportValidity()){
                 this.joinReq={};
-                this.setState({'showModal': true});
+                this.setState({ buttonDisabled:true,
+                                errorMsg:"",
+                                'showModal': true});
                 this.joinReq['alias']=form.alias.value;
                 this.joinReq['meetingId']=form.meetingId.value;
                 this.joinReq['meetingPwd']=form.meetingPwd.value;
                 this.joinReq['shareAudio']=form.shareAudio.value;
                 this.joinReq['shareVideo']=form.shareVideo.value;
-                var jointMeetingUtil=new JoinMeetingUtil();
-                jointMeetingUtil.getJoinReqId(this.joinReq,this.joinReqResultHandler);
+                this.jointMeetingUtil=new JoinMeetingUtil();
+                this.jointMeetingUtil.getJoinReqId(this.joinReq,(result)=>{
+                    if (result.error===0){
+                        this.joinReq['joinReqId']=result.joinReqId;
+                        this.setState({className:"align-items-center d-flex flex-column justify-content-center"});
+                        this.jointMeetingUtil.submitJoinReq(this.joinReq,(result)=>{
+                            if (result.error===0){
+                                this.count=0;
+                                this.timer=setInterval(this.counter,1000); 
+                            }else{
+                                this.setState({
+                                        className:"d-none",
+                                        errorMsg:result.message,
+                                        buttonDisabled:false});        
+                            }
+                        });
+                        
+                    } else {
+                        clearInterval(this.timer);
+                        this.setState({
+                                        className:"d-none",
+                                        errorMsg:result.message,
+                                        buttonDisabled:false});
+                    }
+                });
             }
             event.preventDefault();
         }
         this.counter=(()=>{
             this.count++;
-            if (this.count===180){ //time out = 3min.
+            if (this.count===10){ //time out = 3min.
                 clearInterval(this.timer);
-                this.meetingAPI.cancelApprovalReq(this.approvalReq);
-                this.meetingAPI.disconnect();
+                this.jointMeetingUtil.cancelJoinReq(this.joinReq);
+                this.jointMeetingUtil.disconnect();
                 var message='This join request is time out, please try again.';
-                this.setState({authErrMsg:message,
+                this.setState({errorMsg:message,
                     className:"d-none",
-                    passAuth:false,
                     buttonDisabled:false});
             }
         })
-        this.joinReqResultHandler=(result)=>{
-            if(result.error===0){
-                this.count=0;
-                this.timer=setInterval(this.counter,1000);
-            } else {
-                this.setState({joinResultMsg:result.message,
-                    className:"d-none",
-                    passAuth:false,
-                    buttonDisabled:false});
-            }
-        }
+        
     }            
     render(){
         if (this.state.meeting){
@@ -105,7 +118,7 @@ class JoinMeeting extends Component {
                         keyboard={false}>
                         <Modal.Body className="align-items-center d-flex flex-column justify-content-center">
                             <div 
-                                className="align-items-center d-flex flex-column justify-content-center">
+                                className={this.state.className}>
                                 <div>
                                     The Meeting Authentication is passed.<br/>
                                     Waiting for the host approval.
@@ -114,8 +127,8 @@ class JoinMeeting extends Component {
                                     <span className="sr-only">Loading...</span>
                                 </Spinner>
                             </div>
-                            <div className={(this.state.passAuth===false)?"":"d-none"}>
-                                {this.state.authErrMsg}
+                            <div>
+                                {this.state.errorMsg}
                             </div>
                         </Modal.Body>
                         <Modal.Footer ref={this.modalFooter}>

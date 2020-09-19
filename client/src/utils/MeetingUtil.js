@@ -5,11 +5,15 @@ class MeetingUtil {
     constructor(meetingInfo){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
+        this.joinReqHandler=null;
         this.meetingId=meetingInfo.meetingId;
-        this.memberList={};
-        this.socket=io.connect(SOCKET_URL);
-        this.user=meetingInfo.user;
         
+        this.memberList={};
+        this.user=meetingInfo.user;
+        this.socket=io.connect(SOCKET_URL);
+        this.socket.on("joinRequest",joinReq=>{
+            this.joinReqHandler(joinReq);
+        });
         this.login=(callBack)=>{
             this.socket.emit("login",
             {meetingId:this.meetingId,user:this.user},
