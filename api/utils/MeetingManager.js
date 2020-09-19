@@ -104,6 +104,20 @@ class MeetingManager
 					}
 				}
 			});
+			socket.on("rejectJoinRequest",(info,callBack)=>{
+				var meeting;
+				try{
+					meeting=meetingList[joinReq.meetingId];
+					meeting.rejectJoinReq(joinReq,socket);
+					callBack({"error":0});
+				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			});
 			socket.on("submitJoinReq",(joinReq,callBack)=>{
 				var meeting;
 				try{

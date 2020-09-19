@@ -118,15 +118,6 @@ class Meeting{
 				throw err;
 			}				
 		});
-		this.updateSocketId=((userId,socketId)=>{
-			if (this.hasMember(userId)){
-				memberList[userId].socketId=socketId;
-			} else {
-				var err = new Error('This user id is not included in this meeting.');
-				err.unauthorized=true;
-				throw err;
-			}				
-		});
 //===============================================================		
 
 	}

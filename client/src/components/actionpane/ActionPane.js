@@ -13,7 +13,7 @@ class ActionPane extends React.Component {
     this.memberList=React.createRef();
     this.paneList={};
     this.state={"leave":false};
-    this.props.meetingUtil.joinReqHandler=this.joinReqHandler;
+    this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;

@@ -5,15 +5,12 @@ class MeetingUtil {
     constructor(meetingInfo){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
-        this.joinReqHandler=null;
+        this.joinReqHandler=[];
         this.meetingId=meetingInfo.meetingId;
         
         this.memberList={};
         this.user=meetingInfo.user;
         this.socket=io.connect(SOCKET_URL);
-        this.socket.on("joinRequest",joinReq=>{
-            this.joinReqHandler(joinReq);
-        });
         this.login=(callBack)=>{
             this.socket.emit("login",
             {meetingId:this.meetingId,user:this.user},
@@ -35,7 +32,17 @@ class MeetingUtil {
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",{"meetingId":this.meetingId,"userId":this.user.id});
             this.socket.disconnect();
-        }             
+        }
+        this.rejectJoinRequest=(meetingId,reqid)=>{
+            this.socket.emit("rejectJoinRequest",
+                            {"meetingId":this.meetingId,"userId":this.user.id},
+                            );
+        }
+        this.socket.on("joinRequest",joinReq=>{
+            this.joinReqHandler.forEach(handler=>{
+                handler(joinReq);
+            });
+        });             
     }
 }
 export default MeetingUtil;
