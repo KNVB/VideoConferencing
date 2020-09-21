@@ -38,9 +38,10 @@ class JoinMeeting extends Component {
                         this.setState({className:"align-items-center d-flex flex-column justify-content-center"});
                         this.jointMeetingUtil.submitJoinReq(this.joinReq,(result)=>{
                             if (result.error===0){
+                                this.jointMeetingUtil.joinReqResultHandlder=this.joinReqResultHandlder;
                                 this.count=0;
                                 this.timer=setInterval(this.counter,1000); 
-                            }else{
+                            }else{                                
                                 this.setState({
                                         className:"d-none",
                                         errorMsg:result.message,
@@ -61,7 +62,7 @@ class JoinMeeting extends Component {
         }
         this.counter=(()=>{
             this.count++;
-            if (this.count===10){ //time out = 3min.
+            if (this.count===180){ //time out = 3min.
                 clearInterval(this.timer);
                 this.jointMeetingUtil.cancelJoinReq(this.joinReq);
                 this.jointMeetingUtil.disconnect();
@@ -71,7 +72,21 @@ class JoinMeeting extends Component {
                     buttonDisabled:false});
             }
         })
-        
+        this.joinReqResultHandlder=(result)=>{
+            
+            clearInterval(this.timer);
+            if (result.error===0){
+                delete this.joinReq['joinReqId'];
+                this.setState({meeting:{"user":result.user,"meetingId":result.meetingId}});
+            } else {
+                var message=result.message;
+                
+                this.setState({errorMsg:message,
+                    className:"d-none",
+                    buttonDisabled:false});
+            }
+            this.jointMeetingUtil.disconnect();
+        }
     }            
     render(){
         if (this.state.meeting){

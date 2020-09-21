@@ -57,11 +57,14 @@ class Meeting{
 		this.login=((userId,socket)=>{
 			if (this.hasMember(userId)){
 				var result={};
+				socket.join(meetingId);
 				Object.keys(memberList).forEach(memberId=>{
 					var member=memberList[memberId];
 					result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
 				});
-				memberList[userId].socketId=socket.id;
+				var user=memberList[userId];
+				user.socketId=socket.id;
+				socket.to(meetingId).emit("newMemberJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
 				return result;
 			} else {
 				var err = new Error('This user cannot access this meeting.');
@@ -85,8 +88,11 @@ class Meeting{
 		this.leave=((user)=>{
 			delete memberList[user.id];
 		});
+		
 		this.rejectJoinReq=((info,socket)=>{
 			var user=pendingJoinReq[info.userId];
+			//console.log("info="+JSON.stringify(info));
+			//console.log("pendingJoinReq="+JSON.stringify(pendingJoinReq));
 			socket.to(user.socketId).emit("joinReqResult",{error:1,message:"The host rejects your join meeting request."});
 			delete pendingJoinReq[info.userId];
 		});

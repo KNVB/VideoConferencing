@@ -4,7 +4,7 @@ class JoinMeetingUtil{
     constructor(){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
-
+        this.joinReqResultHandlder=null;
         this.socket=io.connect(SOCKET_URL);
         this.cancelJoinReq=(joinReq)=>{
             this.socket.emit("cancelJoinReq",joinReq);
@@ -17,6 +17,10 @@ class JoinMeetingUtil{
                             joinReq,
                             callBack)
         }
+        
+        this.socket.on("joinReqResult",result=>{
+            this.joinReqResultHandlder(result);
+        })
         this.submitJoinReq=(joinReq,callBack)=>{
             this.socket.emit("submitJoinReq",
                             joinReq,

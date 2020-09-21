@@ -21,28 +21,34 @@ class MeetingUtil {
                 callBack(result);
             });
         }
-        /*
-        this.getMemberList=async()=>{
-            return await fetchApi('/getMemberList','POST',{},{meetingId:this.meetingId,user:this.user},'json')
-            .then(ml=>{
-                    this.memberList=ml;
-                });
-        }
-        */
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",{"meetingId":this.meetingId,"userId":this.user.id});
             this.socket.disconnect();
         }
-        this.rejectJoinRequest=(meetingId,reqid)=>{
+        this.acceptJoinRequest=((meetingId,reqId)=>{
+            this.socket.emit("acceptJoinRequest",
+                            {"meetingId":this.meetingId,"userId":reqId},
+                            (result)=>{
+                                console.log(result);
+                            });
+        });
+        this.rejectJoinRequest=(meetingId,reqId)=>{
             this.socket.emit("rejectJoinRequest",
-                            {"meetingId":this.meetingId,"userId":this.user.id},
-                            );
+                            {"meetingId":this.meetingId,"userId":reqId},
+                            (result)=>{
+                                console.log(result);
+                            });
         }
         this.socket.on("joinRequest",joinReq=>{
+            console.log("joinRequest,joinReq="+JSON.stringify(joinReq));
             this.joinReqHandler.forEach(handler=>{
                 handler(joinReq);
             });
-        });             
+        });
+        this.socket.on("newMemberJoin",user=>{
+            console.log("new member:"+JSON.stringify(user));
+        });
+
     }
 }
 export default MeetingUtil;

@@ -18,20 +18,29 @@ class MemberList extends React.Component {
     show(){
         this.memberListComponent.current.classList.remove("d-none");
     }
+    acceptRequest=()=>{
+        this.props.meetingUtil.acceptJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
+        var memberList=this.state.memberList;
+        delete memberList[this.state.pendingReq.id];
+        this.setState({reqUser:{},
+                        "memberList":memberList,
+                        showApprovModal : false});
+    }
     joinReqHandler=(joinReq)=>{
         var ml=this.state.memberList;
         ml[joinReq.id]=joinReq;
         this.setState({"memberList":ml});
-        console.log('join Request.');
+        console.log('join Request Handler.');
     }
     pendingRequestHandler=(user)=>{
         this.setState({pendingReq:user,
         showApprovModal : true});
     }
     rejectRequest=()=>{
-        this.meetingUtil.rejectJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
+        //console.log(this.state.pendingReq);
+        this.props.meetingUtil.rejectJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
         var memberList=this.state.memberList;
-        delete memberList[this.state.reqUser.id];
+        delete memberList[this.state.pendingReq.id];
         this.setState({reqUser:{},
                         "memberList":memberList,
                         showApprovModal : false});
@@ -40,7 +49,7 @@ class MemberList extends React.Component {
         //console.log("M:"+JSON.stringify(this.props.memberList));
         let finalResult=[],pendingReq=[],normalMember=[];
         let thisMember=this.props.meetingUtil.user;
-        console.log(this.state.memberList);
+       // console.log(this.state.memberList);
         Object.keys(this.state.memberList).forEach(memberId=>{
             var member=this.props.meetingUtil.memberList[memberId];
             if (member.isHost){
@@ -70,7 +79,7 @@ class MemberList extends React.Component {
         if (normalMember.length>0){
             finalResult=finalResult.concat(normalMember);
         }
-        console.log(finalResult);
+        //console.log(finalResult);
         return (
             <Fragment>
                 <Card className="border border-primary w-100" ref={this.memberListComponent}>
