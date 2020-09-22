@@ -13,8 +13,10 @@ class ActionPane extends React.Component {
     this.memberList=React.createRef();
     this.paneList={};
     this.state={"leave":false,"memberList":this.props.meetingUtil.memberList};
+    this.props.meetingUtil.cancelJoinReqHandler.push(this.memberCountChangeHandler);
     this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
-    this.props.meetingUtil.newMemberJoinHandler.push(this.newMemberJoinHandler);
+    this.props.meetingUtil.memberLeftHandler.push(this.memberCountChangeHandler);
+    this.props.meetingUtil.newMemberJoinHandler.push(this.memberCountChangeHandler);
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;
@@ -28,7 +30,7 @@ class ActionPane extends React.Component {
     this.props.meetingUtil.leaveMeeting();
     this.setState({leave:true});
   }
-  newMemberJoinHandler=(user)=>{
+  memberCountChangeHandler=(user)=>{
     this.setState({"memberList":this.props.meetingUtil.memberList});
   }
   showPane=(paneToBeShown)=>{

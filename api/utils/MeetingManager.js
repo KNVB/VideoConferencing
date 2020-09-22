@@ -52,6 +52,21 @@ class MeetingManager
 					}
 				}
 			});
+			socket.on("cancelJoinReq",(info,callBack)=>{
+				var meeting;
+				try{
+					//console.log(info.meetingId);
+					meeting=meetingList[info.meetingId];
+					meeting.cancelJoinReq(info,socket);
+					callBack ({"error":0});
+				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			});
 			socket.on("getJoinReqId",(info,callBack)=>{
 				//console.log("getJoinReqId");
 				var meeting;

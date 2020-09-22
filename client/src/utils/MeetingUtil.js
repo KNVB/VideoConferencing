@@ -5,10 +5,12 @@ class MeetingUtil {
     constructor(meetingInfo){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
+        this.cancelJoinReqHandler=[];
         this.joinReqHandler=[];
         this.meetingId=meetingInfo.meetingId;
         
         this.memberList={};
+        this.memberLeftHandler=[];
         this.newMemberJoinHandler=[];
         this.user=meetingInfo.user;
         this.socket=io.connect(SOCKET_URL);
@@ -44,10 +46,24 @@ class MeetingUtil {
                                 console.log(result);
                             });
         }
+        this.socket.on("cancelJoinReq",joinReq=>{
+            console.log("Cancel Join Request:"+JSON.stringify(joinReq));
+            delete this.memberList[joinReq.id];
+            this.cancelJoinReqHandler.forEach(handler=>{
+                handler(joinReq);
+            });
+        })
         this.socket.on("joinRequest",joinReq=>{
             console.log("joinRequest,joinReq="+JSON.stringify(joinReq));
             this.joinReqHandler.forEach(handler=>{
                 handler(joinReq);
+            });
+        });
+        this.socket.on("memberLeft",user=>{
+            console.log(user.alias+" left the meeting");
+            delete this.memberList[user.id];
+            this.memberLeftHandler.forEach(handler=>{
+                handler(user);
             });
         });
         this.socket.on("newMemberJoin",user=>{

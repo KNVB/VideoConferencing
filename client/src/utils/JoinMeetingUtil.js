@@ -7,7 +7,11 @@ class JoinMeetingUtil{
         this.joinReqResultHandlder=null;
         this.socket=io.connect(SOCKET_URL);
         this.cancelJoinReq=(joinReq)=>{
-            this.socket.emit("cancelJoinReq",joinReq);
+            this.socket.emit("cancelJoinReq",
+                            joinReq,
+                            (result)=>{
+                                console.log(result);
+                            });
         }
         this.disconnect=()=>{
             this.socket.disconnect();

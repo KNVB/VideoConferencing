@@ -7,8 +7,10 @@ class MemberList extends React.Component {
         this.memberListComponent=React.createRef();
         this.state={"memberList":this.props.meetingUtil.memberList,
                     "pendingReq":{}};
+        this.props.meetingUtil.cancelJoinReqHandler.push(this.memberCountChangeHandler);            
         this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
-        this.props.meetingUtil.newMemberJoinHandler.push(this.newMemberJoinHandler);
+        this.props.meetingUtil.memberLeftHandler.push(this.memberCountChangeHandler);
+        this.props.meetingUtil.newMemberJoinHandler.push(this.memberCountChangeHandler);
     }
     componentDidMount(){
         
@@ -33,7 +35,7 @@ class MemberList extends React.Component {
         this.setState({"memberList":ml});
         console.log('join Request Handler.');
     }
-    newMemberJoinHandler=(user=>{
+    memberCountChangeHandler=(user=>{
         this.setState({"memberList":this.props.meetingUtil.memberList});
     })    
     pendingRequestHandler=(user)=>{

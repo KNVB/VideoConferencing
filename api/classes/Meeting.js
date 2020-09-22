@@ -18,7 +18,7 @@ class Meeting{
 			socket.in(meetingId).emit("broadcastMessage", message);
 		});
 		this.cancelJoinReq=((info,socket)=>{
-			var user=pendingJoinReq[info.userId];
+			var user=pendingJoinReq[info.joinReqId];
 			socket.to(hostUser.socketId).emit("cancelJoinReq",user);
 			delete pendingJoinReq[info.userId];
 		});
@@ -73,8 +73,8 @@ class Meeting{
 			if (this.hasMember(info.userId)){
 				var member=memberList[info.userId];
 				delete memberList[info.userId];
-				socket.leave(meetingId);
 				socket.to(meetingId).emit("memberLeft",member);
+				socket.leave(meetingId);
 				console.log('Member '+member.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
 			} else {
 				var err = new Error('This user is not belong to this meeting.');
