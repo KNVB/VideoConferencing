@@ -1,5 +1,5 @@
 import config from './config';
-import fetchApi from './fetch';
+//import fetchApi from './fetch';
 import io from 'socket.io-client';
 class MeetingUtil {
     constructor(meetingInfo){
@@ -9,6 +9,7 @@ class MeetingUtil {
         this.meetingId=meetingInfo.meetingId;
         
         this.memberList={};
+        this.newMemberJoinHandler=[];
         this.user=meetingInfo.user;
         this.socket=io.connect(SOCKET_URL);
         this.login=(callBack)=>{
@@ -22,7 +23,11 @@ class MeetingUtil {
             });
         }
         this.leaveMeeting=()=>{
-            this.socket.emit("leaveMeeting",{"meetingId":this.meetingId,"userId":this.user.id});
+            this.socket.emit("leaveMeeting",
+                            {"meetingId":this.meetingId,"userId":this.user.id},
+                            (result)=>{
+                                console.log(result);
+                            });
             this.socket.disconnect();
         }
         this.acceptJoinRequest=((meetingId,reqId)=>{
@@ -47,6 +52,10 @@ class MeetingUtil {
         });
         this.socket.on("newMemberJoin",user=>{
             console.log("new member:"+JSON.stringify(user));
+            this.memberList[user.id]=user;
+            this.newMemberJoinHandler.forEach(handler=>{
+                handler(user);
+            })
         });
 
     }

@@ -8,6 +8,7 @@ class MemberList extends React.Component {
         this.state={"memberList":this.props.meetingUtil.memberList,
                     "pendingReq":{}};
         this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
+        this.props.meetingUtil.newMemberJoinHandler.push(this.newMemberJoinHandler);
     }
     componentDidMount(){
         
@@ -32,6 +33,9 @@ class MemberList extends React.Component {
         this.setState({"memberList":ml});
         console.log('join Request Handler.');
     }
+    newMemberJoinHandler=(user=>{
+        this.setState({"memberList":this.props.meetingUtil.memberList});
+    })    
     pendingRequestHandler=(user)=>{
         this.setState({pendingReq:user,
         showApprovModal : true});

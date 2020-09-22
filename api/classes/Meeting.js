@@ -6,6 +6,7 @@ class Meeting{
 		var meetingPwd;
 		var pendingJoinReq={};
 		const { v4: uuidv4 } = require('uuid');
+		const util=require("../utils/Utility.js");
 		this.acceptJoinReq=((info,socket)=>{
 			var user=pendingJoinReq[info.userId];
 			user.id=info.userId.replace(/^\*/,"");
@@ -54,24 +55,7 @@ class Meeting{
 			return result;
 		});
 		*/
-		this.login=((userId,socket)=>{
-			if (this.hasMember(userId)){
-				var result={};
-				socket.join(meetingId);
-				Object.keys(memberList).forEach(memberId=>{
-					var member=memberList[memberId];
-					result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
-				});
-				var user=memberList[userId];
-				user.socketId=socket.id;
-				socket.to(meetingId).emit("newMemberJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
-				return result;
-			} else {
-				var err = new Error('This user cannot access this meeting.');
-				err.unauthorized=true;
-				throw err;
-			}
-		});
+		
 		this.getPassword=(()=>{
 			return meetingPwd;
 		});
@@ -85,10 +69,37 @@ class Meeting{
 			memberList[user.id]=user;
 			memberList[user.id]["isHost"]=false;
 		});
-		this.leave=((user)=>{
-			delete memberList[user.id];
+		this.leave=((info,socket)=>{
+			if (this.hasMember(info.userId)){
+				var member=memberList[info.userId];
+				delete memberList[info.userId];
+				socket.leave(meetingId);
+				socket.to(meetingId).emit("memberLeft",member);
+				console.log('Member '+member.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
+			} else {
+				var err = new Error('This user is not belong to this meeting.');
+				err.unauthorized=true;
+				throw err;
+			}
 		});
-		
+		this.login=((userId,socket)=>{
+			if (this.hasMember(userId)){
+				var result={};
+				socket.join(meetingId);
+				Object.keys(memberList).forEach(memberId=>{
+					var member=memberList[memberId];
+					result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
+				});
+				var user=memberList[userId];
+				user.socketId=socket.id;
+				socket.to(meetingId).emit("newMemberJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
+				return result;
+			} else {
+				var err = new Error('This user cannot login this meeting.');
+				err.unauthorized=true;
+				throw err;
+			}
+		});
 		this.rejectJoinReq=((info,socket)=>{
 			var user=pendingJoinReq[info.userId];
 			//console.log("info="+JSON.stringify(info));
@@ -117,7 +128,7 @@ class Meeting{
 				user.shareMedia={"video":info.shareVideo,"audio":info.shareAudio};
 				pendingJoinReq[user.id]=user;
 				socket.to(hostUser.socketId).emit("joinRequest",{"alias":info.alias,"id":info.joinReqId});
-				console.log("joinRequest");
+				//console.log("joinRequest");
 			} else {
 				var err = new Error('Invalid Meeting Password');
 				err.unauthorized=true;

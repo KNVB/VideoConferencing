@@ -82,22 +82,27 @@ class MeetingManager
 					}
 				}
 			});
-			socket.on("leaveMeeting",info=>{
-				var user=userList[info.userId];
-				var meeting=meetingList[info.meetingId];
-				if (Object.keys(meetingList).includes(info.meetingId)){
-					meeting.leave(user);
-					delete userList[info.userId];
-					console.log('User '+user.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
-					socket.to(info.meetingId).emit('member_left',user);
-					socket.leave(info.meetingId);
-					socket.disconnect();
-					console.log("Member count in room "+info.meetingId+" = "+Object.keys(userList).length);
+			socket.on("leaveMeeting",(info,callBack)=>{
+				var meeting;
+				try{
+					console.log("leave meeting:"+JSON.stringify(info));
+					meeting=meetingList[info.meetingId];
+					meeting.leave(info,socket);
+					console.log("Member count in room "+info.meetingId+" = "+meeting.getMemberCount());
 					if (meeting.getMemberCount()==0){
 						delete meetingList[info.meetingId];
 						console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
 					}
+					callBack({"error":0});
+				}catch (error){
+					console.log(error);
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
 				}
+
 			});
 			socket.on("rejectJoinRequest",(info,callBack)=>{
 				var meeting;

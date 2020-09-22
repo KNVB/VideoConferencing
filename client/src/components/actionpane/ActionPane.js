@@ -12,8 +12,9 @@ class ActionPane extends React.Component {
     this.meetingInfo=React.createRef();
     this.memberList=React.createRef();
     this.paneList={};
-    this.state={"leave":false};
+    this.state={"leave":false,"memberList":this.props.meetingUtil.memberList};
     this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
+    this.props.meetingUtil.newMemberJoinHandler.push(this.newMemberJoinHandler);
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;
@@ -26,6 +27,9 @@ class ActionPane extends React.Component {
   leaveMeeting=()=>{
     this.props.meetingUtil.leaveMeeting();
     this.setState({leave:true});
+  }
+  newMemberJoinHandler=(user)=>{
+    this.setState({"memberList":this.props.meetingUtil.memberList});
   }
   showPane=(paneToBeShown)=>{
     Object.keys(this.paneList).forEach(paneName=>{
@@ -41,7 +45,7 @@ class ActionPane extends React.Component {
     if (this.state.leave){
       return <Redirect to="/"/>
     } else {
-      var pendingItemsCount=0,patt=/^\*/,memberCount=0;
+//      var pendingItemsCount=0,patt=/^\*/,memberCount=0;
 /*
         Object.keys(this.props.meetingUtil.memberList).forEach(memberId=>{
           if(patt.test(memberId)){
@@ -51,7 +55,7 @@ class ActionPane extends React.Component {
           }
         });    
  */         
-      memberCount="("+ Object.keys(this.props.meetingUtil.memberList).length +")";
+      var memberCount="("+ Object.keys(this.state.memberList).length +")";
       return (
         <Card className="rounded w-100">
           <Card.Header className="align-items-center d-flex flex-row justify-content-around m-1 p-0 rounded">
