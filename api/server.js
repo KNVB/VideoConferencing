@@ -71,5 +71,5 @@ apiRouter.use((req, res, next) => {
 
 
 io.on('connection', (socket) => {
-	meetingManager.setSocket(socket);	
+	meetingManager.setSocket(io,socket);	
 })

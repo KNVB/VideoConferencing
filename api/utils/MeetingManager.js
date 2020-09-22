@@ -36,7 +36,7 @@ class MeetingManager
 			console.log("meeting :"+meetingId+" is created @"+util.getTimeString());
 			return {"user":user,"meetingId":meetingId};
 		});
-		this.setSocket=(socket=>{
+		this.setSocket=((io,socket)=>{
 			socket.on("acceptJoinRequest",(info,callBack)=>{
 				var meeting;
 				try{
@@ -138,7 +138,7 @@ class MeetingManager
 				var meeting;
 				try{
 					meeting=meetingList[info.meetingId];
-					meeting.sendMsg(info,socket);
+					meeting.sendMsg(info,io);
 					callBack({"error":0,message:"The message is sent."});
 				}catch (error){
 					console.log(error);

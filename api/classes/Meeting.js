@@ -108,8 +108,9 @@ class Meeting{
 			socket.to(user.socketId).emit("joinReqResult",{error:1,message:"The host rejects your join meeting request."});
 			delete pendingJoinReq[info.userId];
 		});
-		this.sendMsg=((info,socket)=>{
-			socket.in(meetingId).emit("receiveMsg",info);
+		this.sendMsg=((info,io)=>{
+			var member=memberList[info.userId];
+			io.in(meetingId).emit("receiveMsg",{"userId":member.id,alias:member.alias,"msg":info.msg});
 		});
 		this.setHostMember=((user)=>{
 			hostUser=user;
