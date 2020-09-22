@@ -15,7 +15,7 @@ class Meeting extends React.Component {
         var meetingUtil =new MeetingUtil(this.meetingInfo);
         
         meetingUtil.login(result=>{
-        //    console.log(result);
+            //console.log(result);
             if (result.error===0){
                 this.setState({"meetingUtil":meetingUtil});
             } else {

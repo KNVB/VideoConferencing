@@ -93,6 +93,7 @@ class Meeting{
 				var user=memberList[userId];
 				user.socketId=socket.id;
 				socket.to(meetingId).emit("newMemberJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
+				console.log('Member '+user.alias+" login the meeting :"+meetingId+" @"+util.getTimeString());
 				return result;
 			} else {
 				var err = new Error('This user cannot login this meeting.');
@@ -106,6 +107,9 @@ class Meeting{
 			//console.log("pendingJoinReq="+JSON.stringify(pendingJoinReq));
 			socket.to(user.socketId).emit("joinReqResult",{error:1,message:"The host rejects your join meeting request."});
 			delete pendingJoinReq[info.userId];
+		});
+		this.sendMsg=((info,socket)=>{
+			socket.in(meetingId).emit("receiveMsg",info);
 		});
 		this.setHostMember=((user)=>{
 			hostUser=user;

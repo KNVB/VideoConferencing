@@ -40,7 +40,7 @@ class MeetingManager
 			socket.on("acceptJoinRequest",(info,callBack)=>{
 				var meeting;
 				try{
-					console.log("acceptJoinReq:"+JSON.stringify(info));
+					//console.log("acceptJoinReq:"+JSON.stringify(info));
 					meeting=meetingList[info.meetingId];
 					meeting.acceptJoinReq(info,socket);
 					callBack({"error":0});
@@ -100,7 +100,7 @@ class MeetingManager
 			socket.on("leaveMeeting",(info,callBack)=>{
 				var meeting;
 				try{
-					console.log("leave meeting:"+JSON.stringify(info));
+					//console.log("leave meeting:"+JSON.stringify(info));
 					meeting=meetingList[info.meetingId];
 					meeting.leave(info,socket);
 					console.log("Member count in room "+info.meetingId+" = "+meeting.getMemberCount());
@@ -127,6 +127,21 @@ class MeetingManager
 					meeting.rejectJoinReq(info,socket);
 					callBack({"error":0});
 				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			});
+			socket.on("sendMsg",(info,callBack)=>{
+				var meeting;
+				try{
+					meeting=meetingList[info.meetingId];
+					meeting.sendMsg(info,socket);
+					callBack({"error":0,message:"The message is sent."});
+				}catch (error){
+					console.log(error);
 					if (meeting===undefined){
 						callBack({"error":1,message:'Invalid Meeting Id'});
 					} else {

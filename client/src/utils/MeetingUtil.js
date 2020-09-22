@@ -12,12 +12,14 @@ class MeetingUtil {
         this.memberList={};
         this.memberLeftHandler=[];
         this.newMemberJoinHandler=[];
-        this.user=meetingInfo.user;
+        this.receiveMsgHandler=[];
         this.socket=io.connect(SOCKET_URL);
+        this.user=meetingInfo.user;
         this.login=(callBack)=>{
             this.socket.emit("login",
             {meetingId:this.meetingId,user:this.user},
             (result)=>{
+                //console.log(result);
                 if (result.error===0){
                     this.memberList=result.memberList;
                 }
@@ -46,6 +48,13 @@ class MeetingUtil {
                                 console.log(result);
                             });
         }
+        this.sendMsg=(msg)=>{
+            this.socket.emit("sendMsg",
+                            {"meetingId":this.meetingId,"userId":this.user.id,"msg":msg},
+                            (result)=>{
+                                console.log(result);
+                            })
+        }
         this.socket.on("cancelJoinReq",joinReq=>{
             console.log("Cancel Join Request:"+JSON.stringify(joinReq));
             delete this.memberList[joinReq.id];
@@ -73,7 +82,11 @@ class MeetingUtil {
                 handler(user);
             })
         });
-
+        this.socket.on("receiveMsg",info=>{
+            this.receiveMsgHandler.forEach(handler=>{
+                handler(info);
+            })
+        });
     }
 }
 export default MeetingUtil;
