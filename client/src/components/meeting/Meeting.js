@@ -8,7 +8,7 @@ import React from "react";
 class Meeting extends React.Component {
     constructor(props){
         super(props);
-        this.state={};
+        this.state={leave:false};
     }    
     componentDidMount() {
         document.getElementById("root").classList.add("p-1");
@@ -17,6 +17,7 @@ class Meeting extends React.Component {
         meetingUtil.login(result=>{
             //console.log(result);
             if (result.error===0){
+                meetingUtil.meetingCloseHandler.push(this.meetingCloseHandler);
                 this.setState({"meetingUtil":meetingUtil});
             } else {
                 alert(result.message);
@@ -27,6 +28,9 @@ class Meeting extends React.Component {
     }
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
+    }
+    meetingCloseHandler=()=>{
+        this.setState({leave:true});
     }    
     render() {
         if (sessionStorage.getItem("meetingInfo")===null){
@@ -43,14 +47,19 @@ class Meeting extends React.Component {
                     </div>
                 )
             }else {
+                if (this.state.leave){
+                    alert("The host closes the meeting,all user must be loggout.");
+                    return <Redirect to="/"/>
+                }else {
                     return (
-                    <div className="border border-info meeting p-0 rounded">
-                        <MediaPlayer meetingUtil={this.state.meetingUtil}/>
-                        <div className="panel d-flex flex-grow-1">
-                            <ActionPane meetingUtil={this.state.meetingUtil}/>
+                        <div className="border border-info meeting p-0 rounded">
+                            <MediaPlayer meetingUtil={this.state.meetingUtil}/>
+                            <div className="panel d-flex flex-grow-1">
+                                <ActionPane meetingUtil={this.state.meetingUtil}/>
+                            </div>
                         </div>
-                    </div>
-                );
+                    );
+                }
             }
         }
     }    

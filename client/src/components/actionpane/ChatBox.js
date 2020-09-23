@@ -95,7 +95,7 @@ class ChatBox extends React.Component {
                     </Card.Body>
                 <Card.Footer className="p-1">
                     <form ref={this.setFormRef}>
-                        <input required type="text" name="msg" placeholder="Send Message to all member"/>
+                        <input required type="text" name="msg" placeholder="Send message to all user"/>
                         <button style={{"float":"right"}} variant="primary" onClick={this.sendMsg}>
                             Send
                         </button>

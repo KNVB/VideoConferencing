@@ -1,14 +1,12 @@
-var apiRouter,app,authRouter,bodyParser,cors,express;
+var apiRouter,app,bodyParser,cors,express;
 var http,httpServer,httpServerPort,io;
 
-var loginRouter,meetingManager;
+var meetingManager;
 bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
 httpServerPort = 9000;
 
-authRouter=require('./routes/auth');
-loginRouter = require('./routes/login');
 
 app = express();
 http = require('http');
@@ -26,31 +24,10 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', apiRouter);
-/*
-apiRouter.post('/getMemberList',function(req,res){
-	res.send(meetingManager.getMemberList(req.body));
-});
-*/
 apiRouter.post('/initMeeting',function(req,res){
 	res.send(meetingManager.initMeeting(req.body));
 });
-apiRouter.post('/getJoinReqId',function(req,res){
-	res.send(meetingManager.getJoinReqId(req.body));
-});
-/*
-apiRouter.use('/login', function(req,res,next){
-		req.body.meetingList=meetingList;
-		req.body.userList=userList;
-		next();
-	},loginRouter);
-*/
-/*	
-apiRouter.use("/auth",function(req,res,next){
-		req.body.meetingList=meetingList;
-		req.body.userList=userList;
-		next();
-	},authRouter);	
-*/	
+
 apiRouter.use((err, req, res, next) => {
   if (err.notFound) {
     res.status(404)

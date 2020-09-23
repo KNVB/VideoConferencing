@@ -55,10 +55,10 @@ class UserList extends React.Component {
                         showApprovModal : false});
     }
     render(){
-        //console.log("M:"+JSON.stringify(this.props.memberList));
+        
         let finalResult=[],pendingReq=[],normalUser=[];
         let thisUser=this.props.meetingUtil.user;
-       // console.log(this.state.memberList);
+       
         Object.keys(this.state.userList).forEach(userId=>{
             var user=this.props.meetingUtil.userList[userId];
             if (user.isHost){

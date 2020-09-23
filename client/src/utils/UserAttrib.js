@@ -18,8 +18,8 @@ class UserAttrib extends Component {
                     </div>
                     <div className="col-6 m-0 p-0">    
                         <select id="shareVideo" name="shareVideo"> 
-	                        <option value="no" >No</option>
-		                    <option value="yes">Yes</option>
+	                        <option value="false" >No</option>
+		                    <option value="true">Yes</option>
 	                    </select>
                     </div>
                 </Row>
@@ -29,8 +29,8 @@ class UserAttrib extends Component {
                     </div>
                     <div className="col-6 m-0 p-0">    
                         <select id="shareAudio" name="shareAudio"> 
-	                        <option value="no" >No</option>
-		                    <option value="yes">Yes</option>
+	                        <option value="false" >No</option>
+		                    <option value="true">Yes</option>
 	                    </select>
                     </div>
                 </Row>

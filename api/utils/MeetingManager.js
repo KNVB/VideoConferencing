@@ -66,6 +66,22 @@ class MeetingManager
 					}
 				}
 			});
+			socket.on("endMeeting",(info,callBack)=>{
+				var meeting;
+				try{
+					meeting=meetingList[info.meetingId];
+					meeting.leave(info,socket);
+					meeting.close(io);
+					delete meetingList[info.meetingId]
+					callBack ({"error":0});
+				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			});
 			socket.on("getJoinReqId",(info,callBack)=>{
 				//console.log("getJoinReqId");
 				var meeting;
@@ -74,6 +90,28 @@ class MeetingManager
 					meeting=meetingList[info.meetingId];
 					callBack ({"error":0,joinReqId:meeting.getJoinReqId(info)});
 				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			});
+			
+			socket.on("leaveMeeting",(info,callBack)=>{
+				var meeting;
+				try{
+					//console.log("leave meeting:"+JSON.stringify(info));
+					meeting=meetingList[info.meetingId];
+					meeting.leave(info,socket);
+					console.log("User count in room "+info.meetingId+" = "+meeting.getUserCount());
+					if (meeting.getUserCount()==0){
+						delete meetingList[info.meetingId];
+						console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
+					}
+					callBack({"error":0});
+				}catch (error){
+					console.log(error);
 					if (meeting===undefined){
 						callBack({"error":1,message:'Invalid Meeting Id'});
 					} else {
@@ -95,28 +133,6 @@ class MeetingManager
 						callBack({"error":1,message:error.message});
 					}
 				}
-			});
-			socket.on("leaveMeeting",(info,callBack)=>{
-				var meeting;
-				try{
-					//console.log("leave meeting:"+JSON.stringify(info));
-					meeting=meetingList[info.meetingId];
-					meeting.leave(info,socket);
-					console.log("User count in room "+info.meetingId+" = "+meeting.getUserCount());
-					if (meeting.getUserCount()==0){
-						delete meetingList[info.meetingId];
-						console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
-					}
-					callBack({"error":0});
-				}catch (error){
-					console.log(error);
-					if (meeting===undefined){
-						callBack({"error":1,message:'Invalid Meeting Id'});
-					} else {
-						callBack({"error":1,message:error.message});
-					}
-				}
-
 			});
 			socket.on("rejectJoinRequest",(info,callBack)=>{
 				var meeting;

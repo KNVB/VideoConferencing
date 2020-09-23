@@ -7,6 +7,7 @@ class MeetingUtil {
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
         this.cancelJoinReqHandler=[];
         this.joinReqHandler=[];
+        this.meetingCloseHandler=[];
         this.meetingId=meetingInfo.meetingId;
         this.newUserJoinHandler=[];
         this.userList={};
@@ -15,6 +16,30 @@ class MeetingUtil {
         this.receiveMsgHandler=[];
         this.socket=io.connect(SOCKET_URL);
         this.user=meetingInfo.user;
+        
+        this.acceptJoinRequest=((meetingId,reqId)=>{
+            this.socket.emit("acceptJoinRequest",
+                            {"meetingId":this.meetingId,"userId":reqId},
+                            (result)=>{
+                                console.log(result);
+                            });
+        });
+        this.endMeeting=()=>{
+            this.socket.emit("endMeeting",
+                            {"meetingId":this.meetingId,"userId":this.user.id},
+                            (result)=>{
+                                console.log(result);
+                            });
+            this.socket.disconnect();
+        }
+        this.leaveMeeting=()=>{
+            this.socket.emit("leaveMeeting",
+                            {"meetingId":this.meetingId,"userId":this.user.id},
+                            (result)=>{
+                                console.log(result);
+                            });
+            this.socket.disconnect();
+        }
         this.login=(callBack)=>{
             this.socket.emit("login",
             {meetingId:this.meetingId,user:this.user},
@@ -26,21 +51,6 @@ class MeetingUtil {
                 callBack(result);
             });
         }
-        this.leaveMeeting=()=>{
-            this.socket.emit("leaveMeeting",
-                            {"meetingId":this.meetingId,"userId":this.user.id},
-                            (result)=>{
-                                console.log(result);
-                            });
-            this.socket.disconnect();
-        }
-        this.acceptJoinRequest=((meetingId,reqId)=>{
-            this.socket.emit("acceptJoinRequest",
-                            {"meetingId":this.meetingId,"userId":reqId},
-                            (result)=>{
-                                console.log(result);
-                            });
-        });
         this.rejectJoinRequest=(meetingId,reqId)=>{
             this.socket.emit("rejectJoinRequest",
                             {"meetingId":this.meetingId,"userId":reqId},
@@ -55,6 +65,11 @@ class MeetingUtil {
                                 console.log(result);
                             })
         }
+        this.socket.on("meetingClose",()=>{
+            this.meetingCloseHandler.forEach(handler=>{
+                handler();
+            })
+        });
         this.socket.on("cancelJoinReq",joinReq=>{
             console.log("Cancel Join Request:"+JSON.stringify(joinReq));
             delete this.userList[joinReq.id];

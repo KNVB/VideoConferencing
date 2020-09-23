@@ -22,8 +22,8 @@ class Meeting{
 			socket.to(hostUser.socketId).emit("cancelJoinReq",user);
 			delete pendingJoinReq[info.userId];
 		});
-		this.close=(()=>{
-			
+		this.close=((io)=>{
+			io.in(meetingId).emit("meetingClose",{});
 		});
 		this.getHostUser=(()=>{
 			return hostUser;
