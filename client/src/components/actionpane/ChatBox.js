@@ -1,4 +1,4 @@
-import { Button,Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import React from "react";
 import Utility from '../../utils/Utility';
 class ChatBox extends React.Component {
@@ -13,8 +13,8 @@ class ChatBox extends React.Component {
     }
     componentDidMount() {
         //this.refs.messageBox=this.refs.messageBox.current;
-        this.props.meetingUtil.memberLeftHandler.push(this.memberLeftHandler);
-        this.props.meetingUtil.newMemberJoinHandler.push(this.memberJoinHandler);
+        this.props.meetingUtil.userLeftHandler.push(this.userLeftHandler);
+        this.props.meetingUtil.newUserJoinHandler.push(this.userJoinHandler);
         this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
         var history=this.state.history;
         history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingUtil.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>)
@@ -23,20 +23,21 @@ class ChatBox extends React.Component {
     hide(){
         this.chatBox.current.classList.add("d-none");
     }
-    memberJoinHandler=(user=>{
-        console.log("Member join:"+JSON.stringify(user));
+    userJoinHandler=(user=>{
+        //console.log("new user join:"+JSON.stringify(user));
         var history=this.state.history;
         history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>)
         this.setState({"history":history});
     });
-    memberLeftHandler=(user=>{
-        console.log("Member Left:"+JSON.stringify(user));
+    userLeftHandler=(user=>{
+        //console.log("User Left:"+JSON.stringify(user));
         var history=this.state.history;
         history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>)
         this.setState({"history":history});
     });
     receiveMsgHandler=(info=>{
-        console.log("Receive Message:"+JSON.stringify(info));
+        //console.log("Receive Message:"+JSON.stringify(info));
+        console.log("Receive Message from "+info.alias);
         var history=this.state.history;
         history.push(<div key={(new Date()).getTime()}>{info.alias}:<br/> 
                             {info.msg} &nbsp;&nbsp;&nbsp;

@@ -1,41 +1,45 @@
 import {Button,Card, Media,Modal}  from 'react-bootstrap';
 import React, { Fragment } from "react";
 
-class MemberList extends React.Component {
+class UserList extends React.Component {
     constructor(props){
         super(props);
-        this.memberListComponent=React.createRef();
-        this.state={"memberList":this.props.meetingUtil.memberList,
+        this.userListComponent=React.createRef();
+        this.state={"userList":this.props.meetingUtil.userList,
                     "pendingReq":{}};
     }
     componentDidMount(){
-        this.props.meetingUtil.cancelJoinReqHandler.push(this.memberCountChangeHandler);            
+        this.props.meetingUtil.cancelJoinReqHandler.push(this.userCountChangeHandler);            
         this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
-        this.props.meetingUtil.memberLeftHandler.push(this.memberCountChangeHandler);
-        this.props.meetingUtil.newMemberJoinHandler.push(this.memberCountChangeHandler);
+        this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
+        this.props.meetingUtil.newUserJoinHandler.push(this.newUserJoinHandler);
     }
     hide(){
-        this.memberListComponent.current.classList.add("d-none");
+        this.userListComponent.current.classList.add("d-none");
     }
     show(){
-        this.memberListComponent.current.classList.remove("d-none");
+        this.userListComponent.current.classList.remove("d-none");
     }
     acceptRequest=()=>{
         this.props.meetingUtil.acceptJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
-        var memberList=this.state.memberList;
-        delete memberList[this.state.pendingReq.id];
+        var userList=this.state.userList;
+        delete userList[this.state.pendingReq.id];
         this.setState({reqUser:{},
-                        "memberList":memberList,
+                        "userList":userList,
                         showApprovModal : false});
     }
     joinReqHandler=(joinReq)=>{
-        var ml=this.state.memberList;
+        var ml=this.state.userList;
         ml[joinReq.id]=joinReq;
-        this.setState({"memberList":ml});
-        console.log('join Request Handler.');
+        this.setState({"userList":ml});
+        //console.log('join Request Received.');
     }
-    memberCountChangeHandler=(user=>{
-        this.setState({"memberList":this.props.meetingUtil.memberList});
+    newUserJoinHandler=(user=>{
+        console.log(user.alias+" join the meeting");
+        this.userCountChangeHandler(user);
+    })
+    userCountChangeHandler=(user=>{
+        this.setState({"userList":this.props.meetingUtil.userList});
     })    
     pendingRequestHandler=(user)=>{
         this.setState({pendingReq:user,
@@ -44,35 +48,35 @@ class MemberList extends React.Component {
     rejectRequest=()=>{
         //console.log(this.state.pendingReq);
         this.props.meetingUtil.rejectJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
-        var memberList=this.state.memberList;
-        delete memberList[this.state.pendingReq.id];
+        var userList=this.state.userList;
+        delete userList[this.state.pendingReq.id];
         this.setState({reqUser:{},
-                        "memberList":memberList,
+                        "userList":userList,
                         showApprovModal : false});
     }
     render(){
         //console.log("M:"+JSON.stringify(this.props.memberList));
-        let finalResult=[],pendingReq=[],normalMember=[];
-        let thisMember=this.props.meetingUtil.user;
+        let finalResult=[],pendingReq=[],normalUser=[];
+        let thisUser=this.props.meetingUtil.user;
        // console.log(this.state.memberList);
-        Object.keys(this.state.memberList).forEach(memberId=>{
-            var member=this.props.meetingUtil.memberList[memberId];
-            if (member.isHost){
-                finalResult.push(<Media className="border-bottom border-info" key={member.id}>
-                                    <Media.Body>{member.alias}(Host){(member.id===thisMember.id)?"*":""}</Media.Body>
+        Object.keys(this.state.userList).forEach(userId=>{
+            var user=this.props.meetingUtil.userList[userId];
+            if (user.isHost){
+                finalResult.push(<Media className="border-bottom border-info" key={user.id}>
+                                    <Media.Body>{user.alias}(Host){(user.id===thisUser.id)?"*":""}</Media.Body>
                                 </Media>);
             } else {
-                if (member.id.startsWith("*")){
-                    pendingReq.push(<Media className="border-bottom border-info" key={member.id}>
+                if (user.id.startsWith("*")){
+                    pendingReq.push(<Media className="border-bottom border-info" key={user.id}>
                                         <Media.Body className="d-flex flex-row justify-content-around">
-                                            {member.alias}{(member.id===thisMember.id)?"*":""}
-                                            <Button variant="primary" onClick={()=>this.pendingRequestHandler(member)}>Pending Approval</Button>
+                                            {user.alias}{(user.id===thisUser.id)?"*":""}
+                                            <Button variant="primary" onClick={()=>this.pendingRequestHandler(user)}>Pending Approval</Button>
                                         </Media.Body>
                                     </Media>);
                 }else {
-                    normalMember.push(
-                        <Media className="border-bottom border-info" key={member.id}>
-                            <Media.Body>{member.alias}{(member.id===thisMember.id)?"*":""}</Media.Body>
+                    normalUser.push(
+                        <Media className="border-bottom border-info" key={user.id}>
+                            <Media.Body>{user.alias}{(user.id===thisUser.id)?"*":""}</Media.Body>
                         </Media>
                     );
                 }
@@ -81,13 +85,13 @@ class MemberList extends React.Component {
         if (pendingReq.length>0){
             finalResult=finalResult.concat(pendingReq);
         }
-        if (normalMember.length>0){
-            finalResult=finalResult.concat(normalMember);
+        if (normalUser.length>0){
+            finalResult=finalResult.concat(normalUser);
         }
         //console.log(finalResult);
         return (
             <Fragment>
-                <Card className="border border-primary w-100" ref={this.memberListComponent}>
+                <Card className="border border-primary w-100" ref={this.userListComponent}>
                     <Card.Body className="d-flex flex-grow-1 position-relative p-0 rounded">
                         <div className="position-absolute h-100 overflow-auto w-100">
                             {finalResult}
@@ -111,4 +115,4 @@ class MemberList extends React.Component {
         )
     }
 }
-export default MemberList
+export default UserList

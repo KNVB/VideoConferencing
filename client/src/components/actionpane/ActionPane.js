@@ -1,7 +1,7 @@
 import Card  from 'react-bootstrap/Card';
 import ChatBox from './ChatBox';
 import MeetingInfo from './MeetingInfo';
-import MemberList from './MemberList';
+import UserList from './UserList';
 import React from "react";
 import { Redirect } from "react-router-dom";
 
@@ -10,19 +10,19 @@ class ActionPane extends React.Component {
     super(props);
     this.chatBox=React.createRef();
     this.meetingInfo=React.createRef();
-    this.memberList=React.createRef();
+    this.userList=React.createRef();
     this.paneList={};
-    this.state={"leave":false,"memberList":this.props.meetingUtil.memberList};
+    this.state={"leave":false,"userList":this.props.meetingUtil.userList};
   }
   componentDidMount(){
     this.paneList['chatBox']=this.chatBox.current;
     this.paneList['meetingInfo']=this.meetingInfo.current;
-    this.paneList['memberList']=this.memberList.current;
+    this.paneList['memberList']=this.userList.current;
 
-    this.props.meetingUtil.cancelJoinReqHandler.push(this.memberCountChangeHandler);
+    this.props.meetingUtil.cancelJoinReqHandler.push(this.userCountChangeHandler);
     this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
-    this.props.meetingUtil.memberLeftHandler.push(this.memberCountChangeHandler);
-    this.props.meetingUtil.newMemberJoinHandler.push(this.memberCountChangeHandler);
+    this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
+    this.props.meetingUtil.newUserJoinHandler.push(this.userCountChangeHandler);
   }
   joinReqHandler=(joinReq)=>{
     this.showPane('memberList');
@@ -31,8 +31,8 @@ class ActionPane extends React.Component {
     this.props.meetingUtil.leaveMeeting();
     this.setState({leave:true});
   }
-  memberCountChangeHandler=(user)=>{
-    this.setState({"memberList":this.props.meetingUtil.memberList});
+  userCountChangeHandler=(user)=>{
+    this.setState({"userList":this.props.meetingUtil.userList});
   }
   showPane=(paneToBeShown)=>{
     Object.keys(this.paneList).forEach(paneName=>{
@@ -58,7 +58,7 @@ class ActionPane extends React.Component {
           }
         });    
  */         
-      var memberCount="("+ Object.keys(this.state.memberList).length +")";
+      var memberCount="("+ Object.keys(this.state.userList).length +")";
       return (
         <Card className="rounded w-100">
           <Card.Header className="align-items-center d-flex flex-row justify-content-around m-1 p-0 rounded">
@@ -83,7 +83,7 @@ class ActionPane extends React.Component {
               meetingUtil={this.props.meetingUtil}/>
             <MeetingInfo ref={this.meetingInfo}
               meetingUtil={this.props.meetingUtil}/>
-            <MemberList ref={this.memberList}
+            <UserList ref={this.userList}
               meetingUtil={this.props.meetingUtil}/>      
           </Card.Body>
           <Card.Footer className="m-1 p-1 rounded">

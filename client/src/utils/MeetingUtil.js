@@ -8,10 +8,10 @@ class MeetingUtil {
         this.cancelJoinReqHandler=[];
         this.joinReqHandler=[];
         this.meetingId=meetingInfo.meetingId;
-        
-        this.memberList={};
-        this.memberLeftHandler=[];
-        this.newMemberJoinHandler=[];
+        this.newUserJoinHandler=[];
+        this.userList={};
+        this.userLeftHandler=[];
+        this.userJoinHandler=[];
         this.receiveMsgHandler=[];
         this.socket=io.connect(SOCKET_URL);
         this.user=meetingInfo.user;
@@ -19,9 +19,9 @@ class MeetingUtil {
             this.socket.emit("login",
             {meetingId:this.meetingId,user:this.user},
             (result)=>{
-                //console.log(result);
+               // console.log(result);
                 if (result.error===0){
-                    this.memberList=result.memberList;
+                    this.userList=result.userList;
                 }
                 callBack(result);
             });
@@ -57,7 +57,7 @@ class MeetingUtil {
         }
         this.socket.on("cancelJoinReq",joinReq=>{
             console.log("Cancel Join Request:"+JSON.stringify(joinReq));
-            delete this.memberList[joinReq.id];
+            delete this.userList[joinReq.id];
             this.cancelJoinReqHandler.forEach(handler=>{
                 handler(joinReq);
             });
@@ -68,17 +68,17 @@ class MeetingUtil {
                 handler(joinReq);
             });
         });
-        this.socket.on("memberLeft",user=>{
+        this.socket.on("userLeft",user=>{
             console.log(user.alias+" left the meeting");
-            delete this.memberList[user.id];
-            this.memberLeftHandler.forEach(handler=>{
+            delete this.userList[user.id];
+            this.userLeftHandler.forEach(handler=>{
                 handler(user);
             });
         });
-        this.socket.on("newMemberJoin",user=>{
-            console.log("new member:"+JSON.stringify(user));
-            this.memberList[user.id]=user;
-            this.newMemberJoinHandler.forEach(handler=>{
+        this.socket.on("newUserJoin",user=>{
+            //console.log("new use join user:"+JSON.stringify(user));
+            this.userList[user.id]=user;
+            this.newUserJoinHandler.forEach(handler=>{
                 handler(user);
             })
         });

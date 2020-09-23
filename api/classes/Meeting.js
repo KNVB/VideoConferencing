@@ -2,7 +2,7 @@ class Meeting{
 	constructor(){
 		var hostUser;
 		var meetingId;
-		var memberList={};
+		var userList={};
 		var meetingPwd;
 		var pendingJoinReq={};
 		const { v4: uuidv4 } = require('uuid');
@@ -14,8 +14,8 @@ class Meeting{
 			delete pendingJoinReq[info.userId];
 			socket.to(user.socketId).emit("joinReqResult",{error:0,"user":user,"meetingId":info.meetingId});
 		});
-		this.broadcastMessage=((message,socket)=>{
-			socket.in(meetingId).emit("broadcastMessage", message);
+		this.broadcastMessage=((message,io)=>{
+			io.in(meetingId).emit("broadcastMessage", message);
 		});
 		this.cancelJoinReq=((info,socket)=>{
 			var user=pendingJoinReq[info.joinReqId];
@@ -42,40 +42,30 @@ class Meeting{
 		this.getMeetingId=(()=>{
 			return meetingId;
 		});
-		this.getMemberCount=(()=>{
-			return Object.keys(memberList).length;
-		});
-		/*
-		this.getMemberList=(()=>{
-			var result={};
-			Object.keys(memberList).forEach(memberId=>{
-				var member=memberList[memberId];
-				result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
-			});
-			return result;
-		});
-		*/
+		this.getUserCount=(()=>{
+			return Object.keys(userList).length;
+		});	
 		
 		this.getPassword=(()=>{
 			return meetingPwd;
 		});
-		this.hasMember=(userId=>{
-			return Object.keys(memberList).includes(userId)
+		this.hasUser=(userId=>{
+			return Object.keys(userList).includes(userId)
 		})
 		this.isHost=((user)=>{
 			return (user.id===hostUser.id)	
 		});
 		this.join=((user)=>{
-			memberList[user.id]=user;
-			memberList[user.id]["isHost"]=false;
+			userList[user.id]=user;
+			userList[user.id]["isHost"]=false;
 		});
 		this.leave=((info,socket)=>{
-			if (this.hasMember(info.userId)){
-				var member=memberList[info.userId];
-				delete memberList[info.userId];
-				socket.to(meetingId).emit("memberLeft",member);
+			if (this.hasUser(info.userId)){
+				var user=userList[info.userId];
+				delete userList[info.userId];
+				socket.to(meetingId).emit("userLeft",user);
 				socket.leave(meetingId);
-				console.log('Member '+member.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
+				console.log('User '+user.alias+" left the meeting :"+info.meetingId+" @"+util.getTimeString());
 			} else {
 				var err = new Error('This user is not belong to this meeting.');
 				err.unauthorized=true;
@@ -83,17 +73,17 @@ class Meeting{
 			}
 		});
 		this.login=((userId,socket)=>{
-			if (this.hasMember(userId)){
+			if (this.hasUser(userId)){
 				var result={};
 				socket.join(meetingId);
-				Object.keys(memberList).forEach(memberId=>{
-					var member=memberList[memberId];
-					result[member.id]={"alias":member.alias,"id":member.id,"isHost":member.isHost};
+				Object.keys(userList).forEach(userId=>{
+					var user=userList[userId];
+					result[user.id]={"alias":user.alias,"id":user.id,"isHost":user.isHost};
 				});
-				var user=memberList[userId];
+				var user=userList[userId];
 				user.socketId=socket.id;
-				socket.to(meetingId).emit("newMemberJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
-				console.log('Member '+user.alias+" login the meeting :"+meetingId+" @"+util.getTimeString());
+				socket.to(meetingId).emit("newUserJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
+				console.log('User '+user.alias+" login the meeting :"+meetingId+" @"+util.getTimeString());
 				return result;
 			} else {
 				var err = new Error('This user cannot login this meeting.');
@@ -109,13 +99,13 @@ class Meeting{
 			delete pendingJoinReq[info.userId];
 		});
 		this.sendMsg=((info,io)=>{
-			var member=memberList[info.userId];
-			io.in(meetingId).emit("receiveMsg",{"userId":member.id,alias:member.alias,"msg":info.msg});
+			var user=userList[info.userId];
+			io.in(meetingId).emit("receiveMsg",{"userId":user.id,alias:user.alias,"msg":info.msg});
 		});
-		this.setHostMember=((user)=>{
+		this.setHostUser=((user)=>{
 			hostUser=user;
-			memberList[user.id]=user;
-			memberList[user.id]["isHost"]=true;
+			userList[user.id]=user;
+			userList[user.id]["isHost"]=true;
 		});
 		this.setMeetingId=((id)=>{
 			meetingId=id;

@@ -1,7 +1,7 @@
 class MeetingManager
 {
 	constructor(){
-		let meetingList={},userList={};
+		let meetingList={};
 		const { v4: uuidv4 } = require('uuid');
 		const util=require("./Utility.js");
 		this.getJoinReqId=((reqBody)=>{
@@ -29,9 +29,8 @@ class MeetingManager
 			user.alias=reqBody.alias;
 			user.shareMedia={"video":reqBody.shareVideo,"audio":reqBody.shareAudio};
 			meeting.setMeetingId(meetingId);
-			meeting.setHostMember(user);
+			meeting.setHostUser(user);
 			meeting.setPassword(reqBody.meetingPwd);
-			userList[userId]=user;
 			meetingList[meetingId]=meeting;
 			console.log("meeting :"+meetingId+" is created @"+util.getTimeString());
 			return {"user":user,"meetingId":meetingId};
@@ -86,8 +85,8 @@ class MeetingManager
 				var meeting;
 				try{
 					meeting=meetingList[info.meetingId];
-					var memberList=meeting.login(info.user.id,socket);
-					callBack({error:0,"memberList":memberList});
+					var userList=meeting.login(info.user.id,socket);
+					callBack({error:0,"userList":userList});
 				}catch (error){
 					//console.log(error);
 					if (meeting===undefined){
@@ -103,8 +102,8 @@ class MeetingManager
 					//console.log("leave meeting:"+JSON.stringify(info));
 					meeting=meetingList[info.meetingId];
 					meeting.leave(info,socket);
-					console.log("Member count in room "+info.meetingId+" = "+meeting.getMemberCount());
-					if (meeting.getMemberCount()==0){
+					console.log("User count in room "+info.meetingId+" = "+meeting.getUserCount());
+					if (meeting.getUserCount()==0){
 						delete meetingList[info.meetingId];
 						console.log("meeting :"+info.meetingId+" is destroyed @"+util.getTimeString());
 					}
