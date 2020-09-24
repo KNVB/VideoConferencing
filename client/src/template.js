@@ -1,225 +1,193 @@
 import React from 'react';
-import ChatHistory from './components/meeting/ChatHistory';
 
-import MemberList from './components/meeting/MemberList';
-import MeetingInfo from './components/meeting/MeetingInfo';
-import MaxMinButton from './components/mediaplayer/buttons/MaxMinButton';
-import MuteButton from './components/mediaplayer/buttons/MuteButton';
-import PInPButton from './components/mediaplayer/buttons/PInPButton';
-
-import './Test1.css';
+import './Template.css';
 import Collapse from 'react-bootstrap/Collapse';
-import { Card } from 'react-bootstrap';
+import { Card, Media } from 'react-bootstrap';
 
-class Test1 extends React.Component{
+class Template extends React.Component{
     constructor(props){
         super(props);
-        this.state={};
-        this.chatHistory=React.createRef();
-        this.meetingInfo=React.createRef();
-        this.memberList=React.createRef();
-        this.paneList={};
-        this.state={showPane:'memberList'};
+        this.state={showControlBar: true};
         this.setShowPane=(paneName)=>{
             this.setState({"showPane":paneName});
         };        
     }
     componentDidMount(){
         document.getElementById("root").classList.add("p-1");
-        this.paneList['chatHistory']=this.chatHistory.current;
-        this.paneList['memberList']=this.memberList.current;
-        this.paneList['meetingInfo']=this.meetingInfo.current;        
+        
     }
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
     }    
     render(){
         
-        Object.keys(this.paneList).forEach(paneName=>{    
-            if (this.state.showPane===paneName){
-                this.paneList[paneName].classList.remove("d-none");
-                this.paneList[paneName].classList.add("d-flex");
-            } else {
-                this.paneList[paneName].classList.remove("d-flex");
-                this.paneList[paneName].classList.add("d-none");
-            }
-        });
         return (
-            <div className="border border-primary p-1 meeting">
-                <div className="d-flex flex-grow-1 panel 
-                            p-1 position-relative">
-                    <div className="position-relative m-0 
-                                p-0 rounded w-100">
-                        <video muted className="rounded">
-                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
-                        </video>
-                    </div>
-                    <div className="align-items-center
-                                bg-dark    
-                                border border-primary
-                                d-none
-                                justify-content-center 
-                                p-1 playerInfoLayer
-                                playerOverlay position-absolute
-                                m-0 rounded text-white w-100">
-                        2
-                    </div>
-                    <div className="align-items-end                                
-                                border border-primary
-                                d-flex m-0 p-1
-                                playerOverlay
-                                position-absolute m-0 
-                                rounded w-100">
-                        <Collapse className="bg-secondary p-1 rounded w-100"
-                            in={true}>
-                            <span className="p-1 m-0 text-white">
-                                <div className="align-items-center d-flex flex-row justify-content-between p-0">
-                                    <MuteButton toggleMute={this.toggleMute}  muted={this.state.muted}/>
-                                    <div><span>{this.state.elapseTime}</span></div>
+        <div className="border border-info meeting p-0 rounded">
+            <div className="d-flex flex-grow-1 p-1 rouned border border-warning  panel position-relative">
+                <video autoPlay className="rounded w-100">
+                    <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4"/>
+                </video>
+                <div className="bg-dark d-none mediaStatus text-white">dsfsdf</div>
+                <div className="controlLayer m-1 p-1">
+                    <Collapse
+                        className="bg-secondary p-1 rounded text-white w-100"
+                        in={true}>
+                        <span className="p-0 m-0">
+                            <div className="align-items-center d-flex flex-row justify-content-between p-0">
+                                <div className="btnlink" title="UnMute">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
+                                        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                                    </svg>
                                 </div>
-                                <div className="align-items-center d-flex flex-row justify-content-between p-0">
-                                    <PInPButton 
-                                        showFullScreen={this.state.showFullScreen}
-                                        togglePInP={this.togglePInP}/>
-                                    <div onClick={this.toggleMirror}>
-                                        &#x21c4;
-                                    </div>
-                                    <MaxMinButton 
-                                        toggFullScreen={this.toggFullScreen} 
-                                        showFullScreen={this.state.showFullScreen}/>    
+                                <div>
+                                    <span>00:00:13</span>
                                 </div>
-                            </span>
-                        </Collapse>                    
-                    </div>
+                            </div>
+                            <div className="align-items-center d-flex flex-row justify-content-between p-0">
+                                <div className="btnlink" title="P In P">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
+                                        <path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/>
+                                    </svg>
+                                </div>
+                                <div className="btnlink">⇄</div>
+                                <div className="btnlink" title="To Full Screen mode">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
+                                        <path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </span>
+                    </Collapse>    
                 </div>
-                <div className="border border-primary 
-                                d-flex flex-grow-1 
-                                panel p-1 rounded">
-                    <Card className="border border-primary w-100">
-                        <Card.Header className="align-items-center 
-                                                d-flex flex-row 
-                                                justify-content-around 
-                                                m-0 p-1">
-                            <div className="align-items-end                                             
-                                            btn d-flex pt-1" 
-                                onClick={()=>this.setShowPane('memberList')}>                            
-                                <svg width="24px" height="24px" viewBox="0 0 24 24" className="bi bi-people-fill d-block m-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd" d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-                                </svg>
-                            </div>
-                            <div className="align-items-end                                             
-                                            btn d-flex pt-1" 
-                                onClick={()=>this.setShowPane('meetingInfo')}>                            
-                                <svg width="24px" height="24px" viewBox="0 0 24 24" className="bi bi-info-circle d-block m-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
-                                    <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"></path>
-                                    <circle cx="8" cy="4.5" r="1"></circle>
-                                </svg>
-                            </div>
-                            <div className="align-items-end                                             
-                                            btn d-flex pt-1" 
-                                onClick={()=>this.setShowPane('chatHistory')}>                            
-                                <svg width="24px" height="24px" viewBox="0 0 24 24" className="bi bi-chat-dots d-block m-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd" d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
-                                    <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                                </svg>
-                            </div>  
-                        </Card.Header>
-                        <Card.Body className="d-flex flex-grow-1 p-1">
-                            <Card className="border border-primary 
-                                         d-none flex-grow-1 w-100"
-                                ref={this.chatHistory}>
-                                <Card.Body className="h-100 p-0 position-relative">
-                                    <div className="h-100 overflow-auto
-                                                    p-1 position-absolute w-100">
-                                        Chat History
-                                    </div>
-                                </Card.Body>                                
-                            </Card>
-                            <Card className="border border-primary 
-                                            d-flex flex-grow-1 w-100"
-                                ref={this.memberList}>
-                                <Card.Body className="h-100 p-0 position-relative">
-                                    <div className="h-100 overflow-auto
-                                                    p-1 position-absolute w-100">
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                        <div>dsfsdf</div>
-                                    </div>
-                                </Card.Body>                                
-                            </Card>
-                            <Card className="border border-primary 
-                                            d-none w-100"
-                                    ref={this.meetingInfo}>
-                                <Card.Body className="p-0 position-relative">
-                                    <div className="h-100 overflow-auto
-                                                    p-1 position-absolute w-100">
-                                        Meeting Info
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Card.Body>
-                        <Card.Footer className="d-flex flex-column p-1 rounded">
-                            <div className="p-0">
-                                <input type="text" className="w-100"/>
-                            </div>
-                            <div className="d-flex flex-row justify-content-around pt-1">
-                                <div className="btn d-flex flex-column just-content-center p-0">
-                                    <div className="p-0">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-mic-fill d-block m-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z"/>
-                                            <path fillRule="evenodd" d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/>
-                                        </svg>
-                                    </div>
-                                    <div className="p-0">Mute</div>
+                <div className="hidePInPPlayer"></div>
+            </div>
+            <div className="panel d-flex flex-grow-1">
+                <Card className="rounded w-100">
+                    <Card.Header className="align-items-center d-flex flex-row justify-content-around m-1 p-0 rounded">
+                        <div className="align-items-center btn d-inline-flex" title="Chat History">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"></path>
+                            </svg>
+                        </div>
+                        <div className="align-items-end btn d-flex" title="Meeting Info" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"></path>
+                            </svg>
+                        </div>
+                        <div className="align-items-end btn d-flex" title="User List" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+                            </svg>
+                        </div>
+                    </Card.Header>
+                    <Card.Body className="d-flex flex-grow-1 pb-0 pl-1 pr-1 pt-0">
+                        <Card className="d-none w-100">
+                            <Card.Body className="border border-primary d-flex flex-grow-1 position-relative p-0 rounded">
+                                <div class="position-absolute h-100 overflow-auto w-100">
                                 </div>
-                                <div className="btn d-flex flex-column just-content-center p-0">
-                                    <div className="p-0">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-camera-video d-block m-auto" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M2.667 3.5c-.645 0-1.167.522-1.167 1.167v6.666c0 .645.522 1.167 1.167 1.167h6.666c.645 0 1.167-.522 1.167-1.167V4.667c0-.645-.522-1.167-1.167-1.167H2.667zM.5 4.667C.5 3.47 1.47 2.5 2.667 2.5h6.666c1.197 0 2.167.97 2.167 2.167v6.666c0 1.197-.97 2.167-2.167 2.167H2.667A2.167 2.167 0 0 1 .5 11.333V4.667z"/>
-                                            <path fillRule="evenodd" d="M11.25 5.65l2.768-1.605a.318.318 0 0 1 .482.263v7.384c0 .228-.26.393-.482.264l-2.767-1.605-.502.865 2.767 1.605c.859.498 1.984-.095 1.984-1.129V4.308c0-1.033-1.125-1.626-1.984-1.128L10.75 4.785l.502.865z"/>
-                                        </svg>
-                                    </div>
-                                    <div className="p-0">Start Video</div>
+                            </Card.Body>
+                            <Card.Footer className="p-1">
+                                <form>
+                                    <input required="" type="text" name="msg" placeholder="Send message to all user"/>
+                                    <button variant="primary" style={{"float":"right"}}>Send</button>
+                                </form>
+                            </Card.Footer>
+                        </Card>
+                        <Card className="border border-primary d-none w-100">
+                            <Card.Body className="d-flex flex-grow-1 position-relative p-0 rounded">
+                                <div className="position-absolute h-100 overflow-auto w-100">Click
+                                    
                                 </div>
-                                <div className="align-items-center 
-                                                btn d-flex                                                
-                                                flex-column just-content-center 
-                                                p-0">
-                                    <div className="p-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="sd-block m-auto" width="24" height="24" viewBox="0 0 24 24">
-                                            <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                                        </svg>
-                                    </div>                
-                                    <div className="p-0">Leave</div>
+                            </Card.Body>
+                        </Card>
+                        <Card className="border border-primary w-100">
+                            <Card.Body className="d-flex flex-grow-1 position-relative p-0 rounded">
+                                <div className="position-absolute h-100 overflow-auto w-100">
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
+                                    <div>dsfsdf</div>
                                 </div>
+                            </Card.Body>
+                        </Card>
+                    </Card.Body>
+                    <Card.Footer class="m-1 p-1 rounded">
+                        <div class="d-flex flex-row justify-content-around pt-1">
+                            <div class="btn d-flex flex-column just-content-center p-0">
+                                <div class="p-0">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" class="bi bi-mic-mute-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M12.734 9.613A4.995 4.995 0 0 0 13 8V7a.5.5 0 0 0-1 0v1c0 .274-.027.54-.08.799l.814.814zm-2.522 1.72A4 4 0 0 1 4 8V7a.5.5 0 0 0-1 0v1a5 5 0 0 0 4.5 4.975V15h-3a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-3v-2.025a4.973 4.973 0 0 0 2.43-.923l-.718-.719zM11 7.88V3a3 3 0 0 0-5.842-.963L11 7.879zM5 6.12l4.486 4.486A3 3 0 0 1 5 8V6.121zm8.646 7.234l-12-12 .708-.708 12 12-.708.707z"></path>
+                                    </svg>
+                                </div>
+                                <div class="p-0">UnMute</div>
                             </div>
-                        </Card.Footer>
-                    </Card>                    
-                </div>
-            </div>    
+                            <div class="btn d-flex flex-column just-content-center p-0">
+                                <div class="p-0">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" class="bi bi-camera-video-off" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M10.961 12.365a1.99 1.99 0 0 0 .522-1.103l3.11 1.382A1 1 0 0 0 16 11.731V4.269a1 1 0 0 0-1.406-.913l-3.111 1.382A2 2 0 0 0 9.5 3H4.272l.714 1H9.5a1 1 0 0 1 1 1v6a1 1 0 0 1-.144.518l.605.847zM1.428 4.18A.999.999 0 0 0 1 5v6a1 1 0 0 0 1 1h5.014l.714 1H2a2 2 0 0 1-2-2V5c0-.675.334-1.272.847-1.634l.58.814zM15 11.73l-3.5-1.555v-4.35L15 4.269v7.462zm-4.407 3.56l-10-14 .814-.58 10 14-.814.58z"></path>
+                                    </svg>
+                                </div>
+                                <div class="p-0">
+                                    Start Video
+                                </div>
+                            </div>                            
+                            <div class="align-items-center btn d-flex flex-column just-content-center p-0">
+                                <div class="p-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="sd-block m-auto" width="24" height="24" viewBox="0 0 24 24">
+                                        <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="p-0">Leave</div>
+                            </div>
+                        </div>
+                    </Card.Footer>                    
+                </Card>
+            </div>
+        </div>
         );
     }
 }
-export default Test1;
+export default Template;
