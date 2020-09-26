@@ -1,0 +1,12 @@
+.nav-link{
+    color:black;
+  }
+  
+  .nav-link:hover{
+    color:white;
+    background-color:red;
+  }
+  .nav-link.active,
+  .nav-link:hover svg path{
+    fill:white
+  }

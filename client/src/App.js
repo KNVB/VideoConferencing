@@ -5,7 +5,7 @@ import FirstForm from "./FirstForm";
 import Info from "./routes/Info";
 import JoinMeeting from "./routes/JoinMeeting";
 import SecureRoute from './routes/SecureRoute';
-import Template from './firstTemplate/Template';
+//import Template from './firstTemplate/Template';
 import CurrentTemplate from './currentTemplate/TestNav';
 class App extends Component {
   render() {

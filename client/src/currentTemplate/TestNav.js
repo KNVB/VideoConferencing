@@ -1,8 +1,8 @@
-import React,{Fragment} from 'react';
+import React from 'react';
 
 import './TestNav.css';
 import Collapse from 'react-bootstrap/Collapse';
-import { Card,Col, Media,Nav,Tab,Row } from 'react-bootstrap';
+import { Card,Nav,Tab} from 'react-bootstrap';
 
 class TestNav extends React.Component{
     constructor(props){

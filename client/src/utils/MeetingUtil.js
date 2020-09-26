@@ -1,5 +1,4 @@
 import config from './config';
-//import fetchApi from './fetch';
 import io from 'socket.io-client';
 class MeetingUtil {
     constructor(meetingInfo){
@@ -92,6 +91,7 @@ class MeetingUtil {
         });
         this.socket.on("newUserJoin",user=>{
             //console.log("new use join user:"+JSON.stringify(user));
+            //console.log(this.newUserJoinHandler);
             this.userList[user.id]=user;
             this.newUserJoinHandler.forEach(handler=>{
                 handler(user);

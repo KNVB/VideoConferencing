@@ -1,27 +1,21 @@
-import { Card } from 'react-bootstrap';
 import React from "react";
-import Utility from '../../utils/Utility';
+import Utility from '../../../utils/Utility';
 class ChatBox extends React.Component {
     constructor(props){
         super(props);
         this.state={"history":[]};
-        this.chatBox=React.createRef();
         this.sendMsgForm=null;
         this.setFormRef = element => {
             this.sendMsgForm = element;
         };
     }
     componentDidMount() {
-        //this.refs.messageBox=this.refs.messageBox.current;
         this.props.meetingUtil.userLeftHandler.push(this.userLeftHandler);
         this.props.meetingUtil.newUserJoinHandler.push(this.userJoinHandler);
         this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
         var history=this.state.history;
         history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingUtil.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>)
         this.setState({"history":history});
-    }
-    hide(){
-        this.chatBox.current.classList.add("d-none");
     }
     userJoinHandler=(user=>{
         //console.log("new user join:"+JSON.stringify(user));
@@ -56,53 +50,22 @@ class ChatBox extends React.Component {
         }
         event.preventDefault();
     }
-    show(){
-        this.chatBox.current.classList.remove("d-none");
-    }
-    render(){
+    render() {
         return (
-            <Card className="d-none w-100" ref={this.chatBox}>
-                <Card.Body className="border border-primary d-flex flex-grow-1 position-relative p-0 rounded">
-                    <div className="position-absolute h-100 overflow-auto w-100">
-                        {this.state.history}
-                        {/*
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        <div>dsfsdf</div>
-                        */}
-                    </div>  
-                    </Card.Body>
-                <Card.Footer className="p-1">
-                    <form ref={this.setFormRef}>
+                <div className="d-flex flex-column flex-grow-1 h-100 p-1 position-absolute w-100">
+                    <div className="border border-primary d-flex flex-grow-1 position-relative rounded">
+                        <div className="h-100 p-1 overflow-auto position-absolute w-100">
+                            {this.state.history}
+                        </div>
+                    </div>
+                    <form className="mt-1" ref={this.setFormRef}>
                         <input required type="text" name="msg" placeholder="Send message to all user"/>
                         <button style={{"float":"right"}} variant="primary" onClick={this.sendMsg}>
                             Send
                         </button>
-                    </form>    
-                </Card.Footer>
-            </Card>
-        )
+                    </form>
+                </div>            
+        );
     }
-}    
+}
 export default ChatBox;

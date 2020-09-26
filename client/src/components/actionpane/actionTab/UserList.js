@@ -1,10 +1,8 @@
-import {Button,Card, Media,Modal}  from 'react-bootstrap';
+import {Button, Media,Modal}  from 'react-bootstrap';
 import React, { Fragment } from "react";
-
 class UserList extends React.Component {
     constructor(props){
         super(props);
-        this.userListComponent=React.createRef();
         this.state={"userList":this.props.meetingUtil.userList,
                     "pendingReq":{}};
     }
@@ -13,12 +11,6 @@ class UserList extends React.Component {
         this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
         this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
         this.props.meetingUtil.newUserJoinHandler.push(this.newUserJoinHandler);
-    }
-    hide(){
-        this.userListComponent.current.classList.add("d-none");
-    }
-    show(){
-        this.userListComponent.current.classList.remove("d-none");
     }
     acceptRequest=()=>{
         this.props.meetingUtil.acceptJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
@@ -54,8 +46,8 @@ class UserList extends React.Component {
                         "userList":userList,
                         showApprovModal : false});
     }
-    render(){
-        
+
+    render() {
         let finalResult=[],pendingReq=[],normalUser=[];
         let thisUser=this.props.meetingUtil.user;
        
@@ -88,16 +80,11 @@ class UserList extends React.Component {
         if (normalUser.length>0){
             finalResult=finalResult.concat(normalUser);
         }
-        //console.log(finalResult);
         return (
             <Fragment>
-                <Card className="border border-primary w-100" ref={this.userListComponent}>
-                    <Card.Body className="d-flex flex-grow-1 position-relative p-0 rounded">
-                        <div className="position-absolute h-100 overflow-auto w-100">
-                            {finalResult}
-                        </div>
-                    </Card.Body>
-                </Card>
+                <div className="h-100 overflow-auto position-absolute w-100">
+                    {finalResult}
+                </div>
                 <Modal show={this.state.showApprovModal}
                         backdrop="static"
                         keyboard={false}>
@@ -111,8 +98,8 @@ class UserList extends React.Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-            </Fragment>
-        )
+            </Fragment>        
+        );
     }
 }
-export default UserList
+export default UserList;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Template.css';
 import Collapse from 'react-bootstrap/Collapse';
-import { Card, Media } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 class Template extends React.Component{
     constructor(props){
