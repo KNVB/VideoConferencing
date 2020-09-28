@@ -1,14 +1,17 @@
 import config from './config';
 import io from 'socket.io-client';
+import Peer from 'peerjs';
 class MeetingUtil {
     constructor(meetingInfo){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
         var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
+        
         this.cancelJoinReqHandler=[];
         this.joinReqHandler=[];
         this.meetingCloseHandler=[];
         this.meetingId=meetingInfo.meetingId;
         this.newUserJoinHandler=[];
+        this.peer=null;
         this.userList={};
         this.userLeftHandler=[];
         this.userJoinHandler=[];
@@ -46,6 +49,7 @@ class MeetingUtil {
                // console.log(result);
                 if (result.error===0){
                     this.userList=result.userList;
+                    this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT});
                 }
                 callBack(result);
             });

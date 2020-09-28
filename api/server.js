@@ -1,28 +1,28 @@
+httpServerPort = 9000;
+//===============================================================
 var apiRouter,app,bodyParser,cors,express;
-var http,httpServer,httpServerPort,io;
-
-var meetingManager;
+var http,httpServer,io,meetingManager,peerServer;
 bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
-httpServerPort = 9000;
+var { ExpressPeerServer } = require('peer');
 
-
+//===============================================================
 app = express();
-http = require('http');
+apiRouter= express.Router();
+http =require('http');
 httpServer= http.createServer(app);
-
 io = require('socket.io')(httpServer);
-httpServer.listen(httpServerPort, function() {
-  console.log('server up and running at %s port', httpServerPort);
+meetingManager=new (require("./utils/MeetingManager.js"));
+peerServer=ExpressPeerServer(httpServer, {
+  path: '/peerServer'
 });
 
-meetingManager=new (require("./utils/MeetingManager.js"));
-
-apiRouter= express.Router();
+//================================================================
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(cors());
+app.use('/', peerServer); 
 app.use('/api', apiRouter);
 apiRouter.post('/initMeeting',function(req,res){
 	res.send(meetingManager.initMeeting(req.body));
@@ -46,7 +46,14 @@ apiRouter.use((req, res, next) => {
   res.status(404).json({ error: true, message: 'not found' })
 })
 
-
+httpServer.listen(httpServerPort, function() {
+  console.log('server up and running at %s port', httpServerPort);
+});
 io.on('connection', (socket) => {
 	meetingManager.setSocket(io,socket);	
 })
+peerServer.on('connection', (client) => {
+	console.log("Peer server connection:");
+	console.log(client);
+});
+//================================================================
