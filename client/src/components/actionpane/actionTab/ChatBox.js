@@ -9,34 +9,25 @@ class ChatBox extends React.Component {
             this.sendMsgForm = element;
         };
     }
+    addHistory=(msgObj)=>{
+        var history=this.state.history;
+        history.push(msgObj);
+        this.setState({"history":history});
+    }
     componentDidMount() {
         this.props.meetingUtil.userLeftHandler.push(this.userLeftHandler);
         this.props.meetingUtil.newUserJoinHandler.push(this.userJoinHandler);
         this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
-        var history=this.state.history;
-        history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingUtil.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>)
-        this.setState({"history":history});
+        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingUtil.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
     }
-    userJoinHandler=(user=>{
-        //console.log("new user join:"+JSON.stringify(user));
-        var history=this.state.history;
-        history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>)
-        this.setState({"history":history});
-    });
-    userLeftHandler=(user=>{
-        //console.log("User Left:"+JSON.stringify(user));
-        var history=this.state.history;
-        history.push(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>)
-        this.setState({"history":history});
-    });
+    
+
     receiveMsgHandler=(info=>{
         //console.log("Receive Message:"+JSON.stringify(info));
         console.log("Receive Message from "+info.alias);
-        var history=this.state.history;
-        history.push(<div key={(new Date()).getTime()}>{info.alias}:<br/> 
-                            {info.msg} &nbsp;&nbsp;&nbsp;
-                            <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span></div>)
-        this.setState({"history":history});
+        this.addHistory(<div key={(new Date()).getTime()}>{info.alias}:<br/> 
+        {info.msg} &nbsp;&nbsp;&nbsp;
+        <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span></div>);
     })
     sendMsg=(event)=>{
         if (this.sendMsgForm.reportValidity()){
@@ -50,6 +41,15 @@ class ChatBox extends React.Component {
         }
         event.preventDefault();
     }
+    userJoinHandler=(user=>{
+        //console.log("new user join:"+JSON.stringify(user));
+        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
+    });
+    userLeftHandler=(user=>{
+        //console.log("User Left:"+JSON.stringify(user));
+        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
+    });
+    
     render() {
         return (
                 <div className="d-flex flex-column flex-grow-1 h-100 p-1 position-absolute w-100">

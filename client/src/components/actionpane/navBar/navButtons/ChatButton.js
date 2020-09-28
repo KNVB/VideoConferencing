@@ -4,16 +4,22 @@ class ChatButton extends React.Component {
   constructor(props){
     super(props);
     this.state={"msgCount":0};
+    this.theLink=React.createRef();
   }
   componentDidMount(){
     this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
+    this.theLink=this.theLink.current;
   }
   clearCount=()=>{
     this.setState({"msgCount":0});
   }
   receiveMsgHandler=(info=>{
-    var count=this.state.msgCount+1;
-    this.setState({"msgCount":count});
+    if (this.theLink.classList.contains("active")) {
+      this.clearCount();
+    } else {
+      var count=this.state.msgCount+1;
+      this.setState({"msgCount":count});  
+    }
   });
   render() {
     var count="";
@@ -22,7 +28,7 @@ class ChatButton extends React.Component {
     }
     return (
       <Nav.Item as="li" title="Chat History">
-        <Nav.Link data-toggle="pill" href="#chatBox">
+        <Nav.Link data-toggle="pill" href="#chatBox" ref={this.theLink} onClick={this.clearCount}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
