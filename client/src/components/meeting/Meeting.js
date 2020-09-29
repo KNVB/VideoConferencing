@@ -8,7 +8,7 @@ import React from "react";
 class Meeting extends React.Component {
     constructor(props){
         super(props);
-        this.state={leave:false,stream:null};
+        this.state={leave:false};
     }    
     componentDidMount() {
         document.getElementById("root").classList.add("p-1");
@@ -18,15 +18,7 @@ class Meeting extends React.Component {
             //console.log(result);
             if (result.error===0){
                 meetingUtil.meetingCloseHandler.push(this.meetingCloseHandler);
-                var shareAudio=(meetingUtil.user.shareMedia.audio==="true");
-                var shareVideo=(meetingUtil.user.shareMedia.video==="true");
-                try{
-                    var s=await meetingUtil.getMediaStream(shareVideo,shareAudio);
-                    this.setState({"meetingUtil":meetingUtil,stream:s});
-                }
-                catch(err){
-                    alert(err.message);
-                }
+                this.setState({"meetingUtil":meetingUtil});
             } else {
                 alert(result.message);
                 sessionStorage.clear();
@@ -61,7 +53,7 @@ class Meeting extends React.Component {
                 }else {
                     return (
                         <div className="border border-info flex-grow-1 meeting p-0 rounded">
-                            <MediaPlayer meetingUtil={this.state.meetingUtil} stream={this.state.stream}/>
+                            <MediaPlayer meetingUtil={this.state.meetingUtil}/>
                             <div className="panel d-flex flex-grow-1">
                                 <ActionPane meetingUtil={this.state.meetingUtil}/>
                             </div>

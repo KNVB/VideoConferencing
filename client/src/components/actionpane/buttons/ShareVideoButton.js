@@ -10,7 +10,8 @@ class ShareVideoButton extends Component {
             this.state={shareVideoState:false}
         }
         this.switchVideo=()=>{
-            this.setState({shareVideoState:!this.state.shareVideoState});
+            var videoState=!this.state.shareVideoState;
+            this.setState({shareVideoState:videoState});        
         }          
     }
     render(){

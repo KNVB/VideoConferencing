@@ -66,6 +66,7 @@ class MediaPlayer extends React.Component {
     );
   };
   render() {
+    console.log(this.props.meetingUtil.user);
     var pInPClass = "",
       pInPPlayer = null;
     var playerClass = "d-flex flex-grow-1 p-1 rouned";
@@ -82,6 +83,7 @@ class MediaPlayer extends React.Component {
           hidePInPPlayer={this.hidePInPPlayer}
           elapseTime={this.media.current.getElapseTime()}
           meetingUtil={this.props.meetingUtil}
+          stream={this.props.stream}
           muted={this.state.muted}
         />
       );

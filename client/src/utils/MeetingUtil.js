@@ -37,14 +37,6 @@ class MeetingUtil {
                             });
             this.socket.disconnect();
         }
-        this.getMediaStream=async (shareVideo,shareAudio)=>{
-            this.localStream=await this.localStreamManager.getMediaStream(shareVideo,shareAudio);
-            return this.localStream;
-        }
-        this.getShareDesktopStream=async (shareVideo,shareAudio)=>{
-            this.localStream=await this.localStreamManager.getShareDesktopStream(shareVideo,shareAudio);
-            return this.localStream;
-        }
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",
                             {"meetingId":this.meetingId,"userId":this.user.id},
@@ -82,7 +74,8 @@ class MeetingUtil {
                             (result)=>{
                                 console.log(result);
                             })
-        }
+        }        
+//====================================================================================================================        
         this.socket.on("meetingClose",()=>{
             this.meetingCloseHandler.forEach(handler=>{
                 handler();

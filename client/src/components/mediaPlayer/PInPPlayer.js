@@ -14,6 +14,9 @@ class PInPPlayer extends React.Component {
         this.state={};
     }
     componentDidMount(){
+        if (this.props.stream){
+            this.media.current.setStream(this.props.stream);
+        }
     }
     render(){
         return (
