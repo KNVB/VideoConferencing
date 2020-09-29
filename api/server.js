@@ -54,6 +54,10 @@ io.on('connection', (socket) => {
 })
 peerServer.on('connection', (client) => {
 	console.log("Peer server connection:");
-	console.log(client);
+	console.log(client.id);
+});
+peerServer.on('disconnect', (client) => {
+	console.log("Peer server disconnected:");
+	console.log(client.id);
 });
 //================================================================

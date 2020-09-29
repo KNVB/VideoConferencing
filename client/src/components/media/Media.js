@@ -52,12 +52,13 @@ class Media extends React.Component {
           autoPlay
           muted={this.props.muted}
           className={finalClass}
-          ref={this.videoTag}
-        >
-          <source
-            src="https://www.w3schools.com/html/movie.mp4"
-            type="video/mp4"
-          />
+          ref={this.videoTag}>
+          {/*
+            <source
+              src="https://www.w3schools.com/html/movie.mp4"
+              type="video/mp4"
+            />
+          */}  
         </video>
         <div className="bg-dark d-none mediaStatus text-white">dsfsdf</div>
       </Fragment>

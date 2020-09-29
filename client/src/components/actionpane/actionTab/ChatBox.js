@@ -3,6 +3,7 @@ import Utility from '../../../utils/Utility';
 class ChatBox extends React.Component {
     constructor(props){
         super(props);
+        this.msgHistory=React.createRef();
         this.state={"history":[]};
         this.sendMsgForm=null;
         this.setFormRef = element => {
@@ -15,13 +16,16 @@ class ChatBox extends React.Component {
         this.setState({"history":history});
     }
     componentDidMount() {
+        this.msgHistory=this.msgHistory.current;
         this.props.meetingUtil.userLeftHandler.push(this.userLeftHandler);
         this.props.meetingUtil.newUserJoinHandler.push(this.userJoinHandler);
         this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
         this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingUtil.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
+        this.scrollToBottom();
+    }    
+    componentDidUpdate() {
+        this.scrollToBottom();
     }
-    
-
     receiveMsgHandler=(info=>{
         //console.log("Receive Message:"+JSON.stringify(info));
         console.log("Receive Message from "+info.alias);
@@ -29,6 +33,9 @@ class ChatBox extends React.Component {
         {info.msg} &nbsp;&nbsp;&nbsp;
         <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span></div>);
     })
+    scrollToBottom = () => {
+        this.msgHistory.scrollTop=this.msgHistory.scrollHeight;
+    }
     sendMsg=(event)=>{
         if (this.sendMsgForm.reportValidity()){
             var msg=this.sendMsgForm.msg.value.trim();
@@ -54,7 +61,7 @@ class ChatBox extends React.Component {
         return (
                 <div className="d-flex flex-column flex-grow-1 h-100 p-1 position-absolute w-100">
                     <div className="border border-primary d-flex flex-grow-1 position-relative rounded">
-                        <div className="h-100 p-1 overflow-auto position-absolute w-100">
+                        <div className="h-100 p-1 overflow-auto position-absolute w-100" ref={this.msgHistory}>
                             {this.state.history}
                         </div>
                     </div>

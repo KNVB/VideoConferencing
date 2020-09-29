@@ -41,6 +41,7 @@ class MeetingUtil {
                                 console.log(result);
                             });
             this.socket.disconnect();
+            this.peer.disconnect();
         }
         this.login=(callBack)=>{
             this.socket.emit("login",
