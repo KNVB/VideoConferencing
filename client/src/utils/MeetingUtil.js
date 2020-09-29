@@ -1,5 +1,6 @@
 import config from './config';
 import io from 'socket.io-client';
+import LocalStreamManager from './LocalStreamManager';
 import Peer from 'peerjs';
 class MeetingUtil {
     constructor(meetingInfo){
@@ -8,6 +9,7 @@ class MeetingUtil {
         
         this.cancelJoinReqHandler=[];
         this.joinReqHandler=[];
+        this.leaveMeetingHandler=[];        
         this.meetingCloseHandler=[];
         this.meetingId=meetingInfo.meetingId;
         this.newUserJoinHandler=[];
@@ -16,9 +18,10 @@ class MeetingUtil {
         this.userLeftHandler=[];
         this.userJoinHandler=[];
         this.receiveMsgHandler=[];
+        this.localStream=null;
         this.socket=io.connect(SOCKET_URL);
         this.user=meetingInfo.user;
-        
+        this.localStreamManager=new LocalStreamManager();
         this.acceptJoinRequest=((meetingId,reqId)=>{
             this.socket.emit("acceptJoinRequest",
                             {"meetingId":this.meetingId,"userId":reqId},
@@ -34,6 +37,14 @@ class MeetingUtil {
                             });
             this.socket.disconnect();
         }
+        this.getMediaStream=async (shareVideo,shareAudio)=>{
+            this.localStream=await this.localStreamManager.getMediaStream(shareVideo,shareAudio);
+            return this.localStream;
+        }
+        this.getShareDesktopStream=async (shareVideo,shareAudio)=>{
+            this.localStream=await this.localStreamManager.getShareDesktopStream(shareVideo,shareAudio);
+            return this.localStream;
+        }
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",
                             {"meetingId":this.meetingId,"userId":this.user.id},
@@ -42,6 +53,9 @@ class MeetingUtil {
                             });
             this.socket.disconnect();
             this.peer.disconnect();
+            this.leaveMeetingHandler.forEach(handler=>{
+                handler();
+            })
         }
         this.login=(callBack)=>{
             this.socket.emit("login",

@@ -21,6 +21,7 @@ class PInPPlayer extends React.Component {
                 <div className="border border-primary d-flex flex-grow-1 p-0 pinp">
                     <Media
                         elapseTime={this.props.elapseTime}
+                        meetingUtil={this.props.meetingUtil}
                         muted={this.props.muted}                        
                         timeUpdateHandler={this.timeUpdateHandler}
                         ref={ this.media }/>

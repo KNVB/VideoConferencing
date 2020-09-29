@@ -12,6 +12,7 @@ class Media extends React.Component {
     if (this.props["elapseTime"]) {
       this.videoTag.current.currentTime = this.props["elapseTime"];
     }
+    this.props.meetingUtil.leaveMeetingHandler.push(this.closeMedia);
     this.videoTag.current.ontimeupdate = () => {
       if (this.videoTag.current && this.props.timeUpdateHandler) {
         this.props.timeUpdateHandler(
@@ -19,6 +20,14 @@ class Media extends React.Component {
         );
       }
     };
+  }
+  closeMedia=()=>{
+    if (this.videoTag.current && this.videoTag.current.srcObject) {
+      this.videoTag.current.srcObject.getTracks().forEach( async track=>{
+        await track.stop();
+      });
+      this.videoTag.current.srcObject=null;
+    }
   }
   getElapseTime=()=>{
     return this.videoTag.current.currentTime;
@@ -33,8 +42,10 @@ class Media extends React.Component {
     this.videoTag.current.play();
   };
   setStream(stream) {
-    this.videoTag.srcObject = null;
-    this.videoTag.srcObject = stream;
+    console.log("Set Stream");
+    console.log(stream);
+    this.videoTag.current.srcObject = null;
+    this.videoTag.current.srcObject = stream;
   }
   toggleMirror() {
     this.setState({

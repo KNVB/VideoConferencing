@@ -4,6 +4,7 @@ class MeetingManager
 		let meetingList={};
 		const { v4: uuidv4 } = require('uuid');
 		const util=require("./Utility.js");
+		/*
 		this.getJoinReqId=((reqBody)=>{
 			var meeting;
 			try{
@@ -20,6 +21,7 @@ class MeetingManager
 				}
 			}
 		});
+		*/
 		this.initMeeting=((reqBody)=>{
 			var user =new(require('../classes/User'));
 			var meeting=new(require('../classes/Meeting'));

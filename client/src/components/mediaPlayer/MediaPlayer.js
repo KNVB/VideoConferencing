@@ -18,7 +18,11 @@ class MediaPlayer extends React.Component {
     this.state["showFullScreen"] = false;
     this.state["showPInPPlayer"] = false;
   }
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.stream){
+      this.media.current.setStream(this.props.stream);
+    }
+  }
   hidePInPPlayer = () => {
     this.setState({ showControlBar: true });
     this.setState(
@@ -77,16 +81,18 @@ class MediaPlayer extends React.Component {
         <PInPPlayer
           hidePInPPlayer={this.hidePInPPlayer}
           elapseTime={this.media.current.getElapseTime()}
+          meetingUtil={this.props.meetingUtil}
           muted={this.state.muted}
         />
       );
     } else {
       pInPClass = "hidePInPPlayer";
-    }
+    } 
     return (
       <Fragment>
         <div className={playerClass}>
           <Media
+            meetingUtil={this.props.meetingUtil}
             muted={this.state.muted}
             ref={this.media}
             timeUpdateHandler={this.timeUpdateHandler}

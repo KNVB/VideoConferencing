@@ -8,17 +8,25 @@ import React from "react";
 class Meeting extends React.Component {
     constructor(props){
         super(props);
-        this.state={leave:false};
+        this.state={leave:false,stream:null};
     }    
     componentDidMount() {
         document.getElementById("root").classList.add("p-1");
         var meetingUtil =new MeetingUtil(this.meetingInfo);
         
-        meetingUtil.login(result=>{
+        meetingUtil.login(async result=>{
             //console.log(result);
             if (result.error===0){
                 meetingUtil.meetingCloseHandler.push(this.meetingCloseHandler);
-                this.setState({"meetingUtil":meetingUtil});
+                var shareAudio=(meetingUtil.user.shareMedia.audio==="true");
+                var shareVideo=(meetingUtil.user.shareMedia.video==="true");
+                try{
+                    var s=await meetingUtil.getMediaStream(shareVideo,shareAudio);
+                    this.setState({"meetingUtil":meetingUtil,stream:s});
+                }
+                catch(err){
+                    alert(err.message);
+                }
             } else {
                 alert(result.message);
                 sessionStorage.clear();
@@ -40,7 +48,7 @@ class Meeting extends React.Component {
             this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
             if (this.state.meetingUtil===undefined){
                 return(
-                    <div className="align-items-center d-flex justify-content-center">
+                    <div className="align-items-center d-flex h-100 justify-content-center w-100">
                         <Spinner animation="border" role="status">
                             <span className="sr-only">Loading...</span>
                         </Spinner>
@@ -52,8 +60,8 @@ class Meeting extends React.Component {
                     return <Redirect to="/"/>
                 }else {
                     return (
-                        <div className="border border-info meeting p-0 rounded">
-                            <MediaPlayer meetingUtil={this.state.meetingUtil}/>
+                        <div className="border border-info flex-grow-1 meeting p-0 rounded">
+                            <MediaPlayer meetingUtil={this.state.meetingUtil} stream={this.state.stream}/>
                             <div className="panel d-flex flex-grow-1">
                                 <ActionPane meetingUtil={this.state.meetingUtil}/>
                             </div>
