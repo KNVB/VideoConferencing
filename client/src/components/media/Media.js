@@ -21,6 +21,11 @@ class Media extends React.Component {
       }
     };
   }
+  componentDidUpdate(prevProps) {
+    //this.closeMedia();    
+    //console.log(this.props.stream);
+    //this.videoTag.current.srcObject = this.props.stream;
+  }
   closeMedia=()=>{
     if (this.videoTag.current && this.videoTag.current.srcObject) {
       this.videoTag.current.srcObject.getTracks().forEach( async track=>{
@@ -44,7 +49,7 @@ class Media extends React.Component {
   setStream(stream) {
     console.log("Set Stream");
     console.log(stream);
-    this.videoTag.current.srcObject = null;
+    this.closeMedia();
     this.videoTag.current.srcObject = stream;
   }
   toggleMirror() {

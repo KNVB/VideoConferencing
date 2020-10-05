@@ -1,8 +1,6 @@
 import {Card}  from 'react-bootstrap';
 import LeaveButton from './buttons/LeaveButton';
 import NavBar from './navBar/NavBar';
-import ShareAudioButton from './buttons/ShareAudioButton';
-import ShareVideoButton from './buttons/ShareVideoButton';
 import ActionTab from './actionTab/ActionTab';
 import React from "react";
 
@@ -18,8 +16,6 @@ class ActionPane extends React.Component {
         </Card.Body>
         <Card.Footer className="m-1 p-1 rounded">
           <div className="d-flex flex-row justify-content-around pt-1">
-              <ShareAudioButton meetingUtil={this.props.meetingUtil}/>
-              <ShareVideoButton meetingUtil={this.props.meetingUtil}/>              
               <LeaveButton meetingUtil={this.props.meetingUtil}/>
           </div>
         </Card.Footer>

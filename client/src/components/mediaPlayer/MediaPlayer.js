@@ -1,27 +1,42 @@
 import Collapse from "react-bootstrap/Collapse";
+import LocalStreamManager from '../../utils/LocalStreamManager';
 import MaxMinButton from "./buttons/MaxMinButton";
 import Media from "../media/Media";
 import MuteButton from "./buttons/MuteButton";
 import PInPButton from "./buttons/PInPButton";
 import PInPPlayer from "./PInPPlayer";
 import React, { Fragment } from "react";
+import ShareAudioButton from './buttons/ShareAudioButton';
+import ShareVideoButton from './buttons/ShareVideoButton';
+
 import "./MediaPlayer.css";
 import "./buttons/Button.css";
 class MediaPlayer extends React.Component {
   constructor(props) {
     super(props);
+    var user=this.props.meetingUtil.user;
+    this.localStreamManager=new LocalStreamManager();
     this.media = React.createRef();
     this.state = {};
     this.state["muted"] = true;
-    this.state["showControlBar"] = true;
-    this.state["timeUpdateHandler"] = "00:00:00";
+    if (user.shareMedia.audio==="true"){
+      this.state["shareAudio"]=true;
+    } else {
+      this.state["shareAudio"]=false;
+    }
+    if (user.shareMedia.video==="true"){
+      this.state["shareVideo"]=true;
+    }else{
+      this.state["shareVideo"]=false;
+    }
+    this.state["showControlBar"] = true;    
     this.state["showFullScreen"] = false;
     this.state["showPInPPlayer"] = false;
+    this.state["stream"]=null;
+    this.state["timeUpdateHandler"] = "00:00:00";
   }
   componentDidMount() {
-    if (this.props.stream){
-      this.media.current.setStream(this.props.stream);
-    }
+    this.setStream(this.state.shareVideo,this.state.shareAudio);
   }
   hidePInPPlayer = () => {
     this.setState({ showControlBar: true });
@@ -54,6 +69,27 @@ class MediaPlayer extends React.Component {
       muted: !this.state.muted,
     });
   };
+  toggleShareAudio=async()=>{
+    var audioState=!this.state.shareAudio;    
+    this.setStream(this.state.shareVideo,audioState);
+  }
+  toggleShareVideo=()=>{
+    var videoState=!this.state.shareVideo;
+    this.setStream(videoState,this.state.shareAudio)  
+  }
+  setStream=async (shareVideo,shareAudio)=>{
+    var stream=null;
+    try{
+      stream=await this.localStreamManager.getMediaStream(shareVideo,shareAudio);
+    }catch (error){
+      console.log(error.message);
+    }finally{
+      this.media.current.setStream(stream);
+      this.setState({"shareAudio":shareAudio,
+                    "shareVideo":shareVideo,
+                    "stream":stream});
+    }  
+  };
   showPInP = () => {
     this.setState({ showControlBar: false });
     this.setState(
@@ -66,7 +102,7 @@ class MediaPlayer extends React.Component {
     );
   };
   render() {
-    console.log(this.props.meetingUtil.user);
+    //console.log(this.props.meetingUtil.user);
     var pInPClass = "",
       pInPPlayer = null;
     var playerClass = "d-flex flex-grow-1 p-1 rouned";
@@ -83,7 +119,7 @@ class MediaPlayer extends React.Component {
           hidePInPPlayer={this.hidePInPPlayer}
           elapseTime={this.media.current.getElapseTime()}
           meetingUtil={this.props.meetingUtil}
-          stream={this.props.stream}
+          stream={this.state.stream}
           muted={this.state.muted}
         />
       );
@@ -105,27 +141,32 @@ class MediaPlayer extends React.Component {
               in={this.state.showControlBar}
             >
               <span className="p-0 m-0">
-                <div className="align-items-center d-flex flex-row justify-content-between p-0">
-                  <MuteButton
-                    toggleMute={this.toggleMute}
-                    muted={this.state.muted}
-                  />
+                <div className="d-flex flex-grow-1 flex-row justify-content-between">
                   <div>
-                    <span>{this.state.elapseTime}</span>
+                    <MuteButton
+                      toggleMute={this.toggleMute}
+                      muted={this.state.muted}
+                    />
+                    <PInPButton
+                      showFullScreen={this.state.showFullScreen}
+                      togglePInP={this.showPInP}
+                    />
                   </div>
-                </div>
-                <div className="align-items-center d-flex flex-row justify-content-between p-0">
-                  <PInPButton
-                    showFullScreen={this.state.showFullScreen}
-                    togglePInP={this.showPInP}
-                  />
-                  <div className="btnlink" onClick={this.toggleMirror}>
-                    &#x21c4;
+                  <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
+                    <ShareAudioButton shareAudioState={this.state.shareAudio}
+                      toggleShareAudio={this.toggleShareAudio}/>
+                    <ShareVideoButton shareVideoState={this.state.shareVideo}
+                      toggleShareVideo={this.toggleShareVideo}/>
                   </div>
-                  <MaxMinButton
-                    toggFullScreen={this.toggFullScreen}
-                    showFullScreen={this.state.showFullScreen}
-                  />
+                  <div>
+                    <div className="btnlink" title="Mirror the video" onClick={this.toggleMirror}>
+                        &#x21c4;
+                    </div>
+                    <MaxMinButton
+                      toggFullScreen={this.toggFullScreen}
+                      showFullScreen={this.state.showFullScreen}
+                    />
+                  </div>
                 </div>
               </span>
             </Collapse>
