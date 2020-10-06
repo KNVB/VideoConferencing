@@ -1,8 +1,10 @@
 import {Button, Media,Modal}  from 'react-bootstrap';
 import React, { Fragment } from "react";
+import RemoteMedia from '../../media/Media';
 class UserList extends React.Component {
     constructor(props){
         super(props);
+        
         this.state={"userList":this.props.meetingUtil.userList,
                     "pendingReq":{}};
     }
@@ -46,29 +48,40 @@ class UserList extends React.Component {
                         "userList":userList,
                         showApprovModal : false});
     }
-
     render() {
         let finalResult=[],pendingReq=[],normalUser=[];
         let thisUser=this.props.meetingUtil.user;
-       
+        this.mediaList={};
         Object.keys(this.state.userList).forEach(userId=>{
             var user=this.props.meetingUtil.userList[userId];
             if (user.isHost){
-                finalResult.push(<Media className="border-bottom border-info" key={user.id}>
-                                    <Media.Body>{user.alias}(Host){(user.id===thisUser.id)?"*":""}</Media.Body>
+                finalResult.push(<Media className="border-bottom border-info p-1" key={user.id}>
+                                    <div style={{"width":"80px","height":"64px"}}>
+                                        <RemoteMedia meetingUtil={this.props.meetingUtil} 
+                                            ref={el=>{this.mediaList[user.id]=el}}/>
+                                    </div>
+                                    <Media.Body className="align-self-center ml-1">
+                                        {user.alias}(Host){(user.id===thisUser.id)?"*":""}
+                                    </Media.Body>
                                 </Media>);
             } else {
                 if (user.id.startsWith("*")){
-                    pendingReq.push(<Media className="border-bottom border-info" key={user.id}>
-                                        <Media.Body className="d-flex flex-row justify-content-around">
+                    pendingReq.push(<Media className="border-bottom border-info p-1" key={user.id}>
+                                        <Media.Body className="align-self-center d-flex flex-row justify-content-around ml-1">
                                             {user.alias}{(user.id===thisUser.id)?"*":""}
                                             <Button variant="primary" onClick={()=>this.pendingRequestHandler(user)}>Pending Approval</Button>
                                         </Media.Body>
                                     </Media>);
                 }else {
                     normalUser.push(
-                        <Media className="border-bottom border-info" key={user.id}>
-                            <Media.Body>{user.alias}{(user.id===thisUser.id)?"*":""}</Media.Body>
+                        <Media className="border-bottom border-info p-1" key={user.id}>
+                            <div style={{"width":"80px","height":"64px"}}>
+                                <RemoteMedia meetingUtil={this.props.meetingUtil}
+                                    ref={el=>{this.mediaList[user.id]=el}}/>
+                            </div>
+                            <Media.Body className="align-self-center ml-1">
+                                {user.alias}{(user.id===thisUser.id)?"*":""}
+                            </Media.Body>
                         </Media>
                     );
                 }

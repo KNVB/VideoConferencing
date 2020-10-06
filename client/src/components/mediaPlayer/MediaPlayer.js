@@ -137,7 +137,7 @@ class MediaPlayer extends React.Component {
           />
           <div className="controlLayer m-1 p-1" onClick={this.toggleControlBar}>
             <Collapse
-              className="bg-secondary p-1 rounded text-white w-100"
+              className="border-top border-white p-1 text-white w-100"
               in={this.state.showControlBar}
             >
               <span className="p-0 m-0">
