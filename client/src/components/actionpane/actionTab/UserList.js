@@ -3,8 +3,7 @@ import React, { Fragment } from "react";
 import RemoteMedia from '../../media/Media';
 class UserList extends React.Component {
     constructor(props){
-        super(props);
-        
+        super(props);        
         this.state={"userList":this.props.meetingUtil.userList,
                     "pendingReq":{}};
     }

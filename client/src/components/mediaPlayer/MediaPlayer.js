@@ -1,5 +1,4 @@
 import Collapse from "react-bootstrap/Collapse";
-import LocalStreamManager from '../../utils/LocalStreamManager';
 import MaxMinButton from "./buttons/MaxMinButton";
 import Media from "../media/Media";
 import MuteButton from "./buttons/MuteButton";
@@ -15,7 +14,7 @@ class MediaPlayer extends React.Component {
   constructor(props) {
     super(props);
     var user=this.props.meetingUtil.user;
-    this.localStreamManager=new LocalStreamManager();
+    
     this.media = React.createRef();
     this.state = {};
     this.state["muted"] = true;
@@ -80,7 +79,7 @@ class MediaPlayer extends React.Component {
   setStream=async (shareVideo,shareAudio)=>{
     var stream=null;
     try{
-      stream=await this.localStreamManager.getMediaStream(shareVideo,shareAudio);
+      stream=await this.props.meetingUtil.getLocalStream(shareVideo,shareAudio);
     }catch (error){
       console.log(error.message);
     }finally{
@@ -88,7 +87,7 @@ class MediaPlayer extends React.Component {
       this.setState({"shareAudio":shareAudio,
                     "shareVideo":shareVideo,
                     "stream":stream});
-    }  
+    }
   };
   showPInP = () => {
     this.setState({ showControlBar: false });

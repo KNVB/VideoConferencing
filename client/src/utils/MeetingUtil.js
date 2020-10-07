@@ -29,6 +29,18 @@ class MeetingUtil {
                                 console.log(result);
                             });
         });
+        /*
+        this.connectPeer=(user)=>{
+            var conn =this.peer.connect(user.id,{metadata:{userid:this.user.id,alias:this.user.alias}});
+            conn.on("open",()=>{
+                console.log("Peer connection to "+user.alias+" is opened");
+                console.log(this.localStream);
+                var call=this.peer.call(user.id,this.localStream,{metadata:{userid:this.user.id,alias:this.user.alias}});
+                call.on('stream', remoteStream=>{
+                    console.log(remoteStream);
+                });
+            })
+        }*/
         this.endMeeting=()=>{
             this.socket.emit("endMeeting",
                             {"meetingId":this.meetingId,"userId":this.user.id},
@@ -36,6 +48,17 @@ class MeetingUtil {
                                 console.log(result);
                             });
             this.socket.disconnect();
+        }
+        this.getLocalStream=async (shareVideo,shareAudio)=>{
+            this.localStream=null;
+            try{
+                this.localStream=await this.localStreamManager.getMediaStream(shareVideo,shareAudio);
+            } catch(error){
+                throw(error);
+            }finally{
+                console.log("I am here "+this.localStream);
+                return this.localStream;
+            }            
         }
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",
@@ -56,7 +79,20 @@ class MeetingUtil {
                // console.log(result);
                 if (result.error===0){
                     this.userList=result.userList;
+                    /*
                     this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT});
+                    this.peer.on("call",(call=>{
+                        console.log("Receive Call from "+call.metadata.alias);  
+                        console.log(this.localStream);                      
+                        
+                        call.answer(this.localStream); //Before getting the remote stream, answer the call with the stream;
+                        call.on('stream', function(remoteStream) {
+                            console.log(remoteStream);
+                        });
+                    }))
+                    this.peer.on('connection', conn => {
+                        console.log("Connection from "+conn.metadata.alias+" is established.");
+                    })*/
                 }
                 callBack(result);
             });

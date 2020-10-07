@@ -7,25 +7,21 @@ class LocalStreamManager{
 								sampleSize: 16
 							},
 					"video":{
-								width:{ min: 640, ideal: 1280, max: 1920 },
-								height:{ min: 480, ideal: 720, max: 1080 }
+								width:{ min:"640", ideal:"1280", max:"1920"},
+								height:{ min:"480", ideal:"720", max:"1080"}
 							}
 					}; 
         this.getMediaStream=async (shareVideo,shareAudio)=>{
-            if ((shareVideo===false) && (shareAudio===false)){
-                return null;
-            } else {
-				//var constraints={"audio":shareAudio,"video":shareVideo};
-				var constraints={};
-				if (shareVideo){
-					constraints["video"]=templateConstraint.video;
-				}
-				if (shareAudio){
-					constraints["audio"]=templateConstraint.audio;
-				}
-				console.log(constraints);   
-                return navigator.mediaDevices.getUserMedia(constraints);
-            }    
+			//var constraints={"audio":shareAudio,"video":shareVideo};
+			var constraints={};
+			if (shareVideo){
+				constraints["video"]=templateConstraint.video;
+			}
+			if (shareAudio){
+				constraints["audio"]=templateConstraint.audio;
+			}
+			console.log(constraints);   
+			return navigator.mediaDevices.getUserMedia(constraints);
         }
         this.getShareDesktopStream=async(shareVideo,shareAudio)=>{
             if ((shareVideo===false) && (shareAudio===false)){
