@@ -27,6 +27,9 @@ class UserList extends React.Component {
             call.on('stream', function(remoteStream) {
                 console.log("Receive Call from "+call.metadata.alias);  
                 console.log("Local Stream is "+((meetingUtil.localStream)?"Object":"null"));
+                console.log("Remote Stream is "+((remoteStream)?"Object":"null"));
+                console.log("Remote Stream has "+((remoteStream.getAudioTracks().length>0)?"":"no")+" audio track");
+                console.log("Remote Stream has "+((remoteStream.getVideoTracks().length>0)?"":"no")+" video track");
                 var media=mediaList[call.metadata.userId];
                 media.setStream(remoteStream);
             });

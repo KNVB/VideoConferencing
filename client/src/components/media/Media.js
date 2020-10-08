@@ -50,10 +50,15 @@ class Media extends React.Component {
   };
   setStream(stream) {
     console.log("Set Stream");
-    console.log(stream);
+    
     this.closeMedia();
-    if (stream) {
+    console.log("The incoming stream is "+((stream)?"Object":"null"));
+    if (stream) {      
+      console.log("The incoming stream has "+((stream.getAudioTracks().length>0)?"":"no")+" audio tracks");
+      console.log("The incoming stream has "+((stream.getVideoTracks().length>0)?"":"no")+" video tracks");
+      
       this.videoTag.current.srcObject = stream;
+      
       if ((stream.getVideoTracks().length===0) && (stream.getAudioTracks().length>0)){
         this.mediaStatus.current.classList.remove("d-none");
       } else {
