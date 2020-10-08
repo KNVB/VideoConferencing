@@ -136,12 +136,13 @@ class MeetingManager
 					}
 				}
 			});
-			socket.on("userStreamUpdated",(info,callBack)=>{
+			socket.on("rejectJoinRequest",(info,callBack)=>{
 				var meeting;
 				try{
-					console.log("userStreamUpdated:"+JSON.stringify(info));
+					console.log("rejectJoinReq:"+JSON.stringify(info));
 					meeting=meetingList[info.meetingId];
-					meeting.userStreamUpdated(info,socket);
+					meeting.rejectJoinReq(info,socket);
+					callBack({"error":0});
 				}catch (error){
 					if (meeting===undefined){
 						callBack({"error":1,message:'Invalid Meeting Id'});
@@ -149,13 +150,13 @@ class MeetingManager
 						callBack({"error":1,message:error.message});
 					}
 				}
-			})
-			socket.on("rejectJoinRequest",(info,callBack)=>{
+			});
+			socket.on("resetRemoteStream",(info,callBack)=>{
 				var meeting;
 				try{
-					console.log("rejectJoinReq:"+JSON.stringify(info));
+					console.log("resetRemoteStream:"+JSON.stringify(info));
 					meeting=meetingList[info.meetingId];
-					meeting.rejectJoinReq(info,socket);
+					meeting.resetRemoteStream(info,socket);
 					callBack({"error":0});
 				}catch (error){
 					if (meeting===undefined){

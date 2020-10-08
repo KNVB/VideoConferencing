@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import "./Media.css";
 import Utility from '../../utils/Utility';
 class Media extends React.Component {
@@ -33,6 +33,7 @@ class Media extends React.Component {
         await track.stop();
       });
       this.videoTag.current.srcObject=null;
+      this.mediaStatus.current.classList.add("d-none");
     }
   }
   getElapseTime=()=>{
@@ -73,7 +74,7 @@ class Media extends React.Component {
       finalClass += " mirror";
     }
     return (
-      <div className="m-0 p-0" style={{"height":"100%","width":"100%"}}>
+      <div className="m-0 p-0 h-100 w-100 position-relative">
         <video
           autoPlay
           muted={this.props.muted}

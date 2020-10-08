@@ -16,22 +16,22 @@ class UserList extends React.Component {
         this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
         this.props.meetingUtil.localStreamUpdateHandler.push(this.localStreamUpdateHandler);
         this.props.meetingUtil.newUserJoinHandler.push(this.newUserJoinHandler);
-        this.props.meetingUtil.remoteStreamUpdateHandler.push(this.remoteStreamUpdateHandler);
+        this.props.meetingUtil.resetRemoteStreamHandler.push(this.resetRemoteStreamHandler);
         this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
-        
-        this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT});
-            this.peer.on("call",call=>{
+        console.log(this.user.id+" "+this.user.alias);
+        this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT,debug:2});
+        this.peer.on("call",call=>{
+            var mediaList=this.mediaList;
+            var meetingUtil=this.props.meetingUtil;
+            call.answer(this.props.meetingUtil.localStream); //Before getting the remote stream, answer the call with the stream;
+            call.on('stream', function(remoteStream) {
                 console.log("Receive Call from "+call.metadata.alias);  
-                console.log(this.props.meetingUtil.localStream);
-                /*
-                call.answer(this.localStream); //Before getting the remote stream, answer the call with the stream;
-                call.on('stream', function(remoteStream) {
-                    console.log(remoteStream);
-                });*/
+                console.log("Local Stream is "+((meetingUtil.localStream)?"Object":"null"));
+                var media=mediaList[call.metadata.userId];
+                media.setStream(remoteStream);
             });
-            this.peer.on('connection', conn => {
-                console.log("Connection from "+conn.metadata.alias+" is established.");
         });
+        this.props.meetingUtil.sendLocalStreamToOthers(this.peer);
     }
     componentWillUnmount() {
         this.peer.disconnect();
@@ -54,17 +54,13 @@ class UserList extends React.Component {
         console.log("local stream updated");
         var media=this.mediaList[this.user.id];
         media.setStream(stream);
+        this.props.meetingUtil.sendLocalStreamToOthers(this.peer);
     });
     newUserJoinHandler=(user=>{
         console.log(user.alias+" join the meeting");
         this.userCountChangeHandler(user);
     })
-    userCountChangeHandler=(user=>{
-        this.setState({"userList":this.props.meetingUtil.userList});
-    })
-    remoteStreamUpdateHandler=(userId=>{
-        console.log("Remote Stream update  "+userId);
-    });    
+  
     pendingRequestHandler=(user)=>{
         this.setState({pendingReq:user,
         showApprovModal : true});
@@ -78,6 +74,14 @@ class UserList extends React.Component {
                         "userList":userList,
                         showApprovModal : false});
     }
+    resetRemoteStreamHandler=(info)=>{
+        console.log("Reset Remote Stream Handler");
+        var media=this.mediaList[info.userId];
+        media.closeMedia();
+    }
+    userCountChangeHandler=(user=>{
+        this.setState({"userList":this.props.meetingUtil.userList});
+    })    
     render() {
         let finalResult=[],pendingReq=[],normalUser=[];
         let thisUser=this.props.meetingUtil.user;
@@ -86,8 +90,9 @@ class UserList extends React.Component {
             var user=this.props.meetingUtil.userList[userId];
             if (user.isHost){
                 finalResult.push(<Media className="border-bottom border-info p-1" key={user.id}>
-                                    <div className="m-0 position-relative p-0" style={{"width":"80px","height":"64px"}}>
+                                    <div className="m-0 p-0" style={{"width":"80px","height":"64px"}}>
                                         <RemoteMedia meetingUtil={this.props.meetingUtil} 
+                                            muted={true}
                                             ref={el=>{this.mediaList[user.id]=el}}/>
                                     </div>
                                     <Media.Body className="align-self-center ml-1">
@@ -107,6 +112,7 @@ class UserList extends React.Component {
                         <Media className="border-bottom border-info p-1" key={user.id}>
                             <div style={{"width":"80px","height":"64px"}}>
                                 <RemoteMedia meetingUtil={this.props.meetingUtil}
+                                    muted={true}
                                     ref={el=>{this.mediaList[user.id]=el}}/>
                             </div>
                             <Media.Body className="align-self-center ml-1">

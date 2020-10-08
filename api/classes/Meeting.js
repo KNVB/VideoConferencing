@@ -98,6 +98,9 @@ class Meeting{
 			socket.to(user.socketId).emit("joinReqResult",{error:1,message:"The host rejects your join meeting request."});
 			delete pendingJoinReq[info.userId];
 		});
+		this.resetRemoteStream=((info,socket)=>{
+			socket.to(meetingId).emit("resetRemoteStream",{userId:info.userId});
+		});
 		this.sendMsg=((info,io)=>{
 			var user=userList[info.userId];
 			io.in(meetingId).emit("receiveMsg",{"userId":user.id,alias:user.alias,"msg":info.msg});
@@ -129,9 +132,6 @@ class Meeting{
 				err.unauthorized=true;
 				throw err;
 			}				
-		});
-		this.userStreamUpdated=((info,socket)=>{
-			socket.to(meetingId).emit("remoteStreamUpdated",{"userId":info.userId});
 		});
 //===============================================================		
 
