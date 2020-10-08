@@ -130,6 +130,9 @@ class Meeting{
 				throw err;
 			}				
 		});
+		this.userStreamUpdated=((info,socket)=>{
+			socket.to(meetingId).emit("remoteStreamUpdated",{"userId":info.userId});
+		});
 //===============================================================		
 
 	}

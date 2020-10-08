@@ -1,17 +1,40 @@
+import config from '../../../utils/config';
 import {Button, Media,Modal}  from 'react-bootstrap';
 import React, { Fragment } from "react";
 import RemoteMedia from '../../media/Media';
+import Peer from "peerjs";
 class UserList extends React.Component {
     constructor(props){
-        super(props);        
+        super(props);
+        this.mediaList=[];        
         this.state={"userList":this.props.meetingUtil.userList,
                     "pendingReq":{}};
     }
     componentDidMount(){
+        this.user=this.props.meetingUtil.user;
         this.props.meetingUtil.cancelJoinReqHandler.push(this.userCountChangeHandler);            
         this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
-        this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
+        this.props.meetingUtil.localStreamUpdateHandler.push(this.localStreamUpdateHandler);
         this.props.meetingUtil.newUserJoinHandler.push(this.newUserJoinHandler);
+        this.props.meetingUtil.remoteStreamUpdateHandler.push(this.remoteStreamUpdateHandler);
+        this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
+        
+        this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT});
+            this.peer.on("call",call=>{
+                console.log("Receive Call from "+call.metadata.alias);  
+                console.log(this.props.meetingUtil.localStream);
+                /*
+                call.answer(this.localStream); //Before getting the remote stream, answer the call with the stream;
+                call.on('stream', function(remoteStream) {
+                    console.log(remoteStream);
+                });*/
+            });
+            this.peer.on('connection', conn => {
+                console.log("Connection from "+conn.metadata.alias+" is established.");
+        });
+    }
+    componentWillUnmount() {
+        this.peer.disconnect();
     }
     acceptRequest=()=>{
         this.props.meetingUtil.acceptJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
@@ -27,13 +50,21 @@ class UserList extends React.Component {
         this.setState({"userList":ml});
         //console.log('join Request Received.');
     }
+    localStreamUpdateHandler=(stream=>{
+        console.log("local stream updated");
+        var media=this.mediaList[this.user.id];
+        media.setStream(stream);
+    });
     newUserJoinHandler=(user=>{
         console.log(user.alias+" join the meeting");
         this.userCountChangeHandler(user);
     })
     userCountChangeHandler=(user=>{
         this.setState({"userList":this.props.meetingUtil.userList});
-    })    
+    })
+    remoteStreamUpdateHandler=(userId=>{
+        console.log("Remote Stream update  "+userId);
+    });    
     pendingRequestHandler=(user)=>{
         this.setState({pendingReq:user,
         showApprovModal : true});
@@ -55,7 +86,7 @@ class UserList extends React.Component {
             var user=this.props.meetingUtil.userList[userId];
             if (user.isHost){
                 finalResult.push(<Media className="border-bottom border-info p-1" key={user.id}>
-                                    <div style={{"width":"80px","height":"64px"}}>
+                                    <div className="m-0 position-relative p-0" style={{"width":"80px","height":"64px"}}>
                                         <RemoteMedia meetingUtil={this.props.meetingUtil} 
                                             ref={el=>{this.mediaList[user.id]=el}}/>
                                     </div>

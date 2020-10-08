@@ -136,6 +136,20 @@ class MeetingManager
 					}
 				}
 			});
+			socket.on("userStreamUpdated",(info,callBack)=>{
+				var meeting;
+				try{
+					console.log("userStreamUpdated:"+JSON.stringify(info));
+					meeting=meetingList[info.meetingId];
+					meeting.userStreamUpdated(info,socket);
+				}catch (error){
+					if (meeting===undefined){
+						callBack({"error":1,message:'Invalid Meeting Id'});
+					} else {
+						callBack({"error":1,message:error.message});
+					}
+				}
+			})
 			socket.on("rejectJoinRequest",(info,callBack)=>{
 				var meeting;
 				try{

@@ -1,7 +1,6 @@
 import config from './config';
 import io from 'socket.io-client';
 import LocalStreamManager from './LocalStreamManager';
-import Peer from 'peerjs';
 class MeetingUtil {
     constructor(meetingInfo){
         var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
@@ -10,14 +9,18 @@ class MeetingUtil {
         this.cancelJoinReqHandler=[];
         this.joinReqHandler=[];
         this.leaveMeetingHandler=[];        
+        this.localStreamUpdateHandler=[];
         this.meetingCloseHandler=[];
-        this.meetingId=meetingInfo.meetingId;
         this.newUserJoinHandler=[];
-        this.peer=null;
-        this.userList={};
+        this.receiveMsgHandler=[];
+        this.remoteStreamUpdateHandler=[];
         this.userLeftHandler=[];
         this.userJoinHandler=[];
-        this.receiveMsgHandler=[];
+
+        this.meetingId=meetingInfo.meetingId;
+        this.peer=null;
+        this.userList={};
+        
         this.localStream=null;
         this.socket=io.connect(SOCKET_URL);
         this.user=meetingInfo.user;
@@ -29,18 +32,7 @@ class MeetingUtil {
                                 console.log(result);
                             });
         });
-        /*
-        this.connectPeer=(user)=>{
-            var conn =this.peer.connect(user.id,{metadata:{userid:this.user.id,alias:this.user.alias}});
-            conn.on("open",()=>{
-                console.log("Peer connection to "+user.alias+" is opened");
-                console.log(this.localStream);
-                var call=this.peer.call(user.id,this.localStream,{metadata:{userid:this.user.id,alias:this.user.alias}});
-                call.on('stream', remoteStream=>{
-                    console.log(remoteStream);
-                });
-            })
-        }*/
+      
         this.endMeeting=()=>{
             this.socket.emit("endMeeting",
                             {"meetingId":this.meetingId,"userId":this.user.id},
@@ -56,7 +48,14 @@ class MeetingUtil {
             } catch(error){
                 throw(error);
             }finally{
-                console.log("I am here "+this.localStream);
+                this.localStreamUpdateHandler.forEach(handler=>{
+                    handler(this.localStream);
+                })
+                this.socket.emit("userStreamUpdated",
+                                {"meetingId":this.meetingId,"userId":this.user.id},
+                                (result)=>{
+                                    console.log(result);
+                                });
                 return this.localStream;
             }            
         }
@@ -67,7 +66,6 @@ class MeetingUtil {
                                 console.log(result);
                             });
             this.socket.disconnect();
-            this.peer.disconnect();
             this.leaveMeetingHandler.forEach(handler=>{
                 handler();
             })
@@ -79,20 +77,6 @@ class MeetingUtil {
                // console.log(result);
                 if (result.error===0){
                     this.userList=result.userList;
-                    /*
-                    this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT});
-                    this.peer.on("call",(call=>{
-                        console.log("Receive Call from "+call.metadata.alias);  
-                        console.log(this.localStream);                      
-                        
-                        call.answer(this.localStream); //Before getting the remote stream, answer the call with the stream;
-                        call.on('stream', function(remoteStream) {
-                            console.log(remoteStream);
-                        });
-                    }))
-                    this.peer.on('connection', conn => {
-                        console.log("Connection from "+conn.metadata.alias+" is established.");
-                    })*/
                 }
                 callBack(result);
             });
@@ -130,13 +114,6 @@ class MeetingUtil {
                 handler(joinReq);
             });
         });
-        this.socket.on("userLeft",user=>{
-            console.log(user.alias+" left the meeting");
-            delete this.userList[user.id];
-            this.userLeftHandler.forEach(handler=>{
-                handler(user);
-            });
-        });
         this.socket.on("newUserJoin",user=>{
             //console.log("new use join user:"+JSON.stringify(user));
             //console.log(this.newUserJoinHandler);
@@ -150,6 +127,19 @@ class MeetingUtil {
                 handler(info);
             })
         });
+        this.socket.on("userLeft",user=>{
+            console.log(user.alias+" left the meeting");
+            delete this.userList[user.id];
+            this.userLeftHandler.forEach(handler=>{
+                handler(user);
+            });
+        });
+        this.socket.on("remoteStreamUpdated",info=>{
+            this.remoteStreamUpdateHandler.forEach(handler=>{
+                handler(info.userId);
+            })
+        });
+        
     }
 }
 export default MeetingUtil;
