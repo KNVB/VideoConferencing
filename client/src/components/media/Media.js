@@ -27,8 +27,7 @@ class Media extends React.Component {
     //console.log(this.props.stream);
     //this.videoTag.current.srcObject = this.props.stream;
   }
-  closeMedia=()=>{
-    
+  closeMedia=async()=>{
     if (this.videoTag.current && this.videoTag.current.srcObject) {
       this.videoTag.current.srcObject.getTracks().forEach( async track=>{
         await track.stop();

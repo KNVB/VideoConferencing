@@ -62,11 +62,6 @@ class MeetingUtil {
                 this.localStreamUpdateHandler.forEach(handler=>{
                     handler(this.localStream);
                 })
-                this.socket.emit("userStreamUpdated",
-                                {"meetingId":this.meetingId,"userId":this.user.id},
-                                (result)=>{
-                                    console.log(result);
-                                });
             })
 
         }
