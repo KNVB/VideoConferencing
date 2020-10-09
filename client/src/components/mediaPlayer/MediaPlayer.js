@@ -34,13 +34,23 @@ class MediaPlayer extends React.Component {
     this.state["stream"]=null;
     this.state["timeUpdateHandler"] = "00:00:00";
   }
-  componentDidMount() {
-    this.setStream(this.state.shareVideo,this.state.shareAudio);
+  async componentDidMount() {
+    if (this.state.shareVideo || this.state.shareAudio){
+      await this.setStream(this.state.shareVideo,this.state.shareAudio)
+      .then (()=>{
+        console.log("Init local stream success");
+      })
+      .catch (error=>{
+        console.log("An Exception is catched by MediPlayer");
+        console.log(error.message);
+      })
+    }
+    console.log("Init Media Player success");
   }
   hidePInPPlayer = () => {
-    this.setState({ showControlBar: true });
     this.setState(
       {
+        showControlBar: true,
         showPInPPlayer: false,
       },
       () => {
@@ -70,11 +80,25 @@ class MediaPlayer extends React.Component {
   };
   toggleShareAudio=async()=>{
     var audioState=!this.state.shareAudio;    
-    this.setStream(this.state.shareVideo,audioState);
+    await this.setStream(this.state.shareVideo,audioState)
+    .then(()=>{
+        this.setState({"shareAudio":audioState,
+                       "shareVideo":this.state.shareVideo});
+    })
+    .catch(error=>{
+      console.log(error.message);
+    })
   }
-  toggleShareVideo=()=>{
+  toggleShareVideo=async()=>{
     var videoState=!this.state.shareVideo;
-    this.setStream(videoState,this.state.shareAudio)  
+    await this.setStream(videoState,this.state.shareAudio)
+    .then(()=>{
+        this.setState({"shareAudio":this.state.shareAudio,
+                       "shareVideo":videoState});
+    })
+    .catch(error=>{
+      console.log(error.message);
+    })
   }
   setStream=async (shareVideo,shareAudio)=>{
     var stream=null;
@@ -83,13 +107,11 @@ class MediaPlayer extends React.Component {
         stream=localStream;
     })
     .catch (error=>{
-      console.log(error.message);
+      throw error
     }) 
     .finally(()=>{
       this.media.current.setStream(stream);
-      this.setState({"shareAudio":shareAudio,
-                    "shareVideo":shareVideo,
-                    "stream":stream});
+      this.setState({"stream":stream});
     })
   };
   showPInP = () => {

@@ -20,8 +20,12 @@ class LocalStreamManager{
 			if (shareAudio){
 				constraints["audio"]=templateConstraint.audio;
 			}
-			console.log("constraints="+JSON.stringify(constraints));   
-			return await navigator.mediaDevices.getUserMedia(constraints);
+			console.log("constraints="+JSON.stringify(constraints)); 
+			if (shareVideo||shareAudio) { 
+				return await navigator.mediaDevices.getUserMedia(constraints);
+			} else {
+				return null;
+			}
         }
         this.getShareDesktopStream=async(shareVideo,shareAudio)=>{
             if ((shareVideo===false) && (shareAudio===false)){
