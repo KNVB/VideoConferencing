@@ -40,14 +40,25 @@ class MeetingUtil {
                                 console.log(result);
                             });
             this.socket.disconnect();
+            sessionStorage.clear();
         }
         this.getLocalStream=async (shareVideo,shareAudio)=>{
-            this.localStream=null;
-            try{
-                this.localStream=await this.localStreamManager.getMediaStream(shareVideo,shareAudio);
-            } catch(error){
-                throw(error);
-            }finally{
+            if (this.localStream){
+                this.localStream.getTracks().forEach(async track=>{
+                    await track.stop();
+                })
+                this.localStream=null;
+            }
+            await this.localStreamManager.getMediaStream(shareVideo,shareAudio)
+            .then (stream=>{
+                this.localStream=stream;
+                return stream
+            })
+            .catch(error=>{
+                console.log("An error catched by MeetingUtil.");
+                throw error
+            })
+            .finally(()=>{
                 this.localStreamUpdateHandler.forEach(handler=>{
                     handler(this.localStream);
                 })
@@ -56,8 +67,8 @@ class MeetingUtil {
                                 (result)=>{
                                     console.log(result);
                                 });
-                return this.localStream;
-            }            
+            })
+
         }
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",

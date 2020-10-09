@@ -25,11 +25,11 @@ class UserList extends React.Component {
             var meetingUtil=this.props.meetingUtil;
             call.answer(this.props.meetingUtil.localStream); //Before getting the remote stream, answer the call with the stream;
             call.on('stream', function(remoteStream) {
-                console.log("Receive Call from "+call.metadata.alias);  
-                console.log("Local Stream is "+((meetingUtil.localStream)?"Object":"null"));
-                console.log("Remote Stream is "+((remoteStream)?"Object":"null"));
-                console.log("Remote Stream has "+((remoteStream.getAudioTracks().length>0)?"":"no")+" audio track");
-                console.log("Remote Stream has "+((remoteStream.getVideoTracks().length>0)?"":"no")+" video track");
+                console.log("The Receive Call from "+call.metadata.alias);  
+                console.log("The Local Stream is "+((meetingUtil.localStream)?"Object":"null"));
+                console.log("The Remote Stream is "+((remoteStream)?"Object":"null"));
+                console.log("The Remote Stream has "+((remoteStream.getAudioTracks().length>0)?"":"no")+" audio track");
+                console.log("The Remote Stream has "+((remoteStream.getVideoTracks().length>0)?"":"no")+" video track");
                 var media=mediaList[call.metadata.userId];
                 media.setStream(remoteStream);
             });
@@ -56,7 +56,11 @@ class UserList extends React.Component {
     localStreamUpdateHandler=(stream=>{
         console.log("local stream updated");
         var media=this.mediaList[this.user.id];
-        media.setStream(stream);
+        if (stream){
+            media.setStream(stream);
+        } else {
+            media.closeMedia();
+        }
         this.props.meetingUtil.sendLocalStreamToOthers(this.peer);
     });
     newUserJoinHandler=(user=>{

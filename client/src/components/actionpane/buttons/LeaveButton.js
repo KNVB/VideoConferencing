@@ -30,9 +30,9 @@ class LeaveButton extends Component {
             return (
                 <Fragment>
                     <div className="align-items-center 
-                                        btn d-flex                                                
-                                        flex-column just-content-center 
-                                        p-0"
+                                    btn d-flex                                                
+                                    flex-column just-content-center 
+                                    p-0"
                             onClick={()=>this.leaveMeeting()}>
                         <div className="p-0">
                             <svg xmlns="http://www.w3.org/2000/svg" className="sd-block m-auto" width="24" height="24" viewBox="0 0 24 24">

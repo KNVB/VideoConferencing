@@ -28,12 +28,14 @@ class Media extends React.Component {
     //this.videoTag.current.srcObject = this.props.stream;
   }
   closeMedia=()=>{
+    
     if (this.videoTag.current && this.videoTag.current.srcObject) {
       this.videoTag.current.srcObject.getTracks().forEach( async track=>{
         await track.stop();
       });
       this.videoTag.current.srcObject=null;
       this.mediaStatus.current.classList.add("d-none");
+      console.log("Media closed.");
     }
   }
   getElapseTime=()=>{
@@ -51,7 +53,6 @@ class Media extends React.Component {
   setStream(stream) {
     console.log("Set Stream");
     
-    this.closeMedia();
     console.log("The incoming stream is "+((stream)?"Object":"null"));
     if (stream) {      
       console.log("The incoming stream has "+((stream.getAudioTracks().length>0)?"":"no")+" audio tracks");
@@ -65,6 +66,7 @@ class Media extends React.Component {
         this.mediaStatus.current.classList.add("d-none");
       }
     } else {
+      this.closeMedia();
       this.mediaStatus.current.classList.add("d-none");
     }
   }
