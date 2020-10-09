@@ -52,7 +52,7 @@ class MeetingUtil {
             await this.localStreamManager.getMediaStream(shareVideo,shareAudio)
             .then (stream=>{
                 this.localStream=stream;
-                return stream
+                console.log(stream);
             })
             .catch(error=>{
                 console.log("An error catched by MeetingUtil.");
@@ -63,7 +63,6 @@ class MeetingUtil {
                     handler(this.localStream);
                 })
             })
-
         }
         this.leaveMeeting=()=>{
             this.socket.emit("leaveMeeting",

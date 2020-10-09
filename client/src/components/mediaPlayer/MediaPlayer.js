@@ -103,16 +103,18 @@ class MediaPlayer extends React.Component {
   setStream=async (shareVideo,shareAudio)=>{
     var stream=null;
     await this.props.meetingUtil.getLocalStream(shareVideo,shareAudio)
-    .then(localStream=>{
-        stream=localStream;
+    .then(()=>{
+        stream=this.props.meetingUtil.localStream;
+        console.log("The local stream is "+((stream)?"Object":"null"));
     })
     .catch (error=>{
-      throw error
+      throw error;
     }) 
-    .finally(()=>{
-      this.media.current.setStream(stream);
+    .finally(()=>{     
+      //this.media.current.setStream(stream);
       this.setState({"stream":stream});
     })
+    
   };
   showPInP = () => {
     this.setState({ showControlBar: false });
