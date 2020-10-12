@@ -13,7 +13,7 @@ import "./buttons/Button.css";
 class MediaPlayer extends React.Component {
   constructor(props) {
     super(props);
-    var user=this.props.meetingUtil.user;
+    var user=this.props.meetingControl.user;
     
     this.media = React.createRef();
     this.state = {};
@@ -102,7 +102,7 @@ class MediaPlayer extends React.Component {
   }
   setStream=async (shareVideo,shareAudio)=>{
     var stream=null;
-    await this.props.meetingUtil.getLocalStream(shareVideo,shareAudio)
+    await this.props.meetingControl.getLocalStream(shareVideo,shareAudio)
     .then(()=>{
         stream=this.props.meetingUtil.localStream;
         console.log("The local stream is "+((stream)?"Object":"null"));

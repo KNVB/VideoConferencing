@@ -3,7 +3,7 @@ import { Spinner } from 'react-bootstrap';
 import ActionPane from "../actionpane/ActionPane";
 import "./Meeting.css";
 import MediaPlayer from '../mediaplayer/MediaPlayer';
-import MeetingUtil from "../../utils/MeetingUtil";
+import MeetingControl from "../../utils/MeetingControl";
 import React from "react";
 class Meeting extends React.Component {
     constructor(props){
@@ -12,19 +12,29 @@ class Meeting extends React.Component {
     }    
     componentDidMount() {
         document.getElementById("root").classList.add("p-1");
-        var meetingUtil =new MeetingUtil(this.meetingInfo);
+        var meetingControl =new MeetingControl(this.meetingInfo);
         
-        meetingUtil.login(async result=>{
+        try
+        {
+            meetingControl.login();
+            meetingControl.addMeetingCloseHandler("Meeting.meetingCloseHandler",this.meetingCloseHandler);
+            this.setState({"meetingControl":meetingControl});
+        }
+        catch(error){
+            console.log(error);
+        }
+        /*
+        meetingControl.login(async result=>{
             //console.log(result);
             if (result.error===0){
-                meetingUtil.meetingCloseHandler.push(this.meetingCloseHandler);
-                this.setState({"meetingUtil":meetingUtil});
+                meetingControl.addMeetingCloseHandler("Meeting.meetingCloseHandler",this.meetingCloseHandler);
+                this.setState({"meetingControl":meetingControl});
             } else {
                 alert(result.message);
                 sessionStorage.clear();
                 this.setState({});
             }
-        })
+        })*/
     }
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
@@ -38,7 +48,7 @@ class Meeting extends React.Component {
           return <Redirect to="/"/>
         } else {
             this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
-            if (this.state.meetingUtil===undefined){
+            if (this.state.meetingControl===undefined){
                 return(
                     <div className="align-items-center d-flex h-100 justify-content-center w-100">
                         <Spinner animation="border" role="status">
@@ -53,9 +63,9 @@ class Meeting extends React.Component {
                 }else {
                     return (
                         <div className="border border-info flex-grow-1 meeting p-0 rounded">
-                            <MediaPlayer meetingUtil={this.state.meetingUtil}/>
+                            <MediaPlayer meetingControl={this.state.meetingControl}/>
                             <div className="panel d-flex flex-grow-1">
-                                <ActionPane meetingUtil={this.state.meetingUtil}/>
+                                <ActionPane meetingControl={this.state.meetingControl}/>
                             </div>
                         </div>
                     );
