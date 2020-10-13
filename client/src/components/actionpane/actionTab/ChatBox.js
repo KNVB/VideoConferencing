@@ -30,8 +30,9 @@ class ChatBox extends React.Component {
         //console.log("Receive Message:"+JSON.stringify(info));
         console.log("Receive Message from "+info.alias);
         this.addHistory(<div key={(new Date()).getTime()}>{info.alias}:<br/> 
-        {info.msg} &nbsp;&nbsp;&nbsp;
-        <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span></div>);
+                            {info.msg} &nbsp;&nbsp;&nbsp;
+                            <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span>
+                        </div>);
     })
     scrollToBottom = () => {
         this.msgHistory.scrollTop=this.msgHistory.scrollHeight;
@@ -42,8 +43,13 @@ class ChatBox extends React.Component {
             if (msg===""){
                 alert("Please enter message.")
             }else {
-                this.props.meetingUtil.sendMsg(msg);
-                this.sendMsgForm.msg.value="";
+                this.props.meetingControl.sendMsg(msg,result=>{
+                    this.sendMsgForm.msg.value="";
+                    this.addHistory(<div key={(new Date()).getTime()}>{this.props.meetingControl.user.alias}:<br/> 
+                                        {msg} &nbsp;&nbsp;&nbsp;
+                                        <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span>
+                                    </div>);
+                });                
             }
         }
         event.preventDefault();

@@ -8,20 +8,24 @@ class MeetingUtil {
         const socket=io.connect(SOCKET_URL);
         const thisMeetingId=meetingId;
         const thisUser=user;
-        
+                
         this.joinReqHandler=null;
-        this.login=()=>{
-            return new Promise((resolve, reject) => {
-                socket.emit("login",
+        this.receiveMsgHandler=null;
+        this.userJoinHandler=null;
+        this.userLeftHandler=null;
+        this.acceptJoinRequest=(reqId,callBack)=>{
+            socket.emit("acceptJoinRequest",
+                        {"meetingId":thisMeetingId,"userId":reqId},
+                        (result)=>{
+                            callBack(result);
+                        });
+        }
+        this.login=(callBack)=>{
+            socket.emit("login",
                             {"meetingId":thisMeetingId,"user":thisUser},
                             (result)=>{
-                                if (result.error===0){
-                                    resolve(result.userList);
-                                } else {
-                                    reject(result);
-                                }
+                                callBack(result);
                             });
-            })
         }
         this.leaveMeeting=()=>{
             socket.emit("leaveMeeting",
@@ -31,11 +35,46 @@ class MeetingUtil {
                             });
             socket.disconnect();
         }
+        this.rejectJoinRequest=(reqId,callBack)=>{
+            socket.emit("rejectJoinRequest",
+                        {"meetingId":thisMeetingId,"userId":reqId},
+                        (result)=>{
+                            callBack(result);
+                        });
+        }
+        this.sendMsg=(msg,callBack)=>{
+            socket.emit("sendMsg",
+                        {"meetingId":thisMeetingId,"userId":thisUser.id,"msg":msg},
+                        (result)=>{
+                            callBack(result);
+                        })
+        }        
 //===================================================================================================
+        socket.on("cancelJoinReq",joinReq=>{
+            console.log("Cancel Join Request:"+JSON.stringify(joinReq));
+            if (this.cancelJoinReqHandler)
+                this.cancelJoinReqHandler(joinReq);            
+        })
         socket.on("joinRequest",joinReq=>{
             console.log("MeetingUtil.joinRequest,joinReq="+JSON.stringify(joinReq));
             if (this.joinReqHandler)
                 this.joinReqHandler(joinReq);
+        });
+        socket.on("receiveMsg",info=>{
+            console.log("MeetingUtil receive message:"+JSON.stringify(info))
+            if (this.receiveMsgHandler)
+                this.receiveMsgHandler(info);
+            
+        });
+        socket.on("userJoin",user=>{
+            console.log(user.alias+" join the meeting");
+            if (this.userJoinHandler)
+                this.userJoinHandler(user);
+        });
+        socket.on("userLeft",user=>{
+            console.log(user.alias+" left the meeting");
+            if (this.userLeftHandler)
+                this.userLeftHandler(user);            
         });
     }
 }

@@ -82,7 +82,7 @@ class Meeting{
 				});
 				var user=userList[userId];
 				user.socketId=socket.id;
-				socket.to(meetingId).emit("newUserJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
+				socket.to(meetingId).emit("userJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
 				console.log('User '+user.alias+" login the meeting :"+meetingId+" @"+util.getTimeString());
 				return result;
 			} else {

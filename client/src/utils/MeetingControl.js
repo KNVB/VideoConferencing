@@ -1,5 +1,6 @@
 import LocalStreamManager from './LocalStreamManager';
 import MeetingUtil from "./MeetingUtil";
+import RemoteStreamManager from './RemoteStreamManager';
 class MeetingControl{
     constructor(meetingInfo){
 /*=========================================================================*
@@ -18,20 +19,61 @@ class MeetingControl{
 //=============================================================================        
         const localStreamManager=new LocalStreamManager(); 
         const meetingUtil=new MeetingUtil(meetingInfo.meetingId,meetingInfo.user);
-        
+        const remoteStreamManager=new RemoteStreamManager();
         this.meetingId=meetingInfo.meetingId;
         this.userList={};
         this.user=meetingInfo.user; 
 //==================================================================================           
+        meetingUtil.cancelJoinReqHandler=(joinReq)=>{
+            console.log("MeetingControl receive join meeting cancellation."); 
+            console.log(joinReq);
+            delete this.userList[joinReq.id];
+            Object.keys(this.cancelJoinReqHandler).forEach(methodName=>{
+                this.cancelJoinReqHandler[methodName](joinReq);
+                console.log(methodName+" is called.");
+            })
+        }
         meetingUtil.joinReqHandler=(joinReq)=>{
             console.log(joinReq);
             console.log("MeetingControl receive join meeting request.");
+            this.userList[joinReq.id]=joinReq;
             Object.keys(this.joinReqHandler).forEach(methodName=>{
                 this.joinReqHandler[methodName](joinReq);
-                console.log(methodName+" is called.");                
+                console.log(methodName+" is called.");
             })
+        }
+        meetingUtil.receiveMsgHandler=(info)=>{
+            console.log("MeetingControl receive message:"+JSON.stringify(info))
+            Object.keys(this.receiveMsgHandler).forEach(methodName=>{
+                this.receiveMsgHandler[methodName](info);
+                console.log(methodName+" is called.");
+            })
+            
+        }
+        meetingUtil.userJoinHandler=(user)=>{
+            console.log("MeetingControl receive user join meeting event.");
+            this.userList[user.id]=user;
+            Object.keys(this.userJoinHandler).forEach(methodName=>{
+                this.userJoinHandler[methodName](user);
+                console.log(methodName+" is called.");
+            });
         }    
+        meetingUtil.userLeftHandler=(user)=>{
+            console.log("MeetingControl receive user left meeting event.");
+            delete this.userList[user.id];
+            Object.keys(this.userLeftHandler).forEach(methodName=>{
+                this.userLeftHandler[methodName](user);
+                console.log(methodName+" is called.");
+            })    
+        }
 //==================================================================================
+        this.acceptJoinRequest=(reqId,callBack)=>{        
+            meetingUtil.acceptJoinRequest(reqId,(result=>{
+                console.log("Accept join Request result="+JSON.stringify(result));                
+                delete this.userList[reqId];
+                callBack(result);
+            }));
+        };    
         this.getLocalStream=async (shareVideo,shareAudio)=>{
             if (this.localStream){
                 this.localStream.getTracks().forEach(async track=>{
@@ -50,30 +92,45 @@ class MeetingControl{
             })
             .finally(()=>{
                 console.log("MeetingControl.getLocalStream is called.")
-                for (let methodName of this.localStreamUpdateHandler.keys()){
+                Object.keys(this.localStreamUpdateHandler).forEach(methodName=>{
                     console.log("Calling :"+methodName);
                     this.localStreamUpdateHandler[methodName](this.localStream);
-                }               
+                });
             })
-        }
-        
+        }        
         this.leaveMeeting=()=>{
+            console.log(this.user.alias+" leave the meeting");
             meetingUtil.leaveMeeting();
             Object.keys(this.leaveMeetingHandler).forEach(methodName=>{
                 this.leaveMeetingHandler[methodName]();
                 console.log(methodName+" is called.");                
-            })
+            });
+            if (this.localStream)
+                localStreamManager.closeStream(this.localStream);
+            remoteStreamManager.disconnect();    
         }
-        this.login=()=>{
-            meetingUtil.login()
-            .then((userList)=>{
-                this.userList=userList;
-                console.log("User "+this.user.alias+" Login Success");
-                console.log("User List:"+JSON.stringify(this.userList));
-            })
-            .catch(error=>{
-                throw(error);
-            })            
+        this.login=(callBack)=>{
+            meetingUtil.login(result=>{
+                if (result.error===0){
+                    this.userList=result.userList;
+                    console.log("User "+this.user.alias+" Login Success");
+                    console.log("User List:"+JSON.stringify(this.userList));
+                    remoteStreamManager.connect(this.user.id);
+                }
+                callBack(result);
+            });
+        }
+        this.rejectJoinRequest=(reqId,callBack)=>{
+            meetingUtil.rejectJoinRequest(reqId,(result=>{
+                //console.log("Reject join Request result="+JSON.stringify(result));
+                delete this.userList[reqId];
+                callBack(result);
+            }));
+        }
+        this.sendMsg=(msg,callBack)=>{
+            meetingUtil.sendMsg(msg,(result=>{
+                callBack(result);
+            }))
         }
     }    
 }

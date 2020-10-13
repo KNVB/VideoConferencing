@@ -111,7 +111,7 @@ class MediaPlayer extends React.Component {
       throw error;
     }) 
     .finally(()=>{     
-      //this.media.current.setStream(stream);
+      this.media.current.setStream(stream);
       this.setState({"stream":stream});
     })
     
