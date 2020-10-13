@@ -2,69 +2,35 @@ import LocalStreamManager from './LocalStreamManager';
 import MeetingUtil from "./MeetingUtil";
 class MeetingControl{
     constructor(meetingInfo){
-        var cancelJoinReqHandler=new Map();
-        var joinReqHandler=new Map();
-        var leaveMeetingHandler=new Map();        
-        var localStreamUpdateHandler=new Map();
-        var meetingCloseHandler=new Map();
+/*=========================================================================*
+ *    Event Handler                                                        *                         
+ *=========================================================================*/            
+        this.cancelJoinReqHandler=new Map();
+        this.joinReqHandler=new Map();
+        this.leaveMeetingHandler=new Map();        
+        this.localStreamUpdateHandler=new Map();
+        this.meetingCloseHandler=new Map();
+        this.receiveMsgHandler=new Map();
+        this.resetRemoteStreamHandler=new Map();
+        this.userLeftHandler=new Map();
+        this.userJoinHandler=new Map();
+        this.userJoinReqHandler=new Map();
+//=============================================================================        
+        const localStreamManager=new LocalStreamManager(); 
+        const meetingUtil=new MeetingUtil(meetingInfo.meetingId,meetingInfo.user);
         
-        var receiveMsgHandler=new Map();
-        var resetRemoteStreamHandler=new Map();
-        var userLeftHandler=new Map();
-        var userJoinHandler=new Map();
-        var userJoinReqHandler=new Map();
-
-        const localStreamManager=new LocalStreamManager();
-        const meetingId=meetingInfo.meetingId;
-        const meetingUtil=new MeetingUtil(meetingId,meetingInfo.user);
-        
-        this.localStream=null;
-        
+        this.meetingId=meetingInfo.meetingId;
         this.userList={};
-        var user=meetingInfo.user;
-//=============================================================================================
-        this.addCancelJoinReqHandler=(methodName,handler)=>{
-            cancelJoinReqHandler[methodName]=handler;
-        }
-        this.addJoinReqHandler=(methodName,handler)=>{
-            joinReqHandler[methodName]=handler;
-        }
-        this.addLeaveMeetingHandler=(methodName,handler)=>{
-            leaveMeetingHandler[methodName]=handler;
-        }
-        this.addLocalStreamUpdateHandler=(methodName,handler)=>{
-            localStreamUpdateHandler[methodName]=handler;
-        }
-        this.addMeetingCloseHandler=(methodName,handler)=>{
-            meetingCloseHandler[methodName]=handler;
-        }
-        this.addReceiveMsgHandler=(methodName,handler)=>{
-			receiveMsgHandler[methodName]=handler;
-		}	
-        this.addResetRemoteStreamHandler=(methodName,handler)=>{
-			resetRemoteStreamHandler[methodName]=handler;
-		}
-        this.addUserLeftHandler=(methodName,handler)=>{
-			userLeftHandler[methodName]=handler;
-        }		
-		this.addUserJoinHandler=(methodName,handler)=>{
-			userJoinHandler[methodName]=handler;
-		}
-		this.addUserJoinReqHandler=(methodName,handler)=>{
-			userJoinReqHandler[methodName]=handler;
-		}
-		this.addResetRemoteStreamHandler=(methodName,handler)=>{
-			resetRemoteStreamHandler[methodName]=handler;
-		}
-		this.addUserLeftHandler=(methodName,handler)=>{
-			userLeftHandler[methodName]=handler;
-		}
-		this.addUserJoinHandler=(methodName,handler)=>{
-			userJoinHandler[methodName]=handler;
-		}
-        this.addUserJoinReqHandler=(methodName,handler)=>{
-			userJoinReqHandler[methodName]=handler;
-        }
+        this.user=meetingInfo.user; 
+//==================================================================================           
+        meetingUtil.joinReqHandler=(joinReq)=>{
+            console.log(joinReq);
+            console.log("MeetingControl receive join meeting request.");
+            Object.keys(this.joinReqHandler).forEach(methodName=>{
+                this.joinReqHandler[methodName](joinReq);
+                console.log(methodName+" is called.");                
+            })
+        }    
 //==================================================================================
         this.getLocalStream=async (shareVideo,shareAudio)=>{
             if (this.localStream){
@@ -84,22 +50,31 @@ class MeetingControl{
             })
             .finally(()=>{
                 console.log("MeetingControl.getLocalStream is called.")
-                for (let methodName of localStreamUpdateHandler.keys()){
+                for (let methodName of this.localStreamUpdateHandler.keys()){
                     console.log("Calling :"+methodName);
-                    localStreamUpdateHandler[methodName](this.localStream);
+                    this.localStreamUpdateHandler[methodName](this.localStream);
                 }               
+            })
+        }
+        
+        this.leaveMeeting=()=>{
+            meetingUtil.leaveMeeting();
+            Object.keys(this.leaveMeetingHandler).forEach(methodName=>{
+                this.leaveMeetingHandler[methodName]();
+                console.log(methodName+" is called.");                
             })
         }
         this.login=()=>{
             meetingUtil.login()
             .then((userList)=>{
                 this.userList=userList;
-                console.log(this.userList);
+                console.log("User "+this.user.alias+" Login Success");
+                console.log("User List:"+JSON.stringify(this.userList));
             })
             .catch(error=>{
                 throw(error);
             })            
-        }        
-    }
+        }
+    }    
 }
 export default MeetingControl;

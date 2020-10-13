@@ -11,17 +11,17 @@ class ActionTab extends React.Component {
           active={true}
           className="border border-primary container p-1 rounded"
           id="meetingInfo">
-            <MeetingInfo meetingUtil={this.props.meetingUtil}/>    
+            <MeetingInfo meetingControl={this.props.meetingControl}/>    
         </Tab.Pane>
         <Tab.Pane
           className="border border-primary container fade p-0 position-relative rounded"
           id="userList">
-            <UserList meetingUtil={this.props.meetingUtil}/>  
+            <UserList meetingControl={this.props.meetingControl}/>  
         </Tab.Pane>
         <Tab.Pane
           className="border border-primary container fade p-0 position-relative rounded"
           id="chatBox">
-            <ChatBox meetingUtil={this.props.meetingUtil}/>
+            <ChatBox meetingControl={this.props.meetingControl}/>
         </Tab.Pane>
       </Tab.Content>
     );

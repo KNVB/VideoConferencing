@@ -7,7 +7,7 @@ class ChatButton extends React.Component {
     this.theLink=React.createRef();
   }
   componentDidMount(){
-    this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
+    this.props.meetingControl.receiveMsgHandler["ChatButton.receiveMsgHandler"]=this.receiveMsgHandler;
     this.theLink=this.theLink.current;
   }
   clearCount=()=>{

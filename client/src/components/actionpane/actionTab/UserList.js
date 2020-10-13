@@ -1,24 +1,24 @@
-import config from '../../../utils/config';
 import {Button, Media,Modal}  from 'react-bootstrap';
 import React, { Fragment } from "react";
 import RemoteMedia from '../../media/Media';
-import Peer from "peerjs";
+
 class UserList extends React.Component {
     constructor(props){
         super(props);
         this.mediaList=[];        
-        this.state={"userList":this.props.meetingUtil.userList,
+        this.state={"userList":this.props.meetingControl.userList,
                     "pendingReq":{}};
     }
     componentDidMount(){
-        this.user=this.props.meetingUtil.user;
-        this.props.meetingUtil.cancelJoinReqHandler.push(this.userCountChangeHandler);            
-        this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
-        this.props.meetingUtil.localStreamUpdateHandler.push(this.localStreamUpdateHandler);
-        this.props.meetingUtil.newUserJoinHandler.push(this.newUserJoinHandler);
-        this.props.meetingUtil.resetRemoteStreamHandler.push(this.resetRemoteStreamHandler);
-        this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
+        this.user=this.props.meetingControl.user;
         console.log(this.user.id+" "+this.user.alias);
+        this.props.meetingControl.cancelJoinReqHandler["UserList.userCountChangeHandler"]=this.userCountChangeHandler;
+        this.props.meetingControl.joinReqHandler["UserList.joinReqHandler"]=this.joinReqHandler;
+        this.props.meetingControl.localStreamUpdateHandler["UserList.localStreamUpdateHandler"]=this.localStreamUpdateHandler;
+        this.props.meetingControl.resetRemoteStreamHandler["UserList.resetRemoteStreamHandler"]=this.resetRemoteStreamHandler;
+        this.props.meetingControl.userLeftHandler["UserList.userCountChangeHandler"]=this.userCountChangeHandler;
+        this.props.meetingControl.userJoinHandler["UserList.userJoinHandler"]=this.userJoinHandler;
+/*
         this.peer=new Peer(this.user.id,{host:"/",path:"/peerServer",port:config.API_PORT,debug:2});
         this.peer.on("call",call=>{
             var mediaList=this.mediaList;
@@ -35,9 +35,10 @@ class UserList extends React.Component {
             });
         });
         this.props.meetingUtil.sendLocalStreamToOthers(this.peer);
+        */
     }
     componentWillUnmount() {
-        this.peer.disconnect();
+        //this.peer.disconnect();
     }
     acceptRequest=()=>{
         this.props.meetingUtil.acceptJoinRequest(this.props.meetingUtil.meetingId,this.state.pendingReq.id);
@@ -63,10 +64,6 @@ class UserList extends React.Component {
         }
         this.props.meetingUtil.sendLocalStreamToOthers(this.peer);
     });
-    newUserJoinHandler=(user=>{
-        console.log(user.alias+" join the meeting");
-        this.userCountChangeHandler(user);
-    })
   
     pendingRequestHandler=(user)=>{
         this.setState({pendingReq:user,
@@ -88,13 +85,17 @@ class UserList extends React.Component {
     }
     userCountChangeHandler=(user=>{
         this.setState({"userList":this.props.meetingUtil.userList});
+    })
+    userJoinHandler=(user=>{
+        console.log(user.alias+" join the meeting");
+        this.userCountChangeHandler(user);
     })    
     render() {
         let finalResult=[],pendingReq=[],normalUser=[];
-        let thisUser=this.props.meetingUtil.user;
+        let thisUser=this.props.meetingControl.user;
         this.mediaList={};
         Object.keys(this.state.userList).forEach(userId=>{
-            var user=this.props.meetingUtil.userList[userId];
+            var user=this.props.meetingControl.userList[userId];
             if (user.isHost){
                 finalResult.push(<Media className="border-bottom border-info p-1" key={user.id}>
                                     <div className="m-0 p-0" style={{"width":"80px","height":"64px"}}>

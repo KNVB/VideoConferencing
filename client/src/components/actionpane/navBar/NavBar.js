@@ -11,7 +11,7 @@ class NavBar extends React.Component {
     this.nav=React.createRef();
   }
   componentDidMount(){
-    this.props.meetingUtil.joinReqHandler.push(this.joinReqHandler);
+    this.props.meetingControl.joinReqHandler["NavBar.joinReqHandler"]=this.joinReqHandler;
     this.nav=this.nav.current;  
   }
  
@@ -21,9 +21,9 @@ class NavBar extends React.Component {
   render() {
     return (
       <Nav as="ul" className="p-0 m-0" justify={true} ref={this.nav} variant="pills">
-        <ChatButton meetingUtil={this.props.meetingUtil}/>
-        <MeetingInfoButton  meetingUtil={this.props.meetingUtil}/>
-        <UserListButton  meetingUtil={this.props.meetingUtil}/>
+        <ChatButton meetingControl={this.props.meetingControl}/>
+        <MeetingInfoButton  meetingControl={this.props.meetingControl}/>
+        <UserListButton  meetingControl={this.props.meetingControl}/>
       </Nav>
     );
   }

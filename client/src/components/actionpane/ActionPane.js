@@ -9,14 +9,14 @@ class ActionPane extends React.Component {
     return (
       <Card className="rounded w-100">
         <Card.Header className="p-1 m-1 rounded">
-          <NavBar meetingUtil={this.props.meetingUtil}/>
+          <NavBar meetingControl={this.props.meetingControl}/>
         </Card.Header>
         <Card.Body className="d-flex flex-grow-1 pb-0 pl-1 pr-1 pt-0 w-100">
-          <ActionTab meetingUtil={this.props.meetingUtil}/>          
+          <ActionTab meetingControl={this.props.meetingControl}/>          
         </Card.Body>
         <Card.Footer className="m-1 p-1 rounded">
           <div className="d-flex flex-row justify-content-around pt-1">
-              <LeaveButton meetingUtil={this.props.meetingUtil}/>
+              <LeaveButton meetingControl={this.props.meetingControl}/>
           </div>
         </Card.Footer>
       </Card>  

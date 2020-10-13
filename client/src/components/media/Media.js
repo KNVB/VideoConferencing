@@ -13,7 +13,7 @@ class Media extends React.Component {
     if (this.props["elapseTime"]) {
       this.videoTag.current.currentTime = this.props["elapseTime"];
     }
-    this.props.meetingUtil.leaveMeetingHandler.push(this.closeMedia);
+    this.props.meetingControl.leaveMeetingHandler["Media.closeMedia"]=this.closeMedia;
     this.videoTag.current.ontimeupdate = () => {
       if (this.videoTag.current && this.props.timeUpdateHandler) {
         this.props.timeUpdateHandler(

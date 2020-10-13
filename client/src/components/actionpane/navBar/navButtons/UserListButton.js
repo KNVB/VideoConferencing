@@ -3,14 +3,14 @@ import React from "react";
 class UserListButton extends React.Component {
   constructor(props){
     super(props);
-    this.state={"userList":this.props.meetingUtil.userList};
+    this.state={"userList":this.props.meetingControl.userList};
   }
   componentDidMount(){
-    this.props.meetingUtil.newUserJoinHandler.push(this.userCountChangeHandler);
-    this.props.meetingUtil.userLeftHandler.push(this.userCountChangeHandler);
+    this.props.meetingControl.userLeftHandler["UserListButton.userCountChangeHandler"]=this.userCountChangeHandler;
+    this.props.meetingControl.userJoinHandler["UserListButton.userJoinHandler"]=this.userCountChangeHandler;
   }
   userCountChangeHandler=(user=>{
-    this.setState({"userList":this.props.meetingUtil.userList});
+    this.setState({"userList":this.props.meetingControl.userList});
   })    
   render() {
     return (

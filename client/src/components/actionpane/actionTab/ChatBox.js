@@ -17,10 +17,10 @@ class ChatBox extends React.Component {
     }
     componentDidMount() {
         this.msgHistory=this.msgHistory.current;
-        this.props.meetingUtil.userLeftHandler.push(this.userLeftHandler);
-        this.props.meetingUtil.newUserJoinHandler.push(this.userJoinHandler);
-        this.props.meetingUtil.receiveMsgHandler.push(this.receiveMsgHandler);
-        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingUtil.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
+        this.props.meetingControl.userLeftHandler["ChatBox.userLeftHandler"]=this.userLeftHandler;
+        this.props.meetingControl.userJoinHandler["ChatBox.userJoinHandler"]=this.userJoinHandler;
+        this.props.meetingControl.receiveMsgHandler["ChatBox.receiveMsgHandler"]=this.receiveMsgHandler;
+        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingControl.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.scrollToBottom();
     }    
     componentDidUpdate() {

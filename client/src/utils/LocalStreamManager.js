@@ -34,7 +34,12 @@ class LocalStreamManager{
 			    var constraints={"audio":shareAudio,"video":shareVideo};
                 return navigator.mediaDevices.getDisplayMedia(constraints);
             }
-        }
+		}
+		this.closeStream=async(stream)=>{
+			stream.getTracks().forEach( async track=>{
+				await track.stop();
+			});
+		}
     }
    
 }

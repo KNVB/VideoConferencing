@@ -17,7 +17,7 @@ class Meeting extends React.Component {
         try
         {
             meetingControl.login();
-            meetingControl.addMeetingCloseHandler("Meeting.meetingCloseHandler",this.meetingCloseHandler);
+            meetingControl.meetingCloseHandler["Meeting.meetingCloseHandler"]=this.meetingCloseHandler;
             this.setState({"meetingControl":meetingControl});
         }
         catch(error){

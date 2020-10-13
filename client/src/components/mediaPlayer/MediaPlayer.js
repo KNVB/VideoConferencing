@@ -104,7 +104,7 @@ class MediaPlayer extends React.Component {
     var stream=null;
     await this.props.meetingControl.getLocalStream(shareVideo,shareAudio)
     .then(()=>{
-        stream=this.props.meetingUtil.localStream;
+        stream=this.props.meetingControl.localStream;
         console.log("The local stream is "+((stream)?"Object":"null"));
     })
     .catch (error=>{
@@ -156,7 +156,7 @@ class MediaPlayer extends React.Component {
       <Fragment>
         <div className={playerClass}>
           <Media
-            meetingUtil={this.props.meetingUtil}
+            meetingControl={this.props.meetingControl}
             muted={this.state.muted}
             ref={this.media}
             timeUpdateHandler={this.timeUpdateHandler}

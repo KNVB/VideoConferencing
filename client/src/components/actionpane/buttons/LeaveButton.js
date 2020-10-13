@@ -20,7 +20,7 @@ class LeaveButton extends Component {
         this.leaveMeetingOnly();
     }
     leaveMeetingOnly=()=>{
-        this.props.meetingUtil.leaveMeeting();
+        this.props.meetingControl.leaveMeeting();
         this.setState({leave:true});
     }
     render() {
