@@ -11,6 +11,7 @@ class MeetingUtil {
                 
         this.joinReqHandler=null;
         this.receiveMsgHandler=null;
+        this.resetRemoteStreamHandler=null;
         this.userJoinHandler=null;
         this.userLeftHandler=null;
         this.acceptJoinRequest=(reqId,callBack)=>{
@@ -42,6 +43,13 @@ class MeetingUtil {
                             callBack(result);
                         });
         }
+        this.resetRemoteStream=(callBack)=>{
+            socket.emit("resetRemoteStream",
+                        {"meetingId":thisMeetingId,"userId":thisUser.id},
+                        (result)=>{
+                            callBack(result);
+                        })
+        }
         this.sendMsg=(msg,callBack)=>{
             socket.emit("sendMsg",
                         {"meetingId":thisMeetingId,"userId":thisUser.id,"msg":msg},
@@ -65,6 +73,11 @@ class MeetingUtil {
             if (this.receiveMsgHandler)
                 this.receiveMsgHandler(info);
             
+        });
+        socket.on("resetRemoteStream",info=>{
+            console.log("MeetingUtil receives resetRemoteStream event:"+JSON.stringify(info));
+            if (this.resetRemoteStreamHandler)
+                this.resetRemoteStreamHandler(info);
         });
         socket.on("userJoin",user=>{
             console.log(user.alias+" join the meeting");

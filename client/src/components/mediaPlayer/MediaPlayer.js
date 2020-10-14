@@ -35,7 +35,7 @@ class MediaPlayer extends React.Component {
     this.state["timeUpdateHandler"] = "00:00:00";
   }
   async componentDidMount() {
-    if (this.state.shareVideo || this.state.shareAudio){
+    //if (this.state.shareVideo || this.state.shareAudio){
       await this.setStream(this.state.shareVideo,this.state.shareAudio)
       .then (()=>{
         console.log("Init local stream success");
@@ -44,7 +44,7 @@ class MediaPlayer extends React.Component {
         console.log("An Exception is catched by MediPlayer");
         console.log(error.message);
       })
-    }
+   // }
     console.log("Init Media Player success");
   }
   hidePInPPlayer = () => {
@@ -111,7 +111,7 @@ class MediaPlayer extends React.Component {
       throw error;
     }) 
     .finally(()=>{     
-      this.media.current.setStream(stream);
+      //this.media.current.setStream(stream);
       this.setState({"stream":stream});
     })
     

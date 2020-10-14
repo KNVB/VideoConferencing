@@ -15,6 +15,7 @@ class UserList extends React.Component {
         this.props.meetingControl.cancelJoinReqHandler["UserList.userCountChangeHandler"]=this.userCountChangeHandler;
         this.props.meetingControl.joinReqHandler["UserList.joinReqHandler"]=this.joinReqHandler;
         this.props.meetingControl.localStreamUpdateHandler["UserList.localStreamUpdateHandler"]=this.localStreamUpdateHandler;
+        this.props.meetingControl.remoteStreamHandler["UserList.remoteStreamHandler"]=this.remoteStreamHandler;
         this.props.meetingControl.resetRemoteStreamHandler["UserList.resetRemoteStreamHandler"]=this.resetRemoteStreamHandler;
         this.props.meetingControl.userLeftHandler["UserList.userCountChangeHandler"]=this.userCountChangeHandler;
         this.props.meetingControl.userJoinHandler["UserList.userJoinHandler"]=this.userJoinHandler;
@@ -45,13 +46,7 @@ class UserList extends React.Component {
         this.setState({pendingReq:user,
         showApprovModal : true});
     }
-    userCountChangeHandler=(user=>{
-        this.setState({"joinReq":Object.keys(this.props.meetingControl.userList).length});
-    })
-    userJoinHandler=(user=>{
-        console.log(user.alias+" join the meeting");
-        this.userCountChangeHandler(user);
-    })    
+   
     rejectRequest=()=>{
         //console.log(this.state.pendingReq);
         this.props.meetingControl.rejectJoinRequest(this.state.pendingReq.id,(result=>{
@@ -59,6 +54,23 @@ class UserList extends React.Component {
                 showApprovModal : false});
         }));        
     }
+    remoteStreamHandler=(metadata,stream)=>{
+        console.log("Receive stream from "+metadata.alias);
+        var media=this.mediaList[metadata.userId];
+        media.setStream(stream);
+    }
+    resetRemoteStreamHandler=(info)=>{
+        console.log("Reset Remote Stream Handler");
+        var media=this.mediaList[info.userId];
+        media.closeMedia();
+    }
+    userCountChangeHandler=(user=>{
+        this.setState({"joinReq":Object.keys(this.props.meetingControl.userList).length});
+    })
+    userJoinHandler=(user=>{
+        console.log(user.alias+" join the meeting");
+        this.userCountChangeHandler(user);
+    })    
     render() {
         let finalResult=[],pendingReq=[],normalUser=[];
         let thisUser=this.props.meetingControl.user;
