@@ -29,7 +29,6 @@ class Meeting extends React.Component {
         }                
     }
     leaveMeetingHandler=()=>{
-        sessionStorage.clear();
         this.setState({leave:true});
     }
     meetingCloseHandler=()=>{

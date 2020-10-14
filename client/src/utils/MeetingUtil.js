@@ -21,6 +21,15 @@ class MeetingUtil {
                             callBack(result);
                         });
         }
+        this.endMeeting=()=>{
+            this.socket.emit("endMeeting",
+                            {"meetingId":thisMeetingId,"userId":thisUser.id},
+                            (result)=>{
+                                console.log(result);
+                            });
+            this.socket.disconnect();
+            sessionStorage.clear();
+        }
         this.login=(callBack)=>{
             socket.emit("login",
                             {"meetingId":thisMeetingId,"user":thisUser},
@@ -35,6 +44,7 @@ class MeetingUtil {
                                 console.log(result);
                             });
             socket.disconnect();
+            sessionStorage.clear();
         }
         this.rejectJoinRequest=(reqId,callBack)=>{
             socket.emit("rejectJoinRequest",
