@@ -1,3 +1,4 @@
+import config from '../utils/config';
 import fetchApi from '../utils/fetch';
 import { Col,Container,Row } from 'react-bootstrap';
 
@@ -58,7 +59,7 @@ class CreateMeeting extends Component {
                                 <label htmlFor="meetingPwd">Meeting Password:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input id="meetingPwd" name="meetingPwd" type="password" defaultValue="1" required/>
+                                <input id="meetingPwd" name="meetingPwd" type="password" defaultValue={config.DEFAULT_MEETING_PWD} required/>
                             </div>
                         </Row>
                         <Row>
@@ -66,7 +67,7 @@ class CreateMeeting extends Component {
                                 <label htmlFor="cfmPwd">Confirm Password:</label>
                             </div>
                             <div className="col-6 m-0 p-0">    
-                                <input id="cfmPwd" name="cfmPwd" type="password" defaultValue="1" required/>
+                                <input id="cfmPwd" name="cfmPwd" type="password" defaultValue={config.DEFAULT_MEETING_PWD} required/>
                             </div>
                         </Row>     
                         <Row>
