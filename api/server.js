@@ -1,10 +1,12 @@
 httpServerPort = 9000;
 //===============================================================
 var apiRouter,app,bodyParser,cors,express;
-var http,httpServer,io,meetingManager,peerServer;
+var http,httpServer,io,meetingManager,path,peerServer;
 bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
+path = require('path')
+
 var { ExpressPeerServer } = require('peer');
 
 //===============================================================
@@ -24,6 +26,10 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/', peerServer); 
 app.use('/api', apiRouter);
+app.use(express.static(path.join(__dirname, 'build')))
+app.use('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 apiRouter.post('/initMeeting',function(req,res){
 	res.send(meetingManager.initMeeting(req.body));
 });
