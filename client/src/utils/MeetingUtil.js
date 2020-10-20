@@ -8,7 +8,7 @@ class MeetingUtil {
         const socket=io.connect(SOCKET_URL);
         const thisMeetingId=meetingId;
         const thisUser=user;
-                
+
         this.joinReqHandler=null;
         this.receiveMsgHandler=null;
         this.resetRemoteStreamHandler=null;

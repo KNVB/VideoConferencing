@@ -1,3 +1,4 @@
+import config from './utils/config'
 import Info from './routes/Info';
 import React ,{Component} from 'react';
 import './App.css';
@@ -34,6 +35,16 @@ class FirstForm extends Component {
                             <a href="/joinMeeting/">Join a meeting</a>
                         </Col>
                     </Row>
+{/*}
+                    <Row>
+                        <Col>config.API_URL={config.API_URL}</Col>
+                        <Col>config.API_HOST={config.API_HOST}</Col>
+                        <Col>config.API_PORT={config.API_PORT}</Col>
+                        <Col>config.SOCKET_URL={config.SOCKET_URL}</Col>
+                        <Col>process.env.REACT_APP_DEFAULT_MEETING_PWD={((process.env.REACT_APP_DEFAULT_MEETING_PWD===undefined)?"null":"not null")}</Col>
+                        <Col>config.DEFAULT_MEETING_PWD={config.DEFAULT_MEETING_PWD}</Col>
+                    </Row>
+*/}
                 </Container>
             );
     }
