@@ -3,8 +3,7 @@ import io from 'socket.io-client';
 
 class MeetingUtil {
     constructor(meetingId,user){
-        const SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
-        const SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
+        const SOCKET_URL=config.SOCKET_URL;
         const socket=io.connect(SOCKET_URL);
         const thisMeetingId=meetingId;
         const thisUser=user;

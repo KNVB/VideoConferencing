@@ -8,7 +8,8 @@ class RemoteStreamManager {
         this.remoteStreamHandler=null;
         this.connect=(user)=>{ 
             thisUser=user;
-            peer=new Peer(thisUser.id,{host:"/",path:"/peerServer",port:config.API_PORT,debug:2});
+
+            peer=new Peer(thisUser.id,{host:config.PEER_SERVER,path:"/peerServer",port:config.SOCKET_PORT,debug:2});
             peer.on("call",call=>{
                 call.answer(this.localStream); //Before getting the remote stream, answer the call with the stream;
                 call.on("stream",(remoteStream=>{
