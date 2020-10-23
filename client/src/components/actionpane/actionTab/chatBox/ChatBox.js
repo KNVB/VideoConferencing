@@ -1,7 +1,6 @@
 import ChatMsg from './ChatMsg';
 import React from "react";
 import UserLeftJoinMsg from './UserLeftJoinMsg';
-import Utility from '../../../../utils/Utility';
 class ChatBox extends React.Component {
     constructor(props){
         super(props);

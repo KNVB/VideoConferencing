@@ -1,4 +1,5 @@
 import Collapse from "react-bootstrap/Collapse";
+import LocalVideoPlayer from './LocalVideoPlayer';
 import MaxMinButton from "./buttons/MaxMinButton";
 import Media from "../media/Media";
 import MuteButton from "./buttons/MuteButton";
@@ -34,6 +35,7 @@ class MediaPlayer extends React.Component {
     }
     async componentDidMount() {
         this.props.meetingControl.remoteStreamHandler["MediaPlayer.remoteStreamHandler"]=this.remoteStreamHandler;
+        this.props.meetingControl.resetRemoteStreamHandler["MediaPlayer.resetRemoteStreamHandler"]=this.resetRemoteStreamHandler;
         await this.setStream(this.state.shareVideo,this.state.shareAudio)
         .then (()=>{
           console.log("Init local stream success");
@@ -51,7 +53,13 @@ class MediaPlayer extends React.Component {
             this.media.current.setStream(stream);
         }
     }
-
+    resetRemoteStreamHandler=(info)=>{
+        var userId=info.userId;
+        var user=this.props.meetingControl.userList[userId];
+        if (user.isHost){
+            this.media.current.closeMedia();
+        }
+    }
     timeUpdateHandler = (timeValue) => {
         this.setState({ elapseTime: timeValue });
     };
@@ -123,12 +131,17 @@ class MediaPlayer extends React.Component {
         */
     };
     render() {
+        var localVideoPlayer=null;
         var playerClass = "d-flex flex-grow-1 p-1 rouned";
         if (this.state.showFullScreen === true) {
             playerClass += " full_screen";
         } else {
             playerClass += " border border-warning ";
             playerClass += " panel position-relative";
+        }
+        if ((this.state.stream)&& (this.state.stream.getVideoTracks().length>0)){
+            localVideoPlayer=<LocalVideoPlayer meetingControl={this.props.meetingControl} 
+                                stream={this.state.stream}/>
         }
         return (
             <Fragment>
@@ -173,7 +186,8 @@ class MediaPlayer extends React.Component {
                             </div>
                         </span>
                     </Collapse>
-                </div>    
+                </div>
+                {localVideoPlayer}    
             </div>
             </Fragment>                  
         )
