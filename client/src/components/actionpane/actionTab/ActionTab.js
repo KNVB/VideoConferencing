@@ -2,7 +2,7 @@ import {Tab} from "react-bootstrap";
 import React from "react";
 import MeetingInfo from "./MeetingInfo";
 import UserList from "./UserList";
-import ChatBox from "./ChatBox";
+import ChatBox from "./chatBox/ChatBox";
 class ActionTab extends React.Component {
   render() {
     return (

@@ -1,8 +1,11 @@
+import ChatMsg from './ChatMsg';
 import React from "react";
-import Utility from '../../../utils/Utility';
+import UserLeftJoinMsg from './UserLeftJoinMsg';
+import Utility from '../../../../utils/Utility';
 class ChatBox extends React.Component {
     constructor(props){
         super(props);
+        this.previousUserId="";
         this.msgHistory=React.createRef();
         this.state={"history":[]};
         this.sendMsgForm=null;
@@ -20,7 +23,9 @@ class ChatBox extends React.Component {
         this.props.meetingControl.userLeftHandler["ChatBox.userLeftHandler"]=this.userLeftHandler;
         this.props.meetingControl.userJoinHandler["ChatBox.userJoinHandler"]=this.userJoinHandler;
         this.props.meetingControl.receiveMsgHandler["ChatBox.receiveMsgHandler"]=this.receiveMsgHandler;
-        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{this.props.meetingControl.user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
+        this.addHistory(
+            <UserLeftJoinMsg user={this.props.meetingControl.user} action="join"/>
+        );
         this.scrollToBottom();
     }    
     componentDidUpdate() {
@@ -29,10 +34,19 @@ class ChatBox extends React.Component {
     receiveMsgHandler=(info=>{
         //console.log("Receive Message:"+JSON.stringify(info));
         console.log("Receive Message from "+info.alias);
+        if (this.previousUserId!==info.userId){
+            this.previousUserId=info.userId;
+            this.addHistory(<ChatMsg alias={info.alias} msg={info.msg}/>)
+        } else {
+            this.addHistory(<ChatMsg msg={info.msg}/>)
+        }       
+        
+        /*
         this.addHistory(<div key={(new Date()).getTime()}>{info.alias}:<br/> 
                             {info.msg} &nbsp;&nbsp;&nbsp;
                             <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span>
                         </div>);
+        */                
     })
     scrollToBottom = () => {
         this.msgHistory.scrollTop=this.msgHistory.scrollHeight;
@@ -58,11 +72,17 @@ class ChatBox extends React.Component {
     }
     userJoinHandler=(user=>{
         //console.log("new user join:"+JSON.stringify(user));
-        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
+        //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
+        this.addHistory(
+            <UserLeftJoinMsg user={user} action="join"/>
+        );
     });
     userLeftHandler=(user=>{
         //console.log("User Left:"+JSON.stringify(user));
-        this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
+        //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
+        this.addHistory(
+            <UserLeftJoinMsg user={user} action="left"/>
+        );
     });
     
     render() {
