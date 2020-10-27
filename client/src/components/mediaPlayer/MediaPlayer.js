@@ -18,36 +18,21 @@ class MediaPlayer extends React.Component {
         this.media = React.createRef();
         this.state = {};
         this.state["muted"] = true;
-        if (user.shareMedia.audio==="true"){
-          this.state["shareAudio"]=true;
-        } else {
-          this.state["shareAudio"]=false;
-        }
-        if (user.shareMedia.video==="true"){
-          this.state["shareVideo"]=true;
-        }else{
-          this.state["shareVideo"]=false;
-        }
+        this.state["shareAudio"]=user.shareMedia.audio;
+        this.state["shareVideo"]=user.shareMedia.video;
         this.state["showControlBar"] = true;    
         this.state["showFullScreen"] = false;
         this.state["stream"]=null;
         this.state["timeUpdateHandler"] = "00:00:00";
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.props.meetingControl.remoteStreamHandler["MediaPlayer.remoteStreamHandler"]=this.remoteStreamHandler;
         this.props.meetingControl.resetRemoteStreamHandler["MediaPlayer.resetRemoteStreamHandler"]=this.resetRemoteStreamHandler;
-        await this.setStream(this.state.shareVideo,this.state.shareAudio)
-        .then (()=>{
-          console.log("Init local stream success");
-        })
-        .catch (error=>{
-          console.log("An Exception is catched by MediPlayer");
-          console.log(error.message);
-        })
+        this.setState({"stream":this.props.meetingControl.localStream});
         console.log("Init Media Player success");
     }
     remoteStreamHandler=(metadata,stream)=>{
-        console.log("Receive stream from "+metadata.alias);
+        console.log("MediaPlayer.remoteStreamHandler Receive stream from "+metadata.alias);
         var user=this.props.meetingControl.userList[metadata.userId];
         if(user.isHost){
             this.media.current.setStream(stream);

@@ -1,6 +1,5 @@
 import { Button,Modal } from 'react-bootstrap';
 import React,{Component, Fragment}  from 'react';
-import { Redirect } from "react-router-dom";
 class LeaveButton extends Component {
     constructor(props){
         super(props);

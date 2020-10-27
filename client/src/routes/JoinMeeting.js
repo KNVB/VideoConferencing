@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { Button,Col,Container,Modal,Row,Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import JoinMeetingUtil from '../utils/JoinMeetingUtil';
@@ -31,6 +32,16 @@ class JoinMeeting extends Component {
                 this.joinReq['meetingPwd']=form.meetingPwd.value;
                 this.joinReq['shareAudio']=form.shareAudio.value;
                 this.joinReq['shareVideo']=form.shareVideo.value;
+
+                if ($(form.shareAudio).val()==="true")
+                    this.joinReq['shareAudio']=true;
+                else     
+                    this.joinReq['shareAudio']=false;
+                if ($(form.shareVideo).val()==="true")
+                    this.joinReq['shareVideo']=true;
+                else
+                    this.joinReq['shareVideo']=false;
+
                 this.jointMeetingUtil=new JoinMeetingUtil();
                 this.jointMeetingUtil.getJoinReqId(this.joinReq,(result)=>{
                     if (result.error===0){

@@ -1,7 +1,8 @@
-import config from '../utils/config';
-import fetchApi from '../utils/fetch';
+import $ from "jquery";
 import { Col,Container,Row } from 'react-bootstrap';
 
+import config from '../utils/config';
+import fetchApi from '../utils/fetch';
 import React ,{Component} from 'react';
 import { Redirect } from 'react-router-dom';
 import UserAttrib from '../utils/UserAttrib';
@@ -21,8 +22,14 @@ class CreateMeeting extends Component {
                     var data={};
                     data['alias']=form.alias.value;
                     data['meetingPwd']=form.meetingPwd.value;
-                    data['shareAudio']=form.shareAudio.value;
-                    data['shareVideo']=form.shareVideo.value;                    
+                    if ($(form.shareAudio).val()==="true")
+                        data['shareAudio']=true;
+                    else     
+                        data['shareAudio']=false;
+                    if ($(form.shareVideo).val()==="true")
+                        data['shareVideo']=true;
+                    else
+                        data['shareVideo']=false;
                     fetchApi('/initMeeting','POST',{},data,'json')
                     .then(x=>{
                         this.setState({'meeting': x});
@@ -42,6 +49,7 @@ class CreateMeeting extends Component {
 
     render(){
         if (this.state.meeting){
+            //console.log(this.state.meeting);
             sessionStorage.setItem("meetingInfo",JSON.stringify(this.state.meeting));
             return <Redirect to={"/meeting/"+this.state.meeting.meetingId}/>
         } else {

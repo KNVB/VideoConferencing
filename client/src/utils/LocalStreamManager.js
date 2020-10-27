@@ -14,9 +14,11 @@ class LocalStreamManager{
         this.getMediaStream=async (shareVideo,shareAudio)=>{
 			//var constraints={"audio":shareAudio,"video":shareVideo};
 			var constraints={};
+			console.log("shareVideo="+shareVideo+",shareAudio="+shareAudio);
 			if (shareVideo){
 				constraints["video"]=templateConstraint.video;
 			}
+			//console.log("constraints="+JSON.stringify(constraints)); 
 			if (shareAudio){
 				constraints["audio"]=templateConstraint.audio;
 			}

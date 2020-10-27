@@ -19,6 +19,11 @@ class UserList extends React.Component {
         this.props.meetingControl.resetRemoteStreamHandler["UserList.resetRemoteStreamHandler"]=this.resetRemoteStreamHandler;
         this.props.meetingControl.userLeftHandler["UserList.userCountChangeHandler"]=this.userCountChangeHandler;
         this.props.meetingControl.userJoinHandler["UserList.userJoinHandler"]=this.userJoinHandler;
+        
+        if (this.props.meetingControl.localStream){
+            var media=this.mediaList[this.user.id];
+            media.setStream(this.props.meetingControl.localStream)
+        }
     }
     componentWillUnmount() {
         //this.peer.disconnect();
@@ -55,7 +60,7 @@ class UserList extends React.Component {
         }));        
     }
     remoteStreamHandler=(metadata,stream)=>{
-        console.log("Receive stream from "+metadata.alias);
+        console.log("UserList.remoteStreamHandler Receive stream from "+metadata.alias);
         var media=this.mediaList[metadata.userId];
         media.setStream(stream);
     }

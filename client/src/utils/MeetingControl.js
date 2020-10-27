@@ -20,7 +20,7 @@ class MeetingControl{
 //=============================================================================        
         const localStreamManager=new LocalStreamManager(); 
         const meetingUtil=new MeetingUtil(meetingInfo.meetingId,meetingInfo.user);
-        const remoteStreamManager=new RemoteStreamManager();
+        const remoteStreamManager=new RemoteStreamManager(this);
         this.meetingId=meetingInfo.meetingId;
         this.userList={};
         this.user=meetingInfo.user; 
@@ -103,7 +103,6 @@ class MeetingControl{
                 //console.log(stream);
             })
             .catch(error=>{
-                console.log("An error catched by MeetingUtil.");
                 throw error
             })
             .finally(()=>{
@@ -131,7 +130,7 @@ class MeetingControl{
                 if (result.error===0){
                     this.userList=result.userList;
                     console.log("User "+this.user.alias+" Login Success");
-                    console.log("User List:"+JSON.stringify(this.userList));
+                    //console.log("User List:"+JSON.stringify(this.userList));
                     remoteStreamManager.connect(this.user);
                 }
                 callBack(result);
@@ -144,10 +143,11 @@ class MeetingControl{
                 callBack(result);
             }));
         }
+        
         this.sendLocalStreamToOthers=()=>{
             console.log("MeetingControl.sendLocalStreamToOthers is called");
             if (this.localStream){
-                remoteStreamManager.sendStreamToAllUser(this.userList,this.user,this.localStream);
+                remoteStreamManager.sendStreamToAllUser(this.userList,this.user);
             }else {
                 remoteStreamManager.localStream=null;
                 meetingUtil.resetRemoteStream(result=>{
@@ -156,6 +156,7 @@ class MeetingControl{
                 });
             }
         }
+        
         this.sendMsg=(msg,callBack)=>{
             meetingUtil.sendMsg(msg,(result=>{
                 callBack(result);

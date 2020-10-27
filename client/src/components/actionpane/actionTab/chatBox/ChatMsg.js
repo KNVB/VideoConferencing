@@ -1,9 +1,10 @@
 import React from "react";
 import Utility from '../../../../utils/Utility';
 class ChatBox extends React.Component {
+    /*
     constructor(props){
         super(props);
-    }
+    }*/
     render() {
         var header;
         if (this.props.alias===undefined){

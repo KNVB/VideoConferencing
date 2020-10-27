@@ -5,19 +5,16 @@ import "./Meeting.css";
 import MediaPlayer from '../mediaplayer/MediaPlayer';
 import MeetingControl from "../../utils/MeetingControl";
 import React from "react";
-import Utility from '../../utils/Utility';
 class Meeting extends React.Component {
     constructor(props){
         super(props);
         this.state={leave:false}
     }
     componentDidMount(){
-        //console.log(Utility.getMeetingInfo());
-        this.meetingInfo=Utility.getMeetingInfo();
-        if ( this.meetingInfo===null){
+        if (sessionStorage.getItem("meetingInfo")===null){
             this.setState({"invalidAccess":true});
         } else {
-            console.log(this.meetingInfo);
+            this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
             var meetingControl =new MeetingControl(this.meetingInfo);
             meetingControl.login(async result=>{
                 if (result.error===0){
@@ -29,7 +26,7 @@ class Meeting extends React.Component {
                         console.log("The local stream is "+((meetingControl.localStream)?"Object":"null"));
                     })
                     .catch (error=>{
-                        console.log("Get local stream failure."+error.message);
+                        throw error;
                     }) 
                     .finally(()=>{     
                         meetingControl.meetingCloseHandler["Meeting.meetingCloseHandler"]=this.meetingCloseHandler;
@@ -40,7 +37,7 @@ class Meeting extends React.Component {
                     alert(result.message);
                 }
             })
-        }
+        }                
     }
     leaveMeetingHandler=()=>{
         this.setState({leave:true});
@@ -53,8 +50,7 @@ class Meeting extends React.Component {
         if (this.state.invalidAccess){
             alert("The access for this meeting is invalid, please login first.");
             return <Redirect to="/"/>
-        }
-        if (this.state.meetingControl===undefined){
+        }if (this.state.meetingControl===undefined){
             return(
                 <div className="align-items-center d-flex h-100 justify-content-center w-100">
                     <Spinner animation="border" role="status">
@@ -70,8 +66,6 @@ class Meeting extends React.Component {
                 if (this.state.leave){
                     return <Redirect to="/"/>
                 }else {
-                    //console.log("Video:"+((Utility.getMeetingInfo().user.shareMedia.video)?"yes":"no"));
-                    //console.log("Audio:"+((Utility.getMeetingInfo().user.shareMedia.audio)?"Yes":"No"));
                     return (
                         <div className="border border-info flex-grow-1 meeting p-0 rounded">
                             <MediaPlayer meetingControl={this.state.meetingControl}/>
