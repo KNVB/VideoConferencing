@@ -10,7 +10,20 @@ class RemoteStreamManager {
         this.connect=(user)=>{ 
             thisUser=user;
 
-            this.peer=new Peer(thisUser.id,{host:config.PEER_SERVER,path:"/peerServer",port:config.SOCKET_PORT,debug:2});
+            this.peer=new Peer(thisUser.id,{
+                                            config:{
+                                                iceServers:[
+                                                            {urls: "stun:stun.stunprotocol.org"},
+                                                            {urls: "stun:stun.l.google.com:19302"},
+                                                            {urls: "turn:numb.viagenie.ca", credential: "turnserver", username: "sj0016092@gmail.com"}		
+                                                        ]
+                                            },
+                                            debug:2,
+											host:config.PEER_SERVER,
+											path:"/peerServer",
+											port:config.SOCKET_PORT,
+											proxied: true
+										});
             this.peer.on("call",call=>{
                 console.log("Receive call from "+call.metadata.alias);
                 console.log(this.meetingControl.localStream);
