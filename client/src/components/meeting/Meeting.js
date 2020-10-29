@@ -13,6 +13,7 @@ class Meeting extends React.Component {
     }
     componentDidMount(){
         //console.log(Utility.getMeetingInfo());
+        document.getElementById("root").classList.add("p-1");
         this.meetingInfo=Utility.getMeetingInfo();
         if ( this.meetingInfo===null){
             this.setState({"invalidAccess":true});
@@ -41,6 +42,9 @@ class Meeting extends React.Component {
                 }
             })
         }
+    }
+    componentWillUnmount() {
+        document.getElementById("root").classList.remove("p-1");
     }
     leaveMeetingHandler=()=>{
         this.setState({leave:true});

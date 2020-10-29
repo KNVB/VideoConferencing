@@ -166,6 +166,17 @@ class MeetingManager
 					}
 				}
 			});
+//=========================================================================
+			socket.on("sendAnswer",answer=>{
+				socket.broadcast.emit('receiveAnswer',answer);
+			});
+			socket.on("sendICECandidate",iceCandidate=>{
+				socket.broadcast.emit('receiveICECandidate',iceCandidate);
+			});
+			socket.on("sendOffer",offer=>{
+				socket.broadcast.emit('receiveOffer',offer);
+			});
+//=========================================================================			
 			socket.on("sendMsg",(info,callBack)=>{
 				var meeting;
 				try{

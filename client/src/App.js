@@ -7,12 +7,14 @@ import JoinMeeting from "./routes/JoinMeeting";
 import SecureRoute from './routes/SecureRoute';
 //import Template from './firstTemplate/Template';
 import TestPeer from './TestPeer';
+import TestWebRtc from './TestWebRtc';
 import CurrentTemplate from './currentTemplate/TestNav';
 class App extends Component {
   render() {
     return (
       <Router>
         <Switch>
+            <Route exact path='/TestWebRtc/:userId' component={TestWebRtc}/>
             <Route exact path='/TestPeer/:userId' component={TestPeer} />
             <Route exact path='/' component={FirstForm} />
             <Route exact path='/Info' component={Info} />
