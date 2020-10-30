@@ -6,6 +6,7 @@ import Info from "./routes/Info";
 import JoinMeeting from "./routes/JoinMeeting";
 import SecureRoute from './routes/SecureRoute';
 //import Template from './firstTemplate/Template';
+import TestPeer from './TestPeer';
 import CurrentTemplate from './currentTemplate/TestNav';
 class App extends Component {
   render() {
@@ -13,6 +14,7 @@ class App extends Component {
       <Router>
         <Switch>
             <Route exact path='/' component={FirstForm} />
+			      <Route exact path='/TestPeer/:userId' component={TestPeer}/>
             <Route exact path='/Info' component={Info} />
             <Route exact path='/createMeeting/' component={CreateMeeting} />
             <Route exact path='/joinMeeting/' component={JoinMeeting} />
