@@ -38,12 +38,21 @@ class TestPeer extends React.Component {
                             }		
                         ]
             },
-            debug:2,
+            debug:3,
             host:config.PEER_SERVER,
             path:"/peerServer",
             port:config.SOCKET_PORT,
-            proxied: true
         });
+        /*
+        var conn;
+        if (this.userId==="1")
+            conn=this.peer.connect("2");
+        else 
+            conn=this.peer.connect("1");
+        conn.on('open', ()=>{
+            console.log("Data connection is opened");
+        });
+        */
         this.peer.on('call', call=>{
             console.log("Receive call from "+call.metadata.alias);
             call.answer(this.localStream);
