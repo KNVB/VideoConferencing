@@ -6,9 +6,10 @@ class LocalVideoPlayer extends React.Component {
     constructor(props) {
         super(props);
         this.media=React.createRef();
+        console.log("LocalVideoPlayer()");
     }
     componentDidMount(){
-        console.log(this.props.stream);
+        console.log("LocalVideoPlayer.componentDidMount");
         if (this.props.stream){
             console.log("LocalVideoPlayer.setStream");
             this.media.current.setStream(this.props.stream);
