@@ -2,7 +2,7 @@ import ChatButton from "./navButtons/ChatButton";
 import MeetingInfoButton from './navButtons/MeetingInfoButton';
 import React from "react";
 import UserListButton from './navButtons/UserListButton';
-import $ from "jquery/dist/jquery.js";
+import $ from "jquery";
 import "./NavButton.css";
 import { Nav } from "react-bootstrap";
 class NavBar extends React.Component {

@@ -125,6 +125,11 @@ class MediaPlayer extends React.Component {
             playerClass += " panel position-relative";
         }
         if ((this.state.stream)&& (this.state.stream.getVideoTracks().length>0)){
+            /*
+            console.log("The state stream has "+((this.state.stream.getAudioTracks().length>0)?"":"no")+" audio tracks");
+            console.log("The state stream has "+((this.state.stream.getVideoTracks().length>0)?"":"no")+" video tracks");
+            */
+            //console.log("MediaPlayer update stream");
             localVideoPlayer=<LocalVideoPlayer meetingControl={this.props.meetingControl} 
                                 stream={this.state.stream}/>
         }

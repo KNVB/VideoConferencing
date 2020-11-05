@@ -34,17 +34,10 @@ class ChatBox extends React.Component {
         console.log("Receive Message from "+info.alias);
         if (this.previousUserId!==info.userId){
             this.previousUserId=info.userId;
-            this.addHistory(<ChatMsg alias={info.alias} msg={info.msg}/>)
+            this.addHistory(<ChatMsg alias={info.alias} key={(new Date()).getTime()} msg={info.msg}/>)
         } else {
-            this.addHistory(<ChatMsg msg={info.msg}/>)
-        }       
-        
-        /*
-        this.addHistory(<div key={(new Date()).getTime()}>{info.alias}:<br/> 
-                            {info.msg} &nbsp;&nbsp;&nbsp;
-                            <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span>
-                        </div>);
-        */                
+            this.addHistory(<ChatMsg key={(new Date()).getTime()} msg={info.msg}/>)
+        }
     })
     scrollToBottom = () => {
         this.msgHistory.current.scrollTop=this.msgHistory.current.scrollHeight;
@@ -57,29 +50,19 @@ class ChatBox extends React.Component {
             }else {
                 this.props.meetingControl.sendMsg(msg,result=>{
                     this.sendMsgForm.msg.value="";
-                    /*
-                    this.addHistory(<div key={(new Date()).getTime()}>{this.props.meetingControl.user.alias}:<br/> 
-                                        {msg} &nbsp;&nbsp;&nbsp;
-                                        <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span>
-                                    </div>);
-                    */                
                 });                
             }
         }
         event.preventDefault();
     }
     userJoinHandler=(user=>{
-        //console.log("new user join:"+JSON.stringify(user));
-        //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.addHistory(
-            <UserLeftJoinMsg action="join" key={user.id} user={user}/>
+            <UserLeftJoinMsg action="join" key={(new Date()).getTime()}  user={user}/>
         );
     });
     userLeftHandler=(user=>{
-        //console.log("User Left:"+JSON.stringify(user));
-        //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.addHistory(
-            <UserLeftJoinMsg action="left" key={user.id}  user={user}/>
+            <UserLeftJoinMsg action="left" key={(new Date()).getTime()}  user={user}/>
         );
     });
     

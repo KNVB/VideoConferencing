@@ -58,7 +58,7 @@ class Media extends React.Component {
       console.log("The incoming stream has "+((stream.getVideoTracks().length>0)?"":"no")+" video tracks");
       
       this.videoTag.current.srcObject = stream;
-      
+      this.videoTag.current.play();
       if ((stream.getVideoTracks().length===0) && (stream.getAudioTracks().length>0)){
         this.mediaStatus.current.classList.remove("d-none");
       } else {

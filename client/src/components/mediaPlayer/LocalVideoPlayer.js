@@ -8,7 +8,9 @@ class LocalVideoPlayer extends React.Component {
         this.media=React.createRef();
     }
     componentDidMount(){
+        console.log(this.props.stream);
         if (this.props.stream){
+            console.log("LocalVideoPlayer.setStream");
             this.media.current.setStream(this.props.stream);
         }
     }
@@ -16,7 +18,10 @@ class LocalVideoPlayer extends React.Component {
         return (
             <Draggable>
                 <div className="border border-primary d-flex flex-grow-1 localVideoPlayer p-0">
-                    <Media ref={ this.media }  meetingControl={this.props.meetingControl}></Media>
+                    <Media 
+                        meetingControl={this.props.meetingControl}
+                        ref={ this.media }
+                        stream={this.props.stream}></Media>
                 </div>
             </Draggable>
         )
