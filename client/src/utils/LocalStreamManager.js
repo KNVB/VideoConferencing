@@ -39,9 +39,12 @@ class LocalStreamManager{
 		}
 		this.closeStream=async(stream)=>{
 			console.log("LocalStreamManager.closeStream is called.");
-			stream.getTracks().forEach( async track=>{
-				await track.stop();
-			});
+			if (stream){
+				stream.getTracks().forEach( async track=>{
+					await track.stop();
+				});
+				stream=null;
+			}
 		}
     }
    
