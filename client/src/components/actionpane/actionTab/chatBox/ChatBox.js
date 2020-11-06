@@ -58,12 +58,6 @@ class ChatBox extends React.Component {
             }else {
                 this.props.meetingControl.sendMsg(msg,result=>{
                     this.sendMsgForm.msg.value="";
-                    /*
-                    this.addHistory(<div key={(new Date()).getTime()}>{this.props.meetingControl.user.alias}:<br/> 
-                                        {msg} &nbsp;&nbsp;&nbsp;
-                                        <span className="font-italic text-secondary">{Utility.getCurrentTimeString()}</span>
-                                    </div>);
-                    */                
                 });                
             }
         }
