@@ -14,7 +14,7 @@ class MediaPlayer extends React.Component {
     constructor(props) {
         super(props);
         var user=this.props.meetingControl.user;
-        
+        this.localVideoPlayer=React.createRef();
         this.media = React.createRef();
         this.state = {};
         this.state["muted"] = true;
@@ -110,11 +110,25 @@ class MediaPlayer extends React.Component {
             console.log("The local stream is "+((stream)?"Object":"null"));
         })
         .catch (error=>{
-            throw error;
+            console.log(error);
+            this.media.current.closeMedia();
+            if (this.state.stream){
+                this.state.stream.getTracks().forEach(track=>{
+                  track.stop();
+                })
+            }    
         }) 
         .finally(()=>{     
-            //this.media.current.setStream(stream);
-            this.setState({"stream":stream});
+            if (this.localVideoPlayer.current){
+                this.localVideoPlayer.current.setStream(stream);
+                if (stream){
+                  this.setState({"stream":stream});
+                }else {
+                  this.setState({"stream":undefined});
+                }
+            } else {
+                this.setState({"stream":stream});
+            }
         })
     };
     showPInP = () => {
@@ -141,6 +155,7 @@ class MediaPlayer extends React.Component {
         }
         if ((this.state.stream)&& (this.state.stream.getVideoTracks().length>0)){
             localVideoPlayer=<LocalVideoPlayer meetingControl={this.props.meetingControl} 
+                                ref={this.localVideoPlayer}
                                 stream={this.state.stream}/>
         }
         return (

@@ -23,7 +23,7 @@ class ChatBox extends React.Component {
         this.props.meetingControl.userJoinHandler["ChatBox.userJoinHandler"]=this.userJoinHandler;
         this.props.meetingControl.receiveMsgHandler["ChatBox.receiveMsgHandler"]=this.receiveMsgHandler;
         this.addHistory(
-            <UserLeftJoinMsg user={this.props.meetingControl.user} action="join"/>
+            <UserLeftJoinMsg action="join" key={(new Date()).getTime()} user={this.props.meetingControl.user} />
         );
         this.scrollToBottom();
     }    
@@ -35,9 +35,9 @@ class ChatBox extends React.Component {
         console.log("Receive Message from "+info.alias);
         if (this.previousUserId!==info.userId){
             this.previousUserId=info.userId;
-            this.addHistory(<ChatMsg alias={info.alias} msg={info.msg}/>)
+            this.addHistory(<ChatMsg alias={info.alias} key={(new Date()).getTime()} msg={info.msg}/>)
         } else {
-            this.addHistory(<ChatMsg msg={info.msg}/>)
+            this.addHistory(<ChatMsg key={(new Date()).getTime()} msg={info.msg}/>)
         }       
         
         /*
@@ -73,14 +73,14 @@ class ChatBox extends React.Component {
         //console.log("new user join:"+JSON.stringify(user));
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.addHistory(
-            <UserLeftJoinMsg user={user} action="join"/>
+            <UserLeftJoinMsg action="join" key={user.id} user={user}/>
         );
     });
     userLeftHandler=(user=>{
         //console.log("User Left:"+JSON.stringify(user));
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.addHistory(
-            <UserLeftJoinMsg user={user} action="left"/>
+            <UserLeftJoinMsg action="left" key={user.id} user={user}/>
         );
     });
     
