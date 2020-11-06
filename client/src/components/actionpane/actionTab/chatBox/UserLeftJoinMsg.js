@@ -1,9 +1,10 @@
 import React from "react";
 import Utility from '../../../../utils/Utility';
 class UserLeftJoinMsg extends React.Component {
+    /*
     constructor(props){
         super(props);
-    }
+    }*/
     render() {
         return (
             <div className="font-italic text-secondary" key={(new Date()).getTime()}>

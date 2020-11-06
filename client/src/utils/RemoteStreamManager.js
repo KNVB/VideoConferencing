@@ -18,7 +18,7 @@ class RemoteStreamManager {
                 }));
             });
         }
-        this.sendStreamToAllUser=(userList,user,stream)=>{
+        this.sendStreamToAllUser=(userList,stream)=>{
             Object.keys(userList).forEach(userId=>{
                 if (thisUser.id !==userId){
                     this.sendStreamToUser(userList[userId],stream);

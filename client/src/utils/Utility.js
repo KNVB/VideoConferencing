@@ -16,6 +16,9 @@ class Utility{
 		("0" + m.getSeconds()).slice(-2);
 		return result;
 	}
+	static getRandomInt(max){
+		return Math.floor(Math.random() * Math.floor(max));
+	}
 	static toHHMMSS(timeInSec){
 		var result="";
 		var sec_num=Number(timeInSec).toFixed(0);

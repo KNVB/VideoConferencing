@@ -1,9 +1,12 @@
 import ChatMsg from './ChatMsg';
 import React from "react";
 import UserLeftJoinMsg from './UserLeftJoinMsg';
+import Utility from '../../../../utils/Utility';
 class ChatBox extends React.Component {
     constructor(props){
         super(props);
+        this.userColorMap=new Map();
+        this.textColorList=['IndianRed','MidnightBlue','SeaGreen','Magenta','DarkCyan','OrangeRed','Brown','Olive'];
         this.previousUserId="";
         this.msgHistory=React.createRef();
         this.state={"history":[]};
@@ -18,6 +21,9 @@ class ChatBox extends React.Component {
         this.setState({"history":history});
     }
     componentDidMount() {
+        var colorId=Utility.getRandomInt(this.textColorList.length);
+        var nameColor=this.textColorList[colorId];
+        this.userColorMap[this.props.meetingControl.user.id]=nameColor;
         this.msgHistory=this.msgHistory.current;
         this.props.meetingControl.userLeftHandler["ChatBox.userLeftHandler"]=this.userLeftHandler;
         this.props.meetingControl.userJoinHandler["ChatBox.userJoinHandler"]=this.userJoinHandler;
@@ -33,11 +39,12 @@ class ChatBox extends React.Component {
     receiveMsgHandler=(info=>{
         //console.log("Receive Message:"+JSON.stringify(info));
         console.log("Receive Message from "+info.alias);
+        var nameColor=this.userColorMap[info.userId];
         if (this.previousUserId!==info.userId){
             this.previousUserId=info.userId;
-            this.addHistory(<ChatMsg alias={info.alias} key={(new Date()).getTime()} msg={info.msg}/>)
+            this.addHistory(<ChatMsg alias={info.alias} key={(new Date()).getTime()} msg={info.msg} nameColor={nameColor}/>)
         } else {
-            this.addHistory(<ChatMsg key={(new Date()).getTime()} msg={info.msg}/>)
+            this.addHistory(<ChatMsg key={(new Date()).getTime()} msg={info.msg} nameColor={nameColor}/>)
         }       
         
         /*
@@ -70,6 +77,9 @@ class ChatBox extends React.Component {
         event.preventDefault();
     }
     userJoinHandler=(user=>{
+        var colorId=Utility.getRandomInt(this.textColorList.length);
+        var nameColor=this.textColorList[colorId];
+        this.userColorMap[user.id]=nameColor;
         //console.log("new user join:"+JSON.stringify(user));
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.addHistory(
@@ -79,6 +89,7 @@ class ChatBox extends React.Component {
     userLeftHandler=(user=>{
         //console.log("User Left:"+JSON.stringify(user));
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
+        delete this.userColorMap[user.id];
         this.addHistory(
             <UserLeftJoinMsg action="left" key={user.id} user={user}/>
         );
