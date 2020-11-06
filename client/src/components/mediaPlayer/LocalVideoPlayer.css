@@ -1,0 +1,8 @@
+.localVideoPlayer{
+    height:30vh;
+    width:40vw;
+    position:fixed;
+    bottom: 5px;
+    right: 5px;
+    z-index: 100;
+  }
