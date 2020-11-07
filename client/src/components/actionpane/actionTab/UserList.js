@@ -102,7 +102,7 @@ class UserList extends React.Component {
                         <Media className="border-bottom border-info p-1" key={user.id}>
                             <div style={{"width":"80px","height":"64px"}}>
                                 <RemoteMedia meetingControl={this.props.meetingControl}
-                                    muted={true}
+                                    muted={false}
                                     ref={el=>{this.mediaList[user.id]=el}}/>
                             </div>
                             <Media.Body className="align-self-center ml-1">

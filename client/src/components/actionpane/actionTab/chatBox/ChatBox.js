@@ -24,7 +24,6 @@ class ChatBox extends React.Component {
         var colorId=Utility.getRandomInt(this.textColorList.length);
         var nameColor=this.textColorList[colorId];
         this.userColorMap[this.props.meetingControl.user.id]=nameColor;
-        this.msgHistory=this.msgHistory.current;
         this.props.meetingControl.userLeftHandler["ChatBox.userLeftHandler"]=this.userLeftHandler;
         this.props.meetingControl.userJoinHandler["ChatBox.userJoinHandler"]=this.userJoinHandler;
         this.props.meetingControl.receiveMsgHandler["ChatBox.receiveMsgHandler"]=this.receiveMsgHandler;
@@ -55,7 +54,7 @@ class ChatBox extends React.Component {
         */                
     })
     scrollToBottom = () => {
-        this.msgHistory.scrollTop=this.msgHistory.scrollHeight;
+        this.msgHistory.current.scrollTop=this.msgHistory.scrollHeight;
     }
     sendMsg=(event)=>{
         if (this.sendMsgForm.reportValidity()){
@@ -83,7 +82,7 @@ class ChatBox extends React.Component {
         //console.log("new user join:"+JSON.stringify(user));
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
         this.addHistory(
-            <UserLeftJoinMsg action="join" key={user.id} user={user}/>
+            <UserLeftJoinMsg action="join" key={(new Date()).getTime()} user={user}/>
         );
     });
     userLeftHandler=(user=>{
@@ -91,7 +90,7 @@ class ChatBox extends React.Component {
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} left the meeting @ {Utility.getCurrentTimeString()}</div>);
         delete this.userColorMap[user.id];
         this.addHistory(
-            <UserLeftJoinMsg action="left" key={user.id} user={user}/>
+            <UserLeftJoinMsg action="left" key={(new Date()).getTime()} user={user}/>
         );
     });
     

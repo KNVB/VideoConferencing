@@ -147,7 +147,8 @@ class MeetingControl{
         this.sendLocalStreamToOthers=()=>{
             console.log("MeetingControl.sendLocalStreamToOthers is called");
             if (this.localStream){
-                remoteStreamManager.sendStreamToAllUser(this.userList,this.user,this.localStream);
+                console.log("The localStream has "+this.localStream.getTracks().length+" tracks");
+                remoteStreamManager.sendStreamToAllUser(this.userList,this.localStream);
             }else {
                 remoteStreamManager.localStream=null;
                 meetingUtil.resetRemoteStream(result=>{

@@ -8,13 +8,12 @@ class ChatButton extends React.Component {
   }
   componentDidMount(){
     this.props.meetingControl.receiveMsgHandler["ChatButton.receiveMsgHandler"]=this.receiveMsgHandler;
-    this.theLink=this.theLink.current;
   }
   clearCount=()=>{
     this.setState({"msgCount":0});
   }
   receiveMsgHandler=(info=>{
-    if (this.theLink.classList.contains("active")) {
+    if (this.theLink.current.classList.contains("active")) {
       this.clearCount();
     } else {
       var count=this.state.msgCount+1;

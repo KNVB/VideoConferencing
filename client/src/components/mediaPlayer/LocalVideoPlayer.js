@@ -27,7 +27,7 @@ class LocalVideoPlayer extends React.Component {
         return (
             <Draggable>
                 <div className="border border-primary d-flex flex-grow-1 localVideoPlayer p-0">
-                    <Media ref={ this.media }  meetingControl={this.props.meetingControl}></Media>
+                    <Media meetingControl={this.props.meetingControl} muted={true} ref={ this.media }  ></Media>
                 </div>
             </Draggable>
         )

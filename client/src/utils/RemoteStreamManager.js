@@ -19,8 +19,10 @@ class RemoteStreamManager {
             });
         }
         this.sendStreamToAllUser=(userList,stream)=>{
+            
             Object.keys(userList).forEach(userId=>{
                 if (thisUser.id !==userId){
+                    //console.log("The localStream has "+stream.getTracks().length+" tracks");
                     this.sendStreamToUser(userList[userId],stream);
                 }
             });
