@@ -11,6 +11,7 @@ class Meeting extends React.Component {
         this.state={leave:false}
     }
     componentDidMount(){
+        document.getElementById("root").classList.add("p-1");
         if (sessionStorage.getItem("meetingInfo")===null){
             this.setState({"invalidAccess":true});
         } else {
@@ -27,6 +28,9 @@ class Meeting extends React.Component {
                 }
             })
         }                
+    }
+    componentWillUnmount() {
+        document.getElementById("root").classList.remove("p-1");
     }
     leaveMeetingHandler=()=>{
         this.setState({leave:true});

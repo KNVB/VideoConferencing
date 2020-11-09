@@ -75,7 +75,7 @@ class Media extends React.Component {
     });
   }
   render() {
-    var finalClass = "bg-dark rounded w-100";
+    var finalClass = "bg-dark h-100 rounded w-100";
     if (this.state.mirror) {
       finalClass += " mirror";
     }
