@@ -17,7 +17,8 @@ httpServer= http.createServer(app);
 io = require('socket.io')(httpServer);
 meetingManager=new (require("./utils/MeetingManager.js"));
 peerServer=ExpressPeerServer(httpServer, {
-  path: '/peerServer'
+  path: '/peerServer',
+  proxied: true
 });
 
 //================================================================
