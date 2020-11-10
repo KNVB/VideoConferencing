@@ -2,8 +2,8 @@ import config from './config';
 import io from 'socket.io-client';
 class JoinMeetingUtil{
     constructor(){
-        var SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
-        var SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
+        const SOCKET_IO_URL='http://' + config.API_HOST + ':' + String(config.API_PORT)+"/";
+        const SOCKET_URL=config.SOCKET_URL|| SOCKET_IO_URL;
         this.joinReqResultHandlder=null;
         this.socket=io.connect(SOCKET_URL);
         this.cancelJoinReq=(joinReq)=>{

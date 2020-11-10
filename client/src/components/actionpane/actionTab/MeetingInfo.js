@@ -6,7 +6,7 @@ class MeetingInfo extends React.Component {
         alert("The join meeting link have been copied to clipboard.");
     }
     render() {
-        var  alias=this.props.meetingControl.user.alias;
+        let alias=this.props.meetingControl.user.alias;
         this.meetingLink=window.location.protocol+"//"+window.location.host+"/joinMeeting/"+this.props.meetingControl.meetingId;  
         return (
         <div>

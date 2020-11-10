@@ -7,7 +7,7 @@ class ChatBox extends React.Component {
     }
     */
     render() {
-        var header;
+        let header;
         if (this.props.alias===undefined){
             header=null;
         } else {

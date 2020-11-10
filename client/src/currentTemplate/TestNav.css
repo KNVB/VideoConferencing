@@ -50,6 +50,7 @@
     opacity: 0.5;
   }
   .controlLayer,
+  .gg,
   .hidePInPPlayer,
   .showPInPPlayer{
     position: absolute;

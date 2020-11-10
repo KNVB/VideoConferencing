@@ -12,13 +12,13 @@ class CreateMeeting extends Component {
         this.state={};
         this.formRef=React.createRef();
         this.handleSubmit =(event)=>{
-            var form=this.formRef.current;
+            let form=this.formRef.current;
             
             if(form.reportValidity()){
                 if (form.meetingPwd.value!==form.cfmPwd.value) {
                     alert("The meeting password and the confirm password do not match.");
                 } else {
-                    var data={};
+                    let data={};
                     data['alias']=form.alias.value;
                     data['meetingPwd']=form.meetingPwd.value;
                     data['shareAudio']=form.shareAudio.value;

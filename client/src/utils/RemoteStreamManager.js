@@ -2,8 +2,8 @@ import config from './config';
 import Peer from "peerjs";
 class RemoteStreamManager {
     constructor(){
-        var peer;
-        var thisUser;
+        let peer;
+        let thisUser;
         this.localStream=null;
         this.remoteStreamHandler=null;
         this.connect=(user)=>{ 

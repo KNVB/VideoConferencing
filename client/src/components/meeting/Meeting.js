@@ -16,7 +16,7 @@ class Meeting extends React.Component {
             this.setState({"invalidAccess":true});
         } else {
             this.meetingInfo=JSON.parse(sessionStorage.getItem("meetingInfo"));
-            var meetingControl =new MeetingControl(this.meetingInfo);
+            let meetingControl =new MeetingControl(this.meetingInfo);
             meetingControl.login(result=>{
                 if (result.error===0){
                     console.log("Meeting:"+JSON.stringify(meetingControl.userList));

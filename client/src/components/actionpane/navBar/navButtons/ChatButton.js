@@ -16,12 +16,12 @@ class ChatButton extends React.Component {
     if (this.theLink.current.classList.contains("active")) {
       this.clearCount();
     } else {
-      var count=this.state.msgCount+1;
+      let count=this.state.msgCount+1;
       this.setState({"msgCount":count});  
     }
   });
   render() {
-    var count="";
+    let count="";
     if (this.state.msgCount>0){
       count="("+this.state.msgCount+")"
     }

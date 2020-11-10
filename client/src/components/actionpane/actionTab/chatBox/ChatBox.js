@@ -16,13 +16,13 @@ class ChatBox extends React.Component {
         };
     }
     addHistory=(msgObj)=>{
-        var history=this.state.history;
+        let history=this.state.history;
         history.push(msgObj);
         this.setState({"history":history});
     }
     componentDidMount() {
-        var colorId=Utility.getRandomInt(this.textColorList.length);
-        var nameColor=this.textColorList[colorId];
+        let colorId=Utility.getRandomInt(this.textColorList.length);
+        let nameColor=this.textColorList[colorId];
         this.userColorMap[this.props.meetingControl.user.id]=nameColor;
         this.props.meetingControl.userLeftHandler["ChatBox.userLeftHandler"]=this.userLeftHandler;
         this.props.meetingControl.userJoinHandler["ChatBox.userJoinHandler"]=this.userJoinHandler;
@@ -38,7 +38,7 @@ class ChatBox extends React.Component {
     receiveMsgHandler=(info=>{
         //console.log("Receive Message:"+JSON.stringify(info));
         console.log("Receive Message from "+info.alias);
-        var nameColor=this.userColorMap[info.userId];
+        let nameColor=this.userColorMap[info.userId];
         if (this.previousUserId!==info.userId){
             this.previousUserId=info.userId;
             this.addHistory(<ChatMsg alias={info.alias} key={(new Date()).getTime()} msg={info.msg} nameColor={nameColor}/>)
@@ -58,7 +58,7 @@ class ChatBox extends React.Component {
     }
     sendMsg=(event)=>{
         if (this.sendMsgForm.reportValidity()){
-            var msg=this.sendMsgForm.msg.value.trim();
+            let msg=this.sendMsgForm.msg.value.trim();
             if (msg===""){
                 alert("Please enter message.")
             }else {
@@ -76,8 +76,8 @@ class ChatBox extends React.Component {
         event.preventDefault();
     }
     userJoinHandler=(user=>{
-        var colorId=Utility.getRandomInt(this.textColorList.length);
-        var nameColor=this.textColorList[colorId];
+        let colorId=Utility.getRandomInt(this.textColorList.length);
+        let nameColor=this.textColorList[colorId];
         this.userColorMap[user.id]=nameColor;
         //console.log("new user join:"+JSON.stringify(user));
         //this.addHistory(<div className="font-italic text-secondary" key={(new Date()).getTime()}>{user.alias} join the meeting @ {Utility.getCurrentTimeString()}</div>);
@@ -104,7 +104,7 @@ class ChatBox extends React.Component {
                     </div>
                     <form className="mt-1" ref={this.setFormRef}>
                         <input required type="text" name="msg" placeholder="Send message to all user"/>
-                        <button style={{"float":"right"}} variant="primary" onClick={this.sendMsg}>
+                        <button className="float-right" variant="primary" onClick={this.sendMsg}>
                             Send
                         </button>
                     </form>

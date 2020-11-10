@@ -8,7 +8,7 @@ class PInPButton extends Component {
     }
     
     render() {
-        var pInPButtonClass;
+        let pInPButtonClass;
         if (this.props.showFullScreen){
             pInPButtonClass="invisible";
         } else {

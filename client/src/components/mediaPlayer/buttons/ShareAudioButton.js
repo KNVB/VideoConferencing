@@ -8,7 +8,7 @@ class ShareAudioButton extends Component {
         };
     }
     render(){
-        var buttonContent,description;
+        let buttonContent,description;
         if (this.props.shareAudioState){
             description="Mute";
             buttonContent=(

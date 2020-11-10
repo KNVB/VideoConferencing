@@ -44,7 +44,7 @@ class Info extends Component {
     }
     
     componentDidMount() {
-        var meetingInfo={"user":{"id":"392e80e9-c1ce-42a5-bc94-abd7c75ce579","isHost":true,"alias":"1","shareMedia":{"video":"false","audio":"false"}},"meetingId":"f6c73c8d-af62-486c-97d6-e0f4a211aa73"}
+        let meetingInfo={"user":{"id":"392e80e9-c1ce-42a5-bc94-abd7c75ce579","isHost":true,"alias":"1","shareMedia":{"video":"false","audio":"false"}},"meetingId":"f6c73c8d-af62-486c-97d6-e0f4a211aa73"}
         //this.meetingUtil=new MeetingUtil(meetingInfo);
     }
     render() {

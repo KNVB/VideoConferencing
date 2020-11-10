@@ -20,7 +20,7 @@ class JoinMeeting extends Component {
             event.preventDefault(); 
         }
         this.submitJoinReq=(event)=>{
-            var form=this.formRef.current;
+            let form=this.formRef.current;
             if(form.reportValidity()){
                 this.joinReq={};
                 this.setState({ buttonDisabled:true,
@@ -66,7 +66,7 @@ class JoinMeeting extends Component {
                 clearInterval(this.timer);
                 this.jointMeetingUtil.cancelJoinReq(this.joinReq);
                 this.jointMeetingUtil.disconnect();
-                var message='This join request is time out, please try again.';
+                let message='This join request is time out, please try again.';
                 this.setState({errorMsg:message,
                     className:"d-none",
                     buttonDisabled:false});
@@ -79,8 +79,7 @@ class JoinMeeting extends Component {
                 delete this.joinReq['joinReqId'];
                 this.setState({meeting:{"user":result.user,"meetingId":result.meetingId}});
             } else {
-                var message=result.message;
-                
+                let message=result.message;
                 this.setState({errorMsg:message,
                     className:"d-none",
                     buttonDisabled:false});

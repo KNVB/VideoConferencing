@@ -1,6 +1,6 @@
 class LocalStreamManager{
     constructor(){
-		var templateConstraint={
+		const templateConstraint={
 					"audio":{
 								channelCount: 2,
 								echoCancellation:true,
@@ -12,8 +12,8 @@ class LocalStreamManager{
 							}
 					}; 
         this.getMediaStream=async (shareVideo,shareAudio)=>{
-			//var constraints={"audio":shareAudio,"video":shareVideo};
-			var constraints={};
+			//let constraints={"audio":shareAudio,"video":shareVideo};
+			let constraints={};
 			if (shareVideo){
 				constraints["video"]=templateConstraint.video;
 			}
@@ -31,7 +31,7 @@ class LocalStreamManager{
             if ((shareVideo===false) && (shareAudio===false)){
                return null;     
             } else {
-			    var constraints={"audio":shareAudio,"video":shareVideo};
+			    let constraints={"audio":shareAudio,"video":shareVideo};
                 return navigator.mediaDevices.getDisplayMedia(constraints);
             }
 		}

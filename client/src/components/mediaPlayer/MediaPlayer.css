@@ -1,6 +1,4 @@
 .controlLayer {
-  align-items: flex-end;
-  display: flex;
   z-index: 10;
 }
 .full_screen {
@@ -21,7 +19,7 @@
   z-index: 20;
   opacity: 0.5;
 }
-.controlLayer,
+
 .hidePInPPlayer,
 .showPInPPlayer{
   position: absolute;

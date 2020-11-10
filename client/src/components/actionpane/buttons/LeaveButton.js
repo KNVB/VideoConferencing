@@ -11,7 +11,7 @@ class LeaveButton extends Component {
         this.setState({leave:true}); 
     }    
     leaveMeeting=()=>{
-        /*var thisUser=this.props.meetingUtil.user;
+        /*let thisUser=this.props.meetingUtil.user;
         if (thisUser.isHost) {
             this.setState({showModal:true});
         } else {

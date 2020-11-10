@@ -8,7 +8,7 @@ class ShareVideoButton extends Component {
         };
     }
     render(){
-        var buttonContent,description;
+        let buttonContent,description;
         if (this.props.shareVideoState){
             description="Stop Video";
             buttonContent=( <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-camera-video d-block m-auto" fill="white" xmlns="http://www.w3.org/2000/svg">

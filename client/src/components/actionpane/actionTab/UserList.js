@@ -35,7 +35,7 @@ class UserList extends React.Component {
     }
     localStreamUpdateHandler=(stream=>{
         console.log("local stream updated");
-        var media=this.mediaList[this.user.id];
+        let media=this.mediaList[this.user.id];
         if (stream){
             media.setStream(stream);
         } else {
@@ -56,12 +56,12 @@ class UserList extends React.Component {
     }
     remoteStreamHandler=(metadata,stream)=>{
         console.log("Receive stream from "+metadata.alias);
-        var media=this.mediaList[metadata.userId];
+        let media=this.mediaList[metadata.userId];
         media.setStream(stream);
     }
     resetRemoteStreamHandler=(info)=>{
         console.log("Reset Remote Stream Handler");
-        var media=this.mediaList[info.userId];
+        let media=this.mediaList[info.userId];
         media.closeMedia();
     }
     userCountChangeHandler=(user=>{
@@ -77,7 +77,7 @@ class UserList extends React.Component {
         this.mediaList={};
     
         Object.keys(this.props.meetingControl.userList).forEach(userId=>{
-            var user=this.props.meetingControl.userList[userId];
+            let user=this.props.meetingControl.userList[userId];
             if (user.isHost){
                 finalResult.push(<Media className="border-bottom border-info p-1" key={user.id}>
                                     <div className="m-0 p-0" style={{"width":"80px","height":"64px"}}>
