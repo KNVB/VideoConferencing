@@ -9,7 +9,19 @@ class RemoteStreamManager {
         this.connect=(user)=>{ 
             thisUser=user;
 
-            peer=new Peer(thisUser.id,{host:config.PEER_SERVER,path:"/peerServer",port:config.SOCKET_PORT,debug:2});
+            peer=new Peer(thisUser.id,{
+                                        config:{
+                                            'iceServers':[
+                                                {urls: "stun:stun.stunprotocol.org"},
+                                                {urls: "stun:stun.l.google.com:19302"},
+                                                {urls: 'turn:numb.viagenie.ca', credential: 'muazkh',username: 'webrtc@live.com'},
+                                                {urls: "turn:numb.viagenie.ca", credential: "turnserver", username: "sj0016092@gmail.com"}
+                                            ]
+                                        },                                        
+                                        debug:2,
+                                        host:config.PEER_SERVER,
+                                        path:"/peerServer",
+                                        port:config.SOCKET_PORT});
             peer.on("call",call=>{
                 call.answer(this.localStream); //Before getting the remote stream, answer the call with the stream;
                 call.on("stream",(remoteStream=>{
