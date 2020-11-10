@@ -1,25 +1,29 @@
 import React from 'react';
-
 import './TestNav.css';
 import Collapse from 'react-bootstrap/Collapse';
-import Draggable from '../utils/Draggable';
+import Draggable from 'react-draggable';
 import LocalStreamManager from '../utils/LocalStreamManager';
 import { Card,Nav,Tab} from 'react-bootstrap';
 
 class TestNav extends React.Component{
     constructor(props){
         super(props);
-        this.localStreamManager=new LocalStreamManager();
+        
         this.localMedia=React.createRef();
-        this.media=React.createRef();
-        this.state={showControlBar: true};
+        this.localStreamManager=new LocalStreamManager();
         this.localVideoPlayer=React.createRef();
+        this.media=React.createRef();
+
+        this.state = {};
+        this.state["showControlBar"]=true;
+        this.state["showFullScreen"] = false;        
         this.setShowPane=(paneName)=>{
             this.setState({"showPane":paneName});
         };        
     }
     componentDidMount(){
         document.getElementById("root").classList.add("p-1");
+        /*
         this.localStreamManager.getMediaStream(true,false)
         .then(stream=>{
             this.media.current.srcObject=stream;
@@ -28,6 +32,7 @@ class TestNav extends React.Component{
         .catch(error=>{
             console.log(error);
         })
+        */
     }
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
@@ -35,12 +40,23 @@ class TestNav extends React.Component{
     toggleControlBar = (event) => {
         if (event.target.classList.contains("gg"))
             this.setState({ showControlBar: !this.state.showControlBar });
+    };
+    toggleFullScreen= () => {
+        this.setState({
+            showFullScreen: !this.state.showFullScreen,
+        });
     };   
     render(){
-        
+        let playerClass = "d-flex flex-grow-1 p-1 rouned";
+        if (this.state.showFullScreen === true) {
+            playerClass += " full_screen";
+        } else {
+            playerClass += " border border-warning ";
+            playerClass += " panel position-relative";
+        }
         return (
             <div className="border border-info flex-grow-1 meeting p-0 rounded">
-                <div className="d-flex flex-grow-1 p-1 rouned border border-warning  panel position-relative">
+                <div className={playerClass}>
                     <div className="m-0 p-0 h-100 w-100 position-relative">
                         <video autoPlay className="bg-danger h-100 position-absolute rounded w-100" ref={this.media}></video>
                         <div className="d-none mediaStatus text-white">
@@ -50,9 +66,11 @@ class TestNav extends React.Component{
                         </div>
                     </div>
                     <div className="d-flex flex-column gg justify-content-end m-1 p-1" onClick={this.toggleControlBar}>
-                        <div className="align-self-end h-25 w-25 position-relative">
-                            <video autoPlay className="bg-dark h-100 position-absolute rounded w-100" ref={this.localMedia}></video>
-                        </div>
+                        <Draggable>
+                            <div className="align-self-end h-25 w-25 position-relative">
+                                <video autoPlay className="bg-dark h-100 position-absolute rounded w-100" ref={this.localMedia}></video>
+                            </div>
+                        </Draggable>
                         <Collapse
                             className="p-1 text-white w-100"
                             in={this.state.showControlBar}>
@@ -74,7 +92,7 @@ class TestNav extends React.Component{
                                             <div className="btn d-flex flex-column just-content-center p-0 text-white">
                                                 <div className="p-0">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-mic-mute-fill" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M12.734 9.613A4.995 4.995 0 0 0 13 8V7a.5.5 0 0 0-1 0v1c0 .274-.027.54-.08.799l.814.814zm-2.522 1.72A4 4 0 0 1 4 8V7a.5.5 0 0 0-1 0v1a5 5 0 0 0 4.5 4.975V15h-3a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-3v-2.025a4.973 4.973 0 0 0 2.43-.923l-.718-.719zM11 7.88V3a3 3 0 0 0-5.842-.963L11 7.879zM5 6.12l4.486 4.486A3 3 0 0 1 5 8V6.121zm8.646 7.234l-12-12 .708-.708 12 12-.708.707z"></path>
+                                                        <path fillRule="evenodd" d="M12.734 9.613A4.995 4.995 0 0 0 13 8V7a.5.5 0 0 0-1 0v1c0 .274-.027.54-.08.799l.814.814zm-2.522 1.72A4 4 0 0 1 4 8V7a.5.5 0 0 0-1 0v1a5 5 0 0 0 4.5 4.975V15h-3a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-3v-2.025a4.973 4.973 0 0 0 2.43-.923l-.718-.719zM11 7.88V3a3 3 0 0 0-5.842-.963L11 7.879zM5 6.12l4.486 4.486A3 3 0 0 1 5 8V6.121zm8.646 7.234l-12-12 .708-.708 12 12-.708.707z"></path>
                                                     </svg>
                                                 </div>
                                                 <div className="p-0">UnMute</div>
@@ -82,8 +100,8 @@ class TestNav extends React.Component{
                                             <div className="btn d-flex flex-column just-content-center p-0  text-white">
                                                 <div className="p-0">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-camera-video d-block m-auto" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M2.667 3.5c-.645 0-1.167.522-1.167 1.167v6.666c0 .645.522 1.167 1.167 1.167h6.666c.645 0 1.167-.522 1.167-1.167V4.667c0-.645-.522-1.167-1.167-1.167H2.667zM.5 4.667C.5 3.47 1.47 2.5 2.667 2.5h6.666c1.197 0 2.167.97 2.167 2.167v6.666c0 1.197-.97 2.167-2.167 2.167H2.667A2.167 2.167 0 0 1 .5 11.333V4.667z"></path>
-                                                        <path fill-rule="evenodd" d="M11.25 5.65l2.768-1.605a.318.318 0 0 1 .482.263v7.384c0 .228-.26.393-.482.264l-2.767-1.605-.502.865 2.767 1.605c.859.498 1.984-.095 1.984-1.129V4.308c0-1.033-1.125-1.626-1.984-1.128L10.75 4.785l.502.865z"></path>
+                                                        <path fillRule="evenodd" d="M2.667 3.5c-.645 0-1.167.522-1.167 1.167v6.666c0 .645.522 1.167 1.167 1.167h6.666c.645 0 1.167-.522 1.167-1.167V4.667c0-.645-.522-1.167-1.167-1.167H2.667zM.5 4.667C.5 3.47 1.47 2.5 2.667 2.5h6.666c1.197 0 2.167.97 2.167 2.167v6.666c0 1.197-.97 2.167-2.167 2.167H2.667A2.167 2.167 0 0 1 .5 11.333V4.667z"></path>
+                                                        <path fillRule="evenodd" d="M11.25 5.65l2.768-1.605a.318.318 0 0 1 .482.263v7.384c0 .228-.26.393-.482.264l-2.767-1.605-.502.865 2.767 1.605c.859.498 1.984-.095 1.984-1.129V4.308c0-1.033-1.125-1.626-1.984-1.128L10.75 4.785l.502.865z"></path>
                                                     </svg>
                                                 </div>
                                                 <div className="p-0">Start Video</div>
@@ -93,7 +111,7 @@ class TestNav extends React.Component{
                                             <div className="btnlink" title="Mirror the video">
                                                 ⇄
                                             </div>
-                                            <div className="btnlink" title="To Full Screen mode">
+                                            <div className="btnlink" title="To Full Screen mode" onClick={this.toggleFullScreen}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
                                                 <path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z"></path>
                                                 </svg>
@@ -159,7 +177,7 @@ class TestNav extends React.Component{
                                         <div className="border-bottom border-info p-1 media">
                                             <div className="m-0 p-0" style={{"width":"80px","height":"64px"}}>
                                                 <div className="m-0 p-0 h-100 w-100 position-relative">
-                                                    <video autoplay="" className="bg-dark h-100 position-absolute rounded w-100"></video>
+                                                    <video autoPlay className="bg-dark h-100 position-absolute rounded w-100"></video>
                                                     <div className="d-none mediaStatus text-white">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="70%" height="70%" viewBox="0 0 24 24" fill="white">
                                                             <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"></path>
