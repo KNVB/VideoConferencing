@@ -54,7 +54,7 @@ class ChatBox extends React.Component {
         */                
     })
     scrollToBottom = () => {
-        this.msgHistory.current.scrollTop=this.msgHistory.scrollHeight;
+        this.msgHistory.current.scrollTop=this.msgHistory.current.scrollHeight;
     }
     sendMsg=(event)=>{
         if (this.sendMsgForm.reportValidity()){
