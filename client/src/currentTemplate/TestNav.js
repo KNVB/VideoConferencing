@@ -2,11 +2,13 @@ import React from 'react';
 
 import './TestNav.css';
 import Collapse from 'react-bootstrap/Collapse';
+import LocalStreamManager from '../utils/LocalStreamManager';
 import { Card,Nav,Tab} from 'react-bootstrap';
 
 class TestNav extends React.Component{
     constructor(props){
         super(props);
+        this.localStreamManager=new LocalStreamManager();
         this.media=React.createRef();
         this.state={showControlBar: true};
         this.setShowPane=(paneName)=>{
@@ -15,7 +17,13 @@ class TestNav extends React.Component{
     }
     componentDidMount(){
         document.getElementById("root").classList.add("p-1");
-        
+        this.localStreamManager.getMediaStream(true,false)
+        .then(stream=>{
+            this.media.current.srcObject=stream;
+        })
+        .catch(error=>{
+            console.log(error);
+        })
     }
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
