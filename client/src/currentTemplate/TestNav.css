@@ -5,6 +5,13 @@
     left: 0;
     right: 0;
 }
+.localVideoPlayer{
+  align-self:flex-end;
+  cursor: pointer;
+  height:25%;    
+  position:relative;
+  width:25%;    
+}
 .meeting {
   display:flex;
 }
@@ -26,11 +33,6 @@
   video {
     object-fit: cover;
   }
-  .controlLayer {
-    align-items: flex-end;
-    display: flex;
-    z-index: 10;
-  }
   .full_screen {
     width: 100%;
     position: fixed;
@@ -50,7 +52,6 @@
     opacity: 0.5;
   }
   .controlLayer,
-  .gg,
   .hidePInPPlayer,
   .showPInPPlayer{
     position: absolute;

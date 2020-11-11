@@ -38,7 +38,7 @@ class TestNav extends React.Component{
         document.getElementById("root").classList.remove("p-1");
     } 
     toggleControlBar = (event) => {
-        if (event.target.classList.contains("gg"))
+        if (event.target.classList.contains("controlLayer"))
             this.setState({ showControlBar: !this.state.showControlBar });
     };
     toggleFullScreen= () => {
@@ -65,60 +65,60 @@ class TestNav extends React.Component{
                             </svg>
                         </div>
                     </div>
-                    <div className="d-flex flex-column gg justify-content-end m-1 p-1" onClick={this.toggleControlBar}>
-                        <Draggable>
-                            <div className="align-self-end h-25 w-25 position-relative">
+                    <div className="controlLayer d-flex flex-column justify-content-end m-1 p-1" onClick={this.toggleControlBar}>
+                        <Draggable bounds="parent">
+                            <div className="localVideoPlayer">
                                 <video autoPlay className="bg-dark h-100 position-absolute rounded w-100" ref={this.localMedia}></video>
                             </div>
                         </Draggable>
                         <Collapse
                             className="p-1 text-white w-100"
                             in={this.state.showControlBar}>
-                                <div>
-                                    <div className="border-top border-white d-flex flex-grow-1 flex-row justify-content-between">
-                                        <div>
-                                            <div className="btnlink" title="UnMute">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
-                                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"></path>
-                                                </svg>
-                                            </div>
-                                            <div className="btnlink" title="P In P">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
-                                                <path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"></path>
-                                                </svg>
-                                            </div>
+                            <span>
+                                <div className="border-top border-white d-flex flex-row justify-content-between">
+                                    <div>
+                                        <div className="btnlink" title="UnMute">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
+                                            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"></path>
+                                            </svg>
                                         </div>
-                                        <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
-                                            <div className="btn d-flex flex-column just-content-center p-0 text-white">
-                                                <div className="p-0">
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-mic-mute-fill" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fillRule="evenodd" d="M12.734 9.613A4.995 4.995 0 0 0 13 8V7a.5.5 0 0 0-1 0v1c0 .274-.027.54-.08.799l.814.814zm-2.522 1.72A4 4 0 0 1 4 8V7a.5.5 0 0 0-1 0v1a5 5 0 0 0 4.5 4.975V15h-3a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-3v-2.025a4.973 4.973 0 0 0 2.43-.923l-.718-.719zM11 7.88V3a3 3 0 0 0-5.842-.963L11 7.879zM5 6.12l4.486 4.486A3 3 0 0 1 5 8V6.121zm8.646 7.234l-12-12 .708-.708 12 12-.708.707z"></path>
-                                                    </svg>
-                                                </div>
-                                                <div className="p-0">UnMute</div>
-                                            </div>
-                                            <div className="btn d-flex flex-column just-content-center p-0  text-white">
-                                                <div className="p-0">
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-camera-video d-block m-auto" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fillRule="evenodd" d="M2.667 3.5c-.645 0-1.167.522-1.167 1.167v6.666c0 .645.522 1.167 1.167 1.167h6.666c.645 0 1.167-.522 1.167-1.167V4.667c0-.645-.522-1.167-1.167-1.167H2.667zM.5 4.667C.5 3.47 1.47 2.5 2.667 2.5h6.666c1.197 0 2.167.97 2.167 2.167v6.666c0 1.197-.97 2.167-2.167 2.167H2.667A2.167 2.167 0 0 1 .5 11.333V4.667z"></path>
-                                                        <path fillRule="evenodd" d="M11.25 5.65l2.768-1.605a.318.318 0 0 1 .482.263v7.384c0 .228-.26.393-.482.264l-2.767-1.605-.502.865 2.767 1.605c.859.498 1.984-.095 1.984-1.129V4.308c0-1.033-1.125-1.626-1.984-1.128L10.75 4.785l.502.865z"></path>
-                                                    </svg>
-                                                </div>
-                                                <div className="p-0">Start Video</div>
-                                            </div>
+                                        <div className="btnlink" title="P In P">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
+                                            <path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"></path>
+                                            </svg>
                                         </div>
-                                        <div>
-                                            <div className="btnlink" title="Mirror the video">
-                                                ⇄
-                                            </div>
-                                            <div className="btnlink" title="To Full Screen mode" onClick={this.toggleFullScreen}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
-                                                <path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z"></path>
+                                    </div>
+                                    <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
+                                        <div className="btn d-flex flex-column just-content-center p-0 text-white">
+                                            <div className="p-0">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-mic-mute-fill" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fillRule="evenodd" d="M12.734 9.613A4.995 4.995 0 0 0 13 8V7a.5.5 0 0 0-1 0v1c0 .274-.027.54-.08.799l.814.814zm-2.522 1.72A4 4 0 0 1 4 8V7a.5.5 0 0 0-1 0v1a5 5 0 0 0 4.5 4.975V15h-3a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-3v-2.025a4.973 4.973 0 0 0 2.43-.923l-.718-.719zM11 7.88V3a3 3 0 0 0-5.842-.963L11 7.879zM5 6.12l4.486 4.486A3 3 0 0 1 5 8V6.121zm8.646 7.234l-12-12 .708-.708 12 12-.708.707z"></path>
                                                 </svg>
                                             </div>
+                                            <div className="p-0">UnMute</div>
+                                        </div>
+                                        <div className="btn d-flex flex-column just-content-center p-0  text-white">
+                                            <div className="p-0">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" className="bi bi-camera-video d-block m-auto" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fillRule="evenodd" d="M2.667 3.5c-.645 0-1.167.522-1.167 1.167v6.666c0 .645.522 1.167 1.167 1.167h6.666c.645 0 1.167-.522 1.167-1.167V4.667c0-.645-.522-1.167-1.167-1.167H2.667zM.5 4.667C.5 3.47 1.47 2.5 2.667 2.5h6.666c1.197 0 2.167.97 2.167 2.167v6.666c0 1.197-.97 2.167-2.167 2.167H2.667A2.167 2.167 0 0 1 .5 11.333V4.667z"></path>
+                                                    <path fillRule="evenodd" d="M11.25 5.65l2.768-1.605a.318.318 0 0 1 .482.263v7.384c0 .228-.26.393-.482.264l-2.767-1.605-.502.865 2.767 1.605c.859.498 1.984-.095 1.984-1.129V4.308c0-1.033-1.125-1.626-1.984-1.128L10.75 4.785l.502.865z"></path>
+                                                </svg>
+                                            </div>
+                                            <div className="p-0">Start Video</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="btnlink" title="Mirror the video">
+                                            ⇄
+                                        </div>
+                                        <div className="btnlink" title="To Full Screen mode" onClick={this.toggleFullScreen}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{"fill":"white"}}>
+                                            <path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z"></path>
+                                            </svg>
                                         </div>
                                     </div>
                                 </div>
+                            </span>
                         </Collapse>        
                     </div>
                 </div>
@@ -161,7 +161,7 @@ class TestNav extends React.Component{
                             <Tab.Content className="d-flex flex-grow-1">
                                 <Tab.Pane
                                     active={true}
-                                    className="border border-primary container p-1 rounded"
+                                    className="border border-primary container-fluid p-1 rounded"
                                     id="meetingInfo">
                                     <div>
                                         Click
@@ -171,7 +171,7 @@ class TestNav extends React.Component{
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane
-                                    className="border border-primary container fade p-0 position-relative rounded"
+                                    className="border border-primary container-fluid fade p-0 position-relative rounded"
                                     id="userList">
                                     <div className="h-100 overflow-auto position-absolute w-100">
                                         <div className="border-bottom border-info p-1 media">
@@ -192,7 +192,7 @@ class TestNav extends React.Component{
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane
-                                    className="border border-primary container fade p-0 position-relative rounded"
+                                    className="border border-primary container-fluid fade p-0 position-relative rounded"
                                     id="chatBox">
                                         <div className="d-flex flex-column flex-grow-1 h-100 p-1 position-absolute w-100">
                                             <div className="border border-primary d-flex flex-grow-1 position-relative rounded">

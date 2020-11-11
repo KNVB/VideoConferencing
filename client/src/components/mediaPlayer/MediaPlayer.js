@@ -171,33 +171,35 @@ class MediaPlayer extends React.Component {
                     <Collapse
                         className="p-1 text-white w-100"
                         in={this.state.showControlBar}>
-                        <div className="border-top border-white d-flex flex-row justify-content-between">
-                            <div>
-                                <MuteButton
-                                toggleMute={this.toggleMute}
-                                muted={this.state.muted}
-                                />
-                                <PInPButton
-                                showFullScreen={this.state.showFullScreen}
-                                togglePInP={this.showPInP}
-                                />
-                            </div>
-                            <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
-                                <ShareAudioButton shareAudioState={this.state.shareAudio}
-                                    toggleShareAudio={this.toggleShareAudio}/>
-                                <ShareVideoButton shareVideoState={this.state.shareVideo}
-                                    toggleShareVideo={this.toggleShareVideo}/>
-                            </div>
-                            <div>
-                                <div className="btnlink" title="Mirror the video" onClick={this.toggleMirror}>
-                                &#x21c4;
-                                </div>
-                                <MaxMinButton
-                                    toggFullScreen={this.toggFullScreen}
+                        <span>
+                            <div className="border-top border-white d-flex flex-row justify-content-between">
+                                <div>
+                                    <MuteButton
+                                    toggleMute={this.toggleMute}
+                                    muted={this.state.muted}
+                                    />
+                                    <PInPButton
                                     showFullScreen={this.state.showFullScreen}
-                                />
+                                    togglePInP={this.showPInP}
+                                    />
+                                </div>
+                                <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
+                                    <ShareAudioButton shareAudioState={this.state.shareAudio}
+                                        toggleShareAudio={this.toggleShareAudio}/>
+                                    <ShareVideoButton shareVideoState={this.state.shareVideo}
+                                        toggleShareVideo={this.toggleShareVideo}/>
+                                </div>
+                                <div>
+                                    <div className="btnlink" title="Mirror the video" onClick={this.toggleMirror}>
+                                    &#x21c4;
+                                    </div>
+                                    <MaxMinButton
+                                        toggFullScreen={this.toggFullScreen}
+                                        showFullScreen={this.state.showFullScreen}
+                                    />
+                                </div>
                             </div>
-                        </div>            
+                        </span>
                     </Collapse>            
                 </div>         
             </div>              
