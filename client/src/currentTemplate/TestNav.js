@@ -15,6 +15,7 @@ class TestNav extends React.Component{
         this.media=React.createRef();
 
         this.state = {};
+        this.state["key"]="meetingInfo";
         this.state["showControlBar"]=true;
         this.state["showFullScreen"] = false;        
         this.setShowPane=(paneName)=>{
@@ -37,6 +38,14 @@ class TestNav extends React.Component{
     componentWillUnmount() {
         document.getElementById("root").classList.remove("p-1");
     } 
+    leaveMeeting=()=>{
+        //$('a[href="#userList"]').tab('show');
+        //console.log("Leave");
+        this.setKey("userList");
+    }
+    setKey=(k)=>{
+        this.setState({"key":k});
+    }
     toggleControlBar = (event) => {
         if (event.target.classList.contains("controlLayer"))
             this.setState({ showControlBar: !this.state.showControlBar });
@@ -123,77 +132,84 @@ class TestNav extends React.Component{
                     </div>
                 </div>
                 <div className="panel d-flex flex-grow-1">
-                    <Card className="rounded w-100">
-                        <Card.Header className="p-1 m-1 rounded">
-                            <Nav as="ul" className="p-0 m-0" justify={true} ref={this.nav} variant="pills">
-                                <Nav.Item as="li" title="Chat History">
-                                    <Nav.Link data-toggle="pill" href="#chatBox">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24">
-                                        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
-                                    </svg>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item as="li" title="Meeting Info.">
-                                    <Nav.Link data-toggle="pill" href="#meetingInfo">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
-                                        </svg>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item as="li" title="User List">
-                                    <Nav.Link data-toggle="pill" href="#userList">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24">
-                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                                    </svg>
-                                    </Nav.Link>
-                                </Nav.Item>
-                            </Nav>
-                        </Card.Header>
-                        <Card.Body className="d-flex flex-grow-1 pb-0 pl-1 pr-1 pt-0 w-100">
-                            <Tab.Content className="d-flex flex-grow-1">
-                                <Tab.Pane
-                                    active={true}
-                                    className="border border-primary container-fluid p-1 rounded"
-                                    id="meetingInfo">
-                                    <div>
-                                        Click
-                                        <svg className="btnlink" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"></path>
-                                        </svg>to get the join meeting link<br/>User Alias:1
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane
-                                    className="border border-primary container-fluid fade p-0 position-relative rounded"
-                                    id="userList">
-                                    <div className="h-100 overflow-auto position-absolute w-100">
-                                        <div className="border-bottom border-info p-1 media">
-                                            <div className="m-0 p-0" style={{"width":"80px","height":"64px"}}>
-                                                <div className="m-0 p-0 h-100 w-100 position-relative">
-                                                    <video autoPlay className="bg-dark h-100 position-absolute rounded w-100"></video>
-                                                    <div className="d-none mediaStatus text-white">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="70%" height="70%" viewBox="0 0 24 24" fill="white">
-                                                            <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"></path>
-                                                        </svg>
+                    <Tab.Container 
+                        activeKey={this.state.key}
+                        id="left-tabs-example">
+                        <Card className="rounded w-100">
+                            <Card.Header className="p-1 m-1 rounded">
+                                <Nav 
+                                    className="flex-row p-0 m-0" 
+                                    justify={true}  
+                                    onSelect={(selectedKey) => this.setKey(selectedKey)}
+                                    variant="pills">
+                                    <Nav.Item as="li" title="Chat History">
+                                        <Nav.Link data-toggle="pill" eventKey="chatBox">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24">
+                                                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
+                                            </svg>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item as="li" title="Meeting Info.">
+                                        <Nav.Link data-toggle="pill" eventKey="meetingInfo">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+                                            </svg>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item as="li" title="User List">
+                                        <Nav.Link data-toggle="pill" eventKey="userList">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24">
+                                                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                                            </svg>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                            </Card.Header>
+                            <Card.Body className="d-flex flex-grow-1 m-0 p-0 w-100">
+                                <Tab.Content 
+                                    className="border border-primary container-fluid d-flex flex-grow-1 ml-1 mr-1 p-0 rounded">
+                                    <Tab.Pane
+                                        className="container-fluid fade p-0"
+                                        eventKey="meetingInfo">
+                                        <div className="m-0 p-1">
+                                            Click
+                                            <svg className="btnlink" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"></path>
+                                            </svg>to get the join meeting link<br/>User Alias:1
+                                        </div>
+                                    </Tab.Pane>
+                                    <Tab.Pane
+                                        className="container-fluid fade p-0 position-relative"
+                                        eventKey="userList">
+                                        <div className="h-100 overflow-auto m-0 p-0 position-absolute w-100">
+                                            <div className="border-bottom border-info p-1 media">
+                                                <div className="m-0 p-0" style={{"width":"80px","height":"64px"}}>
+                                                    <div className="m-0 p-0 h-100 w-100 position-relative">
+                                                        <video autoPlay className="bg-dark h-100 position-absolute rounded w-100"></video>
+                                                        <div className="d-none mediaStatus text-white">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="70%" height="70%" viewBox="0 0 24 24" fill="white">
+                                                                <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"></path>
+                                                            </svg>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="align-self-center ml-1 media-body">
-                                                1(Host)*
+                                                <div className="align-self-center ml-1 media-body">
+                                                    1(Host)*
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane
-                                    className="border border-primary container-fluid fade p-0 position-relative rounded"
-                                    id="chatBox">
+                                    </Tab.Pane>
+                                    <Tab.Pane
+                                        className="container-fluid fade p-0 position-relative"
+                                        eventKey="chatBox">
                                         <div className="d-flex flex-column flex-grow-1 h-100 p-1 position-absolute w-100">
                                             <div className="border border-primary d-flex flex-grow-1 position-relative rounded">
                                                 <div className="h-100 p-1 overflow-auto position-absolute w-100">
@@ -205,26 +221,27 @@ class TestNav extends React.Component{
                                                 <button variant="primary" className="float-right">Send</button>
                                             </form>
                                         </div>
-                                </Tab.Pane>
-                            </Tab.Content>                        
-                        </Card.Body>
-                        <Card.Footer className="m-1 p-1 rounded">
-                            <div className="d-flex flex-row justify-content-around pt-1">
-                                <div className="align-items-center 
-                                            btn d-flex                                                
-                                            flex-column just-content-center 
-                                            p-0"
-                                    onClick={()=>this.leaveMeeting()}>
-                                    <div className="p-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="sd-block m-auto" width="24" height="24" viewBox="0 0 24 24">
-                                            <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                                        </svg>
-                                    </div>                
-                                    <div className="p-0">Leave</div>
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Card.Body>
+                            <Card.Footer className="m-1 p-1 rounded">
+                                <div className="d-flex flex-row justify-content-around pt-1">
+                                    <div className="align-items-center 
+                                                btn d-flex                                                
+                                                flex-column just-content-center 
+                                                p-0"
+                                        onClick={()=>this.leaveMeeting()}>
+                                        <div className="p-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="sd-block m-auto" width="24" height="24" viewBox="0 0 24 24">
+                                                <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                                            </svg>
+                                        </div>                
+                                        <div className="p-0">Leave</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </Card.Footer>
-                    </Card>  
+                            </Card.Footer>
+                        </Card>
+                    </Tab.Container>    
                 </div>
             </div>        
         );
