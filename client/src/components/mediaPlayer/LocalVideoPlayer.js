@@ -1,4 +1,4 @@
-import Draggable from '../../utils/Draggable';
+import Draggable from 'react-draggable';
 import './LocalVideoPlayer.css';
 import Media from "../media/Media";
 import React from "react";
@@ -26,7 +26,7 @@ class LocalVideoPlayer extends React.Component {
     render() {
         return (
             <Draggable>
-                <div className="border border-primary d-flex flex-grow-1 localVideoPlayer p-0">
+                <div className="localVideoPlayer">
                     <Media meetingControl={this.props.meetingControl} muted={true} ref={ this.media }  ></Media>
                 </div>
             </Draggable>

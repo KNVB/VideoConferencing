@@ -159,52 +159,48 @@ class MediaPlayer extends React.Component {
                                 stream={this.state.stream}/>
         }
         return (
-            <Fragment>
-                <div className={playerClass}>
-                    <Media
+            <div className={playerClass}>
+                <Media
                         meetingControl={this.props.meetingControl}
                         muted={this.state.muted}
                         ref={this.media}
                         timeUpdateHandler={this.timeUpdateHandler}
                     />
-                    <div className="controlLayer m-1 p-1" onClick={this.toggleControlBar}>
-                        <Collapse
-                            className="border-top border-white p-1 text-white w-100"
-                            in={this.state.showControlBar}>
-                            <span className="p-0 m-0">
-                                <div className="d-flex flex-grow-1 flex-row justify-content-between">
-                                    <div>
-                                        <MuteButton
-                                        toggleMute={this.toggleMute}
-                                        muted={this.state.muted}
-                                        />
-                                        <PInPButton
-                                        showFullScreen={this.state.showFullScreen}
-                                        togglePInP={this.showPInP}
-                                        />
-                                    </div>
-                                    <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
-                                        <ShareAudioButton shareAudioState={this.state.shareAudio}
-                                            toggleShareAudio={this.toggleShareAudio}/>
-                                        <ShareVideoButton shareVideoState={this.state.shareVideo}
-                                            toggleShareVideo={this.toggleShareVideo}/>
-                                    </div>
-                                    <div>
-                                        <div className="btnlink" title="Mirror the video" onClick={this.toggleMirror}>
-                                        &#x21c4;
-                                        </div>
-                                        <MaxMinButton
-                                            toggFullScreen={this.toggFullScreen}
-                                            showFullScreen={this.state.showFullScreen}
-                                        />
-                                    </div>
+                <div className="controlLayer d-flex flex-column justify-content-end m-1 p-1" onClick={this.toggleControlBar}>
+                    {localVideoPlayer}
+                    <Collapse
+                        className="p-1 text-white w-100"
+                        in={this.state.showControlBar}>
+                        <div className="border-top border-white d-flex flex-row justify-content-between">
+                            <div>
+                                <MuteButton
+                                toggleMute={this.toggleMute}
+                                muted={this.state.muted}
+                                />
+                                <PInPButton
+                                showFullScreen={this.state.showFullScreen}
+                                togglePInP={this.showPInP}
+                                />
+                            </div>
+                            <div className="d-flex flex-row flex-grow-1 justify-content-around m-0 p-0">
+                                <ShareAudioButton shareAudioState={this.state.shareAudio}
+                                    toggleShareAudio={this.toggleShareAudio}/>
+                                <ShareVideoButton shareVideoState={this.state.shareVideo}
+                                    toggleShareVideo={this.toggleShareVideo}/>
+                            </div>
+                            <div>
+                                <div className="btnlink" title="Mirror the video" onClick={this.toggleMirror}>
+                                &#x21c4;
                                 </div>
-                            </span>
-                        </Collapse>
-                    </div>
-                {localVideoPlayer}    
-            </div>
-            </Fragment>                  
+                                <MaxMinButton
+                                    toggFullScreen={this.toggFullScreen}
+                                    showFullScreen={this.state.showFullScreen}
+                                />
+                            </div>
+                        </div>            
+                    </Collapse>            
+                </div>         
+            </div>              
         )
     }
 }

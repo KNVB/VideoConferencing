@@ -1,8 +1,7 @@
 .localVideoPlayer{
-    height:30vh;
-    width:20vw;
-    position:fixed;
-    bottom: 5px;
-    right: 5px;
-    z-index: 100;
+    align-self:flex-end;
+    cursor: pointer;
+    height:25%;    
+    position:relative;
+    width:25%;    
 }
