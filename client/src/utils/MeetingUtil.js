@@ -72,6 +72,9 @@ class MeetingUtil {
             if (this.cancelJoinReqHandler)
                 this.cancelJoinReqHandler(joinReq);            
         })
+        socket.on('disconnect', () => {
+            console.log("Disconnected from server.");
+        });
         socket.on("joinRequest",joinReq=>{
             console.log("MeetingUtil.joinRequest,joinReq="+JSON.stringify(joinReq));
             if (this.joinReqHandler)

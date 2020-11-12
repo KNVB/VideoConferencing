@@ -1,26 +1,41 @@
-httpServerPort = 9000;
+let httpServerPort = 9000;
 //===============================================================
-var apiRouter,app,bodyParser,cors,express;
-var http,httpServer,io,meetingManager,path,peerServer;
+let apiRouter,app,bodyParser,cors,express;
+let http,httpServer,io,meetingManager,path,peerServer;
 bodyParser = require('body-parser')
 cors = require('cors')
 express = require('express');
 path = require('path')
 
-var { ExpressPeerServer } = require('peer');
-
+let { ExpressPeerServer } = require('peer');
 //===============================================================
 app = express();
 apiRouter= express.Router();
+//================================================================
 http =require('http');
 httpServer= http.createServer(app);
+//================================================================
+/*****************************************************************/
+/* if the server is connected to internet directly, you have to  */
+/* provide SSL certificate.                                      */   
+/*****************************************************************/
+/*
+let fs = require('fs');
+let https = require('https');
+let options = {
+  key: fs.readFileSync('./private.key'),
+  ca: [fs.readFileSync('./ca_bundle.crt')],
+  cert: fs.readFileSync('./certificate.crt')
+};
+httpServer = https.createServer(options, app);
+*/
+//================================================================
 io = require('socket.io')(httpServer);
 meetingManager=new (require("./utils/MeetingManager.js"));
 peerServer=ExpressPeerServer(httpServer, {
   path: '/peerServer',
   proxied: true
 });
-
 //================================================================
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
