@@ -15,7 +15,7 @@ class UserListButton extends React.Component {
   render() {
     return (
       <Nav.Item as="li" title="User List">
-        <Nav.Link data-toggle="pill" href="#userList">
+        <Nav.Link data-toggle="pill" eventKey="userList">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

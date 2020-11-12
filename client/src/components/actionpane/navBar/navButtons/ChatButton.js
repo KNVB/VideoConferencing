@@ -27,7 +27,7 @@ class ChatButton extends React.Component {
     }
     return (
       <Nav.Item as="li" title="Chat History">
-        <Nav.Link data-toggle="pill" href="#chatBox" ref={this.theLink} onClick={this.clearCount}>
+        <Nav.Link data-toggle="pill" eventKey="chatBox" ref={this.theLink} onClick={this.clearCount}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

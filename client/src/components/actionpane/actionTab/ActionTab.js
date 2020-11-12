@@ -8,19 +8,18 @@ class ActionTab extends React.Component {
     return (
       <Tab.Content className="d-flex flex-grow-1">
         <Tab.Pane
-          active={true}
           className="border border-primary container-fluid p-1 rounded"
-          id="meetingInfo">
+          eventKey="meetingInfo">
             <MeetingInfo meetingControl={this.props.meetingControl}/>    
         </Tab.Pane>
         <Tab.Pane
           className="border border-primary container-fluid fade p-0 position-relative rounded"
-          id="userList">
+          eventKey="userList">
             <UserList meetingControl={this.props.meetingControl}/>  
         </Tab.Pane>
         <Tab.Pane
           className="border border-primary container-fluid fade p-0 position-relative rounded"
-          id="chatBox">
+          eventKey="chatBox">
             <ChatBox meetingControl={this.props.meetingControl}/>
         </Tab.Pane>
       </Tab.Content>
