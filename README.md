@@ -25,17 +25,26 @@ Moreover, I am using Peerjs library to handle the WebRTC communication between b
    2. Go to the /client folder, enter the following command to install all the dependencies:
    
           npm install
+
+**Configuration**
+ 
+ - Edit the /api/.env file for changing the backend port no.
+ 
+ - To change the client socket port no., open the file /client/.env.production, change the value of REACT_APP_SOCKET_IO_PORT variable.
           
-   3. Enter the following command to build the front end code:          
+
+ - Go to the /client folder, enter the following command to build the front end code:          
     
           npm run build
 
-   4. After the building process, a "build" folder is generated.
+ - After the building process, a "build" folder is generated.
    
-   5. Go to the /api folder, create a symbolic link "build" to point to the /client/build folder.
+ - Go to the /api folder, create a symbolic link "build" to point to the /client/build folder.
    
    > For Linux OS, please refer the ln command; for Windows OS, please refer the mklink command.
    
-   6. Finally, enter the following command to start the application.
+
+**Start the application**
+    Go to the /api folder, enter the following command to start the application.
    
              npm start
