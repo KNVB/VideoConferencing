@@ -1,11 +1,41 @@
-# VideoConferencing
-A Video Conferencing Web Application.
+# Video Conferencing
+This is a Video Conferencing Web Application.
 
-As Chrome,FireFox and Safari browsers support WebRTC API interface, I want to build a simple web application that can perform video conferencing.
+As Chrome,FireFox and Safari browsers support WebRTC API interface, so that I can built a primitive Video Conferencing Web Application.
 
-Currently, I am building front end with React framework and bootstrap, I am using Express to build backend.
+The web application is divided into 2 part: front end and back end.
 
-Although I have some experience on web programming e.g. jquery,javascript,jsp,asp,php , all of the above technologies are new to me.
+Currently, I build front end with React framework and bootstrap, I am using Express to build backend.
 
-Especially, I am not familiar with CSS, so if you are familiar with bootstrap and css, you are the one I am looking for,
-if you have interest on my project, please send me an email(i.e. knvbhk@gmail.com), I looking for your help, thank you very much.
+Moreover, I am using Peerjs library to handle the WebRTC communication between browser.
+
+**Software Requirement**
+
+   1. Node.JS
+   2. A SSL cert for your domain.
+
+> If your server is connected to the internet directly, please amend the api/server.js to include the certificate to the server.
+
+**Installation**
+
+   1. Go to the /api folder,enter the following command to install all the dependencies:
+      
+          npm install
+      
+   2. Go to the /client folder, enter the following command to install all the dependencies:
+   
+          npm install
+          
+   3. Enter the following command to build the front end code:          
+    
+          npm run build
+
+   4. After the building process, a "build" folder is generated.
+   
+   5. Go to the /api folder, create a symbolic link "build" to point to the /client/build folder.
+   
+   > For Linux OS, please refer the ln command; for Windows OS, please refer the mklink command.
+   
+   6. Finally, enter the following command to start the application.
+   
+             npm start
