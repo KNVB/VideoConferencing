@@ -12,12 +12,18 @@ let { ExpressPeerServer } = require('peer');
 app = express();
 apiRouter= express.Router();
 //================================================================
+/*****************************************************************/
+/* if the server is connected to the internet via the web server */
+/* that have SSL cert,use the following 2 statements to start    */ 
+/* the backend                                                   */    
+/*****************************************************************/
 http =require('http');
 httpServer= http.createServer(app);
 //================================================================
 /*****************************************************************/
-/* if the server is connected to internet directly, you have to  */
-/* provide SSL certificate.                                      */   
+/* if the server is connected to the internet directly, you have */
+/* to provide SSL certificate ,uncomment the following code,     */ 
+/* comment the above 2 statements.                               */   
 /*****************************************************************/
 /*
 let fs = require('fs');
