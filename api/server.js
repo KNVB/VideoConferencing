@@ -1,29 +1,29 @@
-let httpServerPort = 9000;
-//===============================================================
-let apiRouter,app,bodyParser,cors,express;
-let http,httpServer,io,meetingManager,path,peerServer;
-bodyParser = require('body-parser')
-cors = require('cors')
-express = require('express');
-path = require('path')
-
+let bodyParser = require('body-parser')
+let cors = require('cors')
+let express = require('express');
+let meetingManager=new (require("./utils/MeetingManager.js"));
+let path = require('path')
 let { ExpressPeerServer } = require('peer');
+
 //===============================================================
-app = express();
-apiRouter= express.Router();
+let app = express();
+let apiRouter= express.Router();
+let httpServerPort = process.env["HTTP_PORT"];
+
 //================================================================
 /*****************************************************************/
-/* if the server is connected to the internet via the web server */
+/* if the server is connected to the internet via a web server   */
 /* that have SSL cert,use the following 2 statements to start    */ 
 /* the backend                                                   */    
 /*****************************************************************/
-http =require('http');
-httpServer= http.createServer(app);
+let http =require('http');
+let httpServer= http.createServer(app);
+
 //================================================================
 /*****************************************************************/
 /* if the server is connected to the internet directly, you have */
 /* to provide SSL certificate ,uncomment the following code,     */ 
-/* comment the above 2 statements.                               */   
+/* and then comment the above 2 statements.                      */   
 /*****************************************************************/
 /*
 let fs = require('fs');
@@ -35,13 +35,14 @@ let options = {
 };
 httpServer = https.createServer(options, app);
 */
+
 //================================================================
-io = require('socket.io')(httpServer);
-meetingManager=new (require("./utils/MeetingManager.js"));
-peerServer=ExpressPeerServer(httpServer, {
+let io = require('socket.io')(httpServer);
+let peerServer=ExpressPeerServer(httpServer, {
   path: '/peerServer',
   proxied: true
 });
+
 //================================================================
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
