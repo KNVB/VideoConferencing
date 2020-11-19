@@ -13,6 +13,7 @@ class Meeting{
 			this.join(user);
 			delete pendingJoinReq[info.userId];
 			socket.to(user.socketId).emit("joinReqResult",{error:0,"user":user,"meetingId":info.meetingId});
+			user.socketId=undefined;
 		});
 		this.broadcastMessage=((message,io)=>{
 			io.in(meetingId).emit("broadcastMessage", message);
@@ -74,17 +75,25 @@ class Meeting{
 		});
 		this.login=((userId,socket)=>{
 			if (this.hasUser(userId)){
-				var result={};
-				socket.join(meetingId);
-				Object.keys(userList).forEach(userId=>{
-					var user=userList[userId];
-					result[user.id]={"alias":user.alias,"id":user.id,"isHost":user.isHost};
-				});
 				var user=userList[userId];
-				user.socketId=socket.id;
-				socket.to(meetingId).emit("userJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
-				console.log('User '+user.alias+" login the meeting :"+meetingId+" @"+util.getTimeString());
-				return result;
+				console.log(user);
+				if (user.socketId===undefined){
+					var result={};
+					socket.join(meetingId);
+					Object.keys(userList).forEach(userId=>{
+						var user=userList[userId];
+						result[user.id]={"alias":user.alias,"id":user.id,"isHost":user.isHost};
+					});
+					
+					user.socketId=socket.id;
+					socket.to(meetingId).emit("userJoin",{"alias":user.alias,"id":user.id,"isHost":user.isHost});
+					console.log('User '+user.alias+" login the meeting :"+meetingId+" @"+util.getTimeString());
+					return result;
+				} else {
+					var err = new Error('This user cannot login this meeting.');
+					err.unauthorized=true;
+					throw err;
+				}
 			} else {
 				var err = new Error('This user cannot login this meeting.');
 				err.unauthorized=true;

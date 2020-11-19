@@ -144,6 +144,9 @@ class MeetingControl{
                 callBack(result);
             }));
         }
+        this.removeIntruder=()=>{
+            meetingUtil.removeIntruder();
+        }
         this.sendLocalStreamToOthers=()=>{
             console.log("MeetingControl.sendLocalStreamToOthers is called");
             if (this.localStream){

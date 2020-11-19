@@ -2,8 +2,8 @@ import config from './config';
 import Peer from "peerjs";
 class RemoteStreamManager {
     constructor(){
-        let peer;
-        let thisUser;
+        let peer=null;
+        let thisUser=null;
         this.localStream=null;
         this.remoteStreamHandler=null;
         this.connect=(user)=>{ 
@@ -46,7 +46,8 @@ class RemoteStreamManager {
             peer.call(toUser.id,stream,{metadata:{"userId":thisUser.id,"alias":thisUser.alias}});
         }
         this.disconnect=()=>{
-            peer.disconnect();
+            if (peer)
+                peer.disconnect();
         }
     }
 }

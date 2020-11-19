@@ -24,7 +24,9 @@ class Meeting extends React.Component {
                     meetingControl.leaveMeetingHandler["Meeting.leaveMeetingHandler"]=this.leaveMeetingHandler;
                     this.setState({"meetingControl":meetingControl});
                 } else {
-                    alert(result.message);
+                    //alert(result.message);
+                    meetingControl.removeIntruder();
+                    this.setState({"invalidAccess":true});
                 }
             })
         }                

@@ -52,6 +52,9 @@ class MeetingUtil {
                             callBack(result);
                         });
         }
+        this.removeIntruder=()=>{
+            sessionStorage.clear();
+        }
         this.resetRemoteStream=(callBack)=>{
             socket.emit("resetRemoteStream",
                         {"meetingId":thisMeetingId,"userId":thisUser.id},
@@ -86,6 +89,9 @@ class MeetingUtil {
                 this.receiveMsgHandler(info);
             
         });
+        socket.on('reconnect',()=>{
+            console.log("Reconnect success.");
+        })
         socket.on("resetRemoteStream",info=>{
             console.log("MeetingUtil receives resetRemoteStream event:"+JSON.stringify(info));
             if (this.resetRemoteStreamHandler)
