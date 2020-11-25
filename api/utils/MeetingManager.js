@@ -166,6 +166,7 @@ class MeetingManager
 					}
 				}
 			});
+/*
 //=========================================================================
 			socket.on("sendAnswer",answer=>{
 				socket.broadcast.emit('receiveAnswer',answer);
@@ -177,11 +178,12 @@ class MeetingManager
 				socket.broadcast.emit('receiveOffer',offer);
 			});
 //=========================================================================			
+*/
 			socket.on("sendMsg",(info,callBack)=>{
 				var meeting;
 				try{
 					meeting=meetingList[info.meetingId];
-					meeting.sendMsg(info,io);
+					meeting.sendMsg(info,io,socket.id);
 					callBack({"error":0,message:"The message is sent."});
 				}catch (error){
 					console.log(error);

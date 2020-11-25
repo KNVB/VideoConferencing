@@ -76,7 +76,7 @@ class Meeting{
 		this.login=((userId,socket)=>{
 			if (this.hasUser(userId)){
 				var user=userList[userId];
-				console.log(user);
+				//console.log(user);
 				if (user.socketId===undefined){
 					var result={};
 					socket.join(meetingId);
@@ -110,8 +110,9 @@ class Meeting{
 		this.resetRemoteStream=((info,socket)=>{
 			socket.to(meetingId).emit("resetRemoteStream",{userId:info.userId});
 		});
-		this.sendMsg=((info,io)=>{
+		this.sendMsg=((info,io,socketId)=>{
 			var user=userList[info.userId];
+			console.log(user.socketId==socketId);
 			io.in(meetingId).emit("receiveMsg",{"userId":user.id,alias:user.alias,"msg":info.msg});
 		});
 		this.setHostUser=((user)=>{
